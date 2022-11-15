@@ -1,0 +1,68 @@
+<form class="col-md-6" id="registerForm">
+
+
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="exampleInputName1">Ime</label>
+        <input type="text" class="form-control" id="exampleInputName1" placeholder="Unesite ime" name="registeredName" [(ngModel)]="registerForm.name">
+      </div>
+     
+      <div class="form-group col-md-6">
+        <label for="exampleInputSurname1">Prezime</label>
+        <input type="text" class="form-control" id="exampleInputSurname1" placeholder="Unesite prezime" name="registeredSurname" [(ngModel)]="registerForm.surname">
+      </div>
+    </div>
+    
+    
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputEmail1">E-mail</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Unesite e-mail adresu" name="registeredEmail" [(ngModel)]="registerForm.email">
+      
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputPhone1">Telefon</label>
+      <input type="text" class="form-control" id="exampleInputPhone1" placeholder="Unesite broj telefona" name="registeredPhone" [(ngModel)]="registerForm.phone">
+    </div>
+  </div>
+  
+  <hr>
+  <div class="row">
+    <div class="form-group col-md-4">
+      <label for="exampleInputCity1">Grad</label>
+      <input type="text" class="form-control" id="exampleInputCity1" placeholder="Unesite grad" name="registeredCity" [(ngModel)]="registerForm.address.city">
+    </div>
+  
+    <div class="form-group col-md-4">
+      <label for="exampleInputStreet1">Ulica</label>
+      <input type="text" class="form-control" id="exampleInputStreet1" placeholder="Unesite ulicu" name="registeredStreet" [(ngModel)]="registerForm.address.street">
+    </div>
+  
+    
+    <div class="form-group col-md-4">
+      <label for="exampleInputNumber1">Broj</label>
+      <input type="text" class="form-control" id="exampleInputNumber1" placeholder="Unesite broj" name="registeredNumber" [(ngModel)]="registerForm.address.number">
+    </div>
+  
+  </div>
+  <hr>
+  
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputPassword1">Lozinka</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Unesite lozinku" name="registeredPassword" [(ngModel)]="registerForm.password">
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputPassword2">Potvrda</label>
+      <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Unesite lozinku ponovo" name="registeredCheckPassword" [(ngModel)]="registerForm.checkPassword">
+    </div>
+  </div>
+    
+  
+    
+  
+  
+    <button type="submit" class="btn btn-secondary" id="registerButton"  (click)="register()">Registruj se</button>
+  </form>
