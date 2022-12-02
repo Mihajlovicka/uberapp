@@ -9,6 +9,12 @@ export enum Status {
     BANNED = 'BANNED'
 }
 
+export enum Role {
+    CLIENT = 'CLIENT',
+    DRIVER = 'DRIVER',
+    ADMINISTRATOR = 'ADMINISTRATOR'
+}
+
 
 interface UserInterface{
     name: string;
@@ -16,8 +22,8 @@ interface UserInterface{
     email: string;
     address: Address;
     phone: string;
-    status: Status
-  
+    status: Status;
+    role: Role;
 
 }
 
@@ -28,6 +34,7 @@ export class User implements UserInterface{
     public address: Address;
     public phone: string;
     public status: Status;
+    public role: Role;
 
     constructor(userInt: UserInterface){
         this.name = userInt.name;
@@ -36,6 +43,7 @@ export class User implements UserInterface{
         this.address = userInt.address;
         this.phone = userInt.phone;
         this.status = userInt.status;
+        this.role = userInt.role;
     }
 }
 

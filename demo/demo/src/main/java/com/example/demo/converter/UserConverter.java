@@ -12,7 +12,7 @@ public class UserConverter {
     AddressConverter addressConverter;
 
     public UserDTO toDTO(User user){
-        return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getPhone(), addressConverter.toDTO(user.getAddress()), user.getStatus()           );
+        return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getPhone(), addressConverter.toDTO(user.getAddress()), user.getStatus(), user.getRole());
     }
 
 }

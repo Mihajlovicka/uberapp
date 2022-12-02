@@ -25,9 +25,12 @@ public class User {
     @Column(nullable = false)
     private Status status;
 
+    @Column(nullable = false)
+    private Role role;
+
     public User(){}
 
-    public User(Long id, String name, String surname, String email, String phone, String password, Address address, Status status){
+    public User(Long id, String name, String surname, String email, String phone, String password, Address address, Status status, Role role){
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -36,6 +39,7 @@ public class User {
         this.password = password;
         this.address = address;
         this.status = status;
+        this.role = role;
     }
 
     public Long getId(){
@@ -93,4 +97,8 @@ public class User {
     public Status getStatus(){return status;}
 
     public void setStatus(Status status){this.status = status;}
+
+    public Role getRole(){return role;}
+
+    public void setRole(Role role){this.role = role;}
 }

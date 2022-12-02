@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.Role;
 import com.example.demo.model.Status;
 
 public class UserDTO {
@@ -11,15 +12,18 @@ public class UserDTO {
 
     private Status status;
 
+    private Role role;
+
     public UserDTO(){}
 
-    public UserDTO(String name, String surname, String email, String phone, AddressDTO address, Status status){
+    public UserDTO(String name, String surname, String email, String phone, AddressDTO address, Status status, Role role){
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.status = status;
+        this.role = role;
     }
 
     public String getName() {
@@ -65,5 +69,9 @@ public class UserDTO {
     public Status getStatus(){return status;}
 
     public void setStatus(Status status){this.status = status;}
+
+    public Role getRole(){return role;}
+
+    public void setRole(Role role){this.role = role;}
 }
 

@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.Role;
+
 public class RegisterFormDTO {
     private String name;
     private String surname;
@@ -9,9 +11,11 @@ public class RegisterFormDTO {
     private String password;
     private String checkPassword;
 
+    private Role role;
+
     public RegisterFormDTO(){}
 
-    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO addressDTO, String password, String checkPassword){
+    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO addressDTO, String password, String checkPassword, Role role){
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -19,6 +23,7 @@ public class RegisterFormDTO {
         this.address = addressDTO;
         this.password = password;
         this.checkPassword = checkPassword;
+        this.role = role;
     }
 
     public String getName() {
@@ -72,4 +77,8 @@ public class RegisterFormDTO {
     public void setCheckPassword(String checkPassword) {
         this.checkPassword = checkPassword;
     }
+
+    public Role getRole(){return role;}
+
+    public void setRole(Role role){this.role = role;}
 }

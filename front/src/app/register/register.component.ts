@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service';
 import { RegisterForm } from '../model/registerForm.model';
-import { User, Status } from '../model/user.model';
+import { User, Status, Role } from '../model/user.model';
 
 @Component({
   selector: 'app-register',
@@ -15,13 +15,14 @@ export class RegisterComponent implements OnInit {
     surname:'',
     email:'',
     phone:'',
-    address:{
+    address: {
       city:'',
       street:'',
       number:''
     },
     password:'',
-    checkPassword:''
+    checkPassword:'',
+    role: Role.CLIENT
   }
 
   user: User = {
@@ -34,7 +35,8 @@ export class RegisterComponent implements OnInit {
       street:'',
       number:''
     },
-    status: Status.ACTIVE
+    status: Status.ACTIVE,
+    role: Role.CLIENT
   }
 
   constructor(private appService: AppService) { }
@@ -43,6 +45,7 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
+    console.log(this.registerForm.role)
     this.appService.register(this.registerForm).subscribe((resp: User) => {
       this.user = resp;
       console.log(this.user);

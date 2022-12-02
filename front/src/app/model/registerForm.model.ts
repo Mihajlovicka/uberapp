@@ -1,4 +1,5 @@
 import { Address } from "./address.model";
+import { Role } from "./user.model";
 
 interface RegisterFormInterface{
     name: string;
@@ -8,6 +9,7 @@ interface RegisterFormInterface{
     address: Address;
     password: string;
     checkPassword: string;
+    role: Role;
 
 }
 
@@ -19,6 +21,7 @@ export class RegisterForm implements RegisterFormInterface{
     public address: Address;
     public password: string;
     public checkPassword: string;
+    public role: Role;
 
     constructor(registerFormInt: RegisterFormInterface){
         this.name = registerFormInt.name;
@@ -28,5 +31,6 @@ export class RegisterForm implements RegisterFormInterface{
         this.address = registerFormInt.address;
         this.password = registerFormInt.password;
         this.checkPassword = registerFormInt.checkPassword;
+        this.role = registerFormInt.role;
     }
 }

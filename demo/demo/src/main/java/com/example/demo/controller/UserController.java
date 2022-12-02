@@ -29,6 +29,7 @@ public class UserController {
 
     @PostMapping(value="api/register")
     public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO){
+        System.out.println(registerFormDTO.getRole());
         User user = new User();
         Address address = new Address();
 
@@ -43,10 +44,14 @@ public class UserController {
         address.setNumber(registerFormDTO.getAddress().getNumber());
 
         user.setAddress(addressService.save(address));
+        user.setRole(registerFormDTO.getRole());
 
         final User savedUser = userService.save(user);
 
         return new ResponseEntity(userConverter.toDTO(savedUser), HttpStatus.OK);
 
     }
+
+
+
 }
