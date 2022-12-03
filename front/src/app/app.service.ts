@@ -23,12 +23,13 @@ import { User } from "./model/user.model";
 
      public register(registerForm: RegisterForm): Observable<User>{
 
-      return this.http.post<User>(`${this.registerUrl}`, registerForm, this.httpOptions).pipe(catchError(this.handleError<User>('register')))
+      return this.http.post<User>(`${this.registerUrl}`, registerForm, this.httpOptions).pipe(
+        catchError(this.handleError<User>('register')))
 
      }
 
-  
-
+    
+     
       private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
           // TODO: send the error to remote logging infrastructure

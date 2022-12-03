@@ -14,6 +14,9 @@ public class AddressService {
     AddressRepository addressRepository;
 
     public Address save(Address address){
-        return addressRepository.save(address);
+        Address existing = addressRepository.findAddressByCityAndStreetAndNumber(address.getCity(), address.getStreet(), address.getNumber());
+        if(existing == null) return addressRepository.save(address);
+        address.setId(existing.getId());
+        return address;
     }
 }

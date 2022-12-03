@@ -22,14 +22,10 @@ public class UserController {
     UserService userService;
 
     @Autowired
-    AddressService addressService;
-
-    @Autowired
     UserConverter userConverter;
 
     @PostMapping(value="api/register")
     public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO){
-        System.out.println(registerFormDTO.getRole());
         User user = new User();
         Address address = new Address();
 
@@ -43,15 +39,11 @@ public class UserController {
         address.setStreet(registerFormDTO.getAddress().getStreet());
         address.setNumber(registerFormDTO.getAddress().getNumber());
 
-        user.setAddress(addressService.save(address));
+        user.setAddress(address);
         user.setRole(registerFormDTO.getRole());
 
         final User savedUser = userService.save(user);
 
         return new ResponseEntity(userConverter.toDTO(savedUser), HttpStatus.OK);
-
     }
-
-
-
 }
