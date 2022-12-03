@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.converter.UserConverter;
 import com.example.demo.dto.RegisterFormDTO;
+import com.example.demo.exception.ApiRequestException;
 import com.example.demo.model.Address;
 import com.example.demo.model.User;
 import com.example.demo.service.AddressService;
@@ -25,7 +26,7 @@ public class UserController {
     UserConverter userConverter;
 
     @PostMapping(value="api/register")
-    public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO){
+    public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws ApiRequestException {
         User user = new User();
         Address address = new Address();
 
@@ -42,8 +43,9 @@ public class UserController {
         user.setAddress(address);
         user.setRole(registerFormDTO.getRole());
 
-        final User savedUser = userService.save(user);
 
+        final User savedUser = userService.save(user);
         return new ResponseEntity(userConverter.toDTO(savedUser), HttpStatus.OK);
+
     }
 }

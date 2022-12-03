@@ -9,6 +9,8 @@ import { RegisterComponent } from './register/register.component';
 
 import { RouterModule, Routes } from '@angular/router';
 
+
+
 const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent}
 ]

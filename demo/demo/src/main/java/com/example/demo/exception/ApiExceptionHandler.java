@@ -16,11 +16,11 @@ public class ApiExceptionHandler {
         // 1. create payload containing exception details
         EmailExist emailExist = new EmailExist(
                 e.getMessage(),
-                HttpStatus.MULTI_STATUS,
+                HttpStatus.CONFLICT,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
         // 2. return response entity
-        return new ResponseEntity<>(emailExist, HttpStatus.MULTI_STATUS);
+        return new ResponseEntity<>(emailExist, HttpStatus.CONFLICT);
 
     }
 }

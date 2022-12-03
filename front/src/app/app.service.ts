@@ -24,8 +24,29 @@ import { User } from "./model/user.model";
      public register(registerForm: RegisterForm): Observable<User>{
 
       return this.http.post<User>(`${this.registerUrl}`, registerForm, this.httpOptions).pipe(
-        catchError(this.handleError<User>('register')))
+        catchError(this.handeRegistrationError<User>()))
 
+     }
+
+
+     private handeRegistrationError<T>(result?: T) {
+      return (error: any): Observable<T> => {
+        // TODO: send the error to remote logging infrastructure
+        console.error(error); // log to console instead
+
+        if(error.error.message === "Email in use."){
+  
+        // TODO: better job of transforming error for user consumption
+        alert("Email in use.");
+
+      }
+      else{
+        alert("Registration failed.");
+      }
+  
+        // Let the app keep running by returning an empty result.
+        return of(result as T);
+      };
      }
 
     

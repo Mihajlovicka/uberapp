@@ -45,11 +45,9 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
-    console.log(this.registerForm.role)
     this.appService.register(this.registerForm).subscribe((resp: User) => {
-      this.user = resp;
-      console.log(this.user);
-
+        this.user = resp;
+        console.log(this.user);
     })
   }
   

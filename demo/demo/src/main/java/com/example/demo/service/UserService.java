@@ -20,7 +20,7 @@ public class UserService {
     AddressService addressService;
 
 
-    public User save(User user){
+    public User save(User user) throws ApiRequestException {
         if(userRepository.findUserByEmail(user.getEmail()) != null) {
             throw new ApiRequestException("Email in use.");
         }
