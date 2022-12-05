@@ -8,20 +8,24 @@ import { AppService } from './app.service';
 import { RegisterComponent } from './register/register.component';
 
 import { RouterModule, Routes } from '@angular/router';
+import { RegistrationConfirmComponent } from './registration-confirm/registration-confirm.component';
+import {UserRegistrationService} from "./user-registration.service";
 
 
 
 const appRoutes: Routes = [
-  { path: 'register', component: RegisterComponent}
+  { path: 'register', component: RegisterComponent},
+  { path:'registerConfirm/:email', component:RegistrationConfirmComponent}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent
+    RegisterComponent,
+    RegistrationConfirmComponent
   ],
 
-  
+
 
   imports: [
     BrowserModule,
@@ -34,7 +38,7 @@ const appRoutes: Routes = [
     )
 
   ],
-  providers: [AppService],
+  providers: [AppService, UserRegistrationService],
   bootstrap: [AppComponent]
 
 

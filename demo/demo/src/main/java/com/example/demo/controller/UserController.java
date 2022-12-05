@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @CrossOrigin(value = "http://localhost:4200", allowedHeaders="*")
 public class UserController {
@@ -55,5 +57,11 @@ public class UserController {
         final ClientsAccount savedAccount = userService.saveClient(clientsAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
+    }
+
+    @PostMapping(value="api/registerConfirm")
+    public ResponseEntity register(@RequestBody String email) throws ApiRequestException {
+        userService.registerConfirm(email);
+        return new ResponseEntity(email, HttpStatus.OK);
     }
 }

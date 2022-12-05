@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.email.EmailDetails;
+import com.example.demo.email.EmailService;
 import com.example.demo.exception.ApiRequestException;
 import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
@@ -24,6 +26,7 @@ public class UserService {
     @Autowired
     ClientsRepository clientsRepository;
 
+    @Autowired private EmailService emailService;
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws ApiRequestException {
         if(userRepository.findUserByEmail(clientsAccount.getUser().getEmail()) != null) {
@@ -35,7 +38,23 @@ public class UserService {
         clientsAccount.getUser().setStatus(Status.NOTACTIVATED);
         final User user = userRepository.save(clientsAccount.getUser());
         clientsAccount.setUser(user);
+        //sanje meila
+        EmailDetails emailDetails = new EmailDetails();
+        emailDetails.setSubject("Potrvda registracije UberApp");
+        emailDetails.setRecipient("saramihajlovic94@gmail.com");
+        emailDetails.setMsgBody("Kliknite na link kako bi se registrovali. \n " +
+                "<a href=\"localhost:4200/registerConfirm/"+emailDetails.getRecipient()+"\">Potvrda registracije</a>");
+        emailService.send(emailDetails);
 
         return clientsRepository.save(clientsAccount);
+    }
+
+    public void registerConfirm(String email) throws ApiRequestException {
+        User u = userRepository.findUserByEmail(email);
+        if(u == null) {
+            throw new ApiRequestException("Email not found.");
+        }
+        u.setStatus(Status.ACTIVE);
+        userRepository.save(u);
     }
 }
