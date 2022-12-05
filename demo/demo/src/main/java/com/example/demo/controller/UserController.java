@@ -4,6 +4,7 @@ import com.example.demo.converter.UserConverter;
 import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.ApiRequestException;
 import com.example.demo.model.Address;
+import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.User;
 import com.example.demo.service.AddressService;
 import com.example.demo.service.UserService;
@@ -29,23 +30,30 @@ public class UserController {
     public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws ApiRequestException {
         User user = new User();
         Address address = new Address();
+        ClientsAccount clientsAccount = new ClientsAccount();
 
         user.setName(registerFormDTO.getName());
         user.setSurname(registerFormDTO.getSurname());
         user.setEmail(registerFormDTO.getEmail());
-        user.setPhone(registerFormDTO.getPhone());
         user.setPassword(registerFormDTO.getPassword());
 
         address.setCity(registerFormDTO.getAddress().getCity());
         address.setStreet(registerFormDTO.getAddress().getStreet());
         address.setNumber(registerFormDTO.getAddress().getNumber());
 
-        user.setAddress(address);
+
+        clientsAccount.setUser(user);
+        clientsAccount.setAddress(address);
+        clientsAccount.setPicture("");
+        clientsAccount.setPhone(registerFormDTO.getPhone());
+
+
         user.setRole(registerFormDTO.getRole());
 
 
-        final User savedUser = userService.save(user);
-        return new ResponseEntity(userConverter.toDTO(savedUser), HttpStatus.OK);
+        //final User savedUser = userService.save(user);
+        final ClientsAccount savedAccount = userService.saveClient(clientsAccount);
+        return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
     }
 }

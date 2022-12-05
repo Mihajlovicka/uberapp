@@ -7,21 +7,19 @@ public class UserDTO {
     private String name;
     private String surname;
     private String email;
-    private String phone;
-    private AddressDTO address;
+
 
     private Status status;
 
     private Role role;
 
+
     public UserDTO(){}
 
-    public UserDTO(String name, String surname, String email, String phone, AddressDTO address, Status status, Role role){
+    public UserDTO(String name, String surname, String email, Status status, Role role){
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.phone = phone;
-        this.address = address;
         this.status = status;
         this.role = role;
     }
@@ -50,21 +48,6 @@ public class UserDTO {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public AddressDTO getAddress() {
-        return address;
-    }
-
-    public void setAddress(AddressDTO address) {
-        this.address = address;
-    }
 
     public Status getStatus(){return status;}
 

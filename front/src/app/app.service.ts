@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { catchError, Observable, of } from "rxjs";
 import { RegisterForm } from "./model/registerForm.model";
 import { User } from "./model/user.model";
+import { ClientsAccount } from "./model/clientsAccount.model";
 
 @Injectable({
     providedIn: 'root'
@@ -21,10 +22,10 @@ import { User } from "./model/user.model";
     }
 
 
-     public register(registerForm: RegisterForm): Observable<User>{
+     public register(registerForm: RegisterForm): Observable<ClientsAccount>{
 
-      return this.http.post<User>(`${this.registerUrl}`, registerForm, this.httpOptions).pipe(
-        catchError(this.handeRegistrationError<User>()))
+      return this.http.post<ClientsAccount>(`${this.registerUrl}`, registerForm, this.httpOptions).pipe(
+        catchError(this.handeRegistrationError<ClientsAccount>()))
 
      }
 

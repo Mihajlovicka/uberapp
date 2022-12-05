@@ -2,8 +2,10 @@ package com.example.demo.service;
 
 import com.example.demo.exception.ApiRequestException;
 import com.example.demo.model.Address;
+import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.Status;
 import com.example.demo.model.User;
+import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,13 +21,21 @@ public class UserService {
     @Autowired
     AddressService addressService;
 
+    @Autowired
+    ClientsRepository clientsRepository;
 
-    public User save(User user) throws ApiRequestException {
-        if(userRepository.findUserByEmail(user.getEmail()) != null) {
+
+    public ClientsAccount saveClient(ClientsAccount clientsAccount) throws ApiRequestException {
+        if(userRepository.findUserByEmail(clientsAccount.getUser().getEmail()) != null) {
             throw new ApiRequestException("Email in use.");
         }
-        Address address = addressService.save(user.getAddress());
-        user.setStatus(Status.NOTACTIVATED);
-        return userRepository.save(user);
+        final Address address = addressService.save(clientsAccount.getAddress());
+        clientsAccount.setAddress(address);
+
+        clientsAccount.getUser().setStatus(Status.NOTACTIVATED);
+        final User user = userRepository.save(clientsAccount.getUser());
+        clientsAccount.setUser(user);
+
+        return clientsRepository.save(clientsAccount);
     }
 }

@@ -14,30 +14,19 @@ public class User {
     @Column(nullable = false)
     private String email;
     @Column(nullable = false)
-    private String phone;
-    @Column(nullable = false)
     private String password;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "address_id")
-    private Address address;
-
     @Column(nullable = false)
     private Status status;
-
     @Column(nullable = false)
     private Role role;
-
     public User(){}
 
-    public User(Long id, String name, String surname, String email, String phone, String password, Address address, Status status, Role role){
+    public User(Long id, String name, String surname, String email, String password, Status status, Role role){
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.email = email;
-        this.phone = phone;
         this.password = password;
-        this.address = address;
         this.status = status;
         this.role = role;
     }
@@ -73,31 +62,13 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public String getPhone(){return phone;}
-
-    public void setPhone(String phone){this.phone = phone;}
-
-    public String getPassword() {
-        return password;
-    }
-
+    public String getPassword() {return password;}
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
     public Status getStatus(){return status;}
-
     public void setStatus(Status status){this.status = status;}
-
     public Role getRole(){return role;}
 
     public void setRole(Role role){this.role = role;}

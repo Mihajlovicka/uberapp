@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service';
+import { ClientsAccount } from '../model/clientsAccount.model';
 import { RegisterForm } from '../model/registerForm.model';
 import { User, Status, Role } from '../model/user.model';
 
@@ -25,18 +26,23 @@ export class RegisterComponent implements OnInit {
     role: Role.CLIENT
   }
 
-  user: User = {
-    name:'',
-    surname:'',
-    email:'',
-    phone:'',
+ 
+
+  clientsAccount: ClientsAccount = {
+    user:{
+      name:'',
+      surname:'',
+      email:'',
+      status: Status.ACTIVE,
+      role: Role.CLIENT
+    },
     address:{
       city:'',
       street:'',
       number:''
     },
-    status: Status.ACTIVE,
-    role: Role.CLIENT
+    picture:'',
+    phone:''
   }
 
   constructor(private appService: AppService) { }
@@ -87,10 +93,10 @@ export class RegisterComponent implements OnInit {
 
     this.capitalizeForm();
     
-    this.appService.register(this.registerForm).subscribe((resp: User) => {
-        this.user = resp;
+    this.appService.register(this.registerForm).subscribe((resp: ClientsAccount) => {
+        this.clientsAccount = resp;
         alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
-        console.log(this.user);
+        console.log(this.clientsAccount);
       })
     }
   }
