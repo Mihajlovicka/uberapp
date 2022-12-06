@@ -2,7 +2,9 @@
 export enum Status {
     ACTIVE = 'ACTIVE',
     NOTACTIVATED = 'NOTACTIVATED',
-    BANNED = 'BANNED'
+    BANNED = 'BANNED',
+    UNDERREVISION = 'UNDERREVISION',
+    DELETED = 'DELETED'
 }
 
 export enum Role {

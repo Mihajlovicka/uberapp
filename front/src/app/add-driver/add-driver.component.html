@@ -1,0 +1,52 @@
+<form class="col-md-6" id="registerForm">
+
+   
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="exampleInputName1">Ime</label>
+        <input type="text" class="form-control" id="exampleInputName1" placeholder="Unesite ime" name="registeredName" [(ngModel)]="info.name">
+      </div>
+     
+      <div class="form-group col-md-6">
+        <label for="exampleInputSurname1">Prezime</label>
+        <input type="text" class="form-control" id="exampleInputSurname1" placeholder="Unesite prezime" name="registeredSurname" [(ngModel)]="info.surname">
+      </div>
+    </div>
+    
+    
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputEmail1">E-mail</label>
+      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Unesite e-mail adresu" name="registeredEmail" [(ngModel)]="info.email">
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputPhone1">Telefon</label>
+      <input type="text" class="form-control" id="exampleInputPhone1" placeholder="Unesite broj telefona" name="registeredPhone" [(ngModel)]="info.phone">
+    </div>
+  </div>
+  
+  <hr>
+  
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputPassword1">Lozinka</label>
+      <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Unesite lozinku" name="registeredPassword" [(ngModel)]="info.password">
+      
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputPassword2">Potvrda</label>
+      <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Unesite lozinku ponovo" name="registeredCheckPassword" [(ngModel)]="info.checkPassword">
+    </div>
+  </div>
+    
+  
+    
+
+
+  <button type="button" class="btn btn-secondary" id="nextButton" (click)="next()">
+    Dalje
+  </button>
+  
+  </form>

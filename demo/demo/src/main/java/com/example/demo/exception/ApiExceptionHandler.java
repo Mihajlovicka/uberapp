@@ -11,10 +11,10 @@ import java.time.ZonedDateTime;
 @ControllerAdvice
 public class ApiExceptionHandler {
 
-    @ExceptionHandler(value = {ApiRequestException.class})
-    public ResponseEntity<Object> handlerEmailExistException(ApiRequestException e){
+    @ExceptionHandler(value = {EmailExistException.class})
+    public ResponseEntity<Object> handlerEmailExistException(EmailExistException e){
         // 1. create payload containing exception details
-        EmailExist emailExist = new EmailExist(
+        EmailExistBean emailExist = new EmailExistBean(
                 e.getMessage(),
                 HttpStatus.CONFLICT,
                 ZonedDateTime.now(ZoneId.of("Z"))
@@ -23,4 +23,16 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(emailExist, HttpStatus.CONFLICT);
 
     }
+
+    @ExceptionHandler(value = {PlateNumberExistException.class})
+    public ResponseEntity<Object> handlerPlateNumberExistException(PlateNumberExistException e){
+        PlateNumberExistBean plateNumberExist = new PlateNumberExistBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(plateNumberExist, HttpStatus.CONFLICT);
+    }
+
 }

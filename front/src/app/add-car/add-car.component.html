@@ -1,0 +1,68 @@
+<form class="col-md-6" id="registerForm">
+
+   
+    <div class="row">
+      <div class="form-group col-md-6">
+        <label for="exampleInputBrand1">Marka</label>
+        <input type="text" class="form-control" id="exampleInputBrand1" placeholder="Unesite marku" name="registeredBrand" [(ngModel)]="info.car.brand">
+      </div>
+     
+      <div class="form-group col-md-6">
+        <label for="exampleInputModel1">Model</label>
+        <input type="text" class="form-control" id="exampleInputModel1" placeholder="Unesite model" name="registeredModel" [(ngModel)]="info.car.model">
+      </div>
+    </div>
+    
+    
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputColor1">Boja</label>
+      <input type="text" class="form-control" id="exampleInputColor1" placeholder="Unesite boju" name="registeredColor" [(ngModel)]="info.car.color">
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputPlateNumber1">Registracija</label>
+      <input type="text" class="form-control" id="exampleInputPlateNumber1" placeholder="Unesite registracioni broj" name="registeredPlateNumber" [(ngModel)]="info.car.plateNumber">
+    </div>
+  </div>
+  
+  <hr>
+  
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="exampleInputBodyType1">Karoserija</label>
+      <select class="form-control" name="registeredCarBodyType" [(ngModel)]="selectedBodyType">
+        <option>COUPE</option>
+        <option>HATCHBACK</option>
+        <option>SUV</option>
+        <option>JEEP</option>
+        <option>SEDAN</option>
+      </select>
+      
+    </div>
+  
+    <div class="form-group col-md-6">
+      <label for="exampleInputFuel2">Gorivo</label>
+      <select class="form-control" name="registeredFuelType" [(ngModel)]="selectedFuelType">
+        <option>GASOLINE</option>
+        <option>DIESEL</option>
+        <option>AUTOGAS</option>
+      </select>
+    
+    
+    </div>
+
+
+  </div>
+
+
+
+  <button type="button" class="btn btn-secondary" id="backButton" (click)="back()">
+    Nazad
+  </button>
+
+  <button type="button" class="btn btn-secondary" id="saveButton" (click)="save()">
+    Sacuvaj
+  </button>
+  
+  </form>

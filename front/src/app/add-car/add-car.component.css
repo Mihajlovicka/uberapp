@@ -1,0 +1,14 @@
+#registerForm{
+    margin:12% auto;
+}
+
+#backButton{
+    margin: 3% auto;
+    width: 30%;
+}
+
+#saveButton{
+    margin: 3% auto;
+    width: 30%;
+    margin-left: 40%;
+}

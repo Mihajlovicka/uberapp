@@ -2,18 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
-import com.example.demo.exception.ApiRequestException;
-import com.example.demo.model.Address;
-import com.example.demo.model.ClientsAccount;
-import com.example.demo.model.Status;
-import com.example.demo.model.User;
+import com.example.demo.exception.EmailExistException;
+import com.example.demo.exception.PlateNumberExistException;
+import com.example.demo.model.*;
 import com.example.demo.repository.ClientsRepository;
+import com.example.demo.repository.DriversRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-
-import java.time.ZonedDateTime;
 
 @Component
 public class UserService {
@@ -26,11 +22,17 @@ public class UserService {
     @Autowired
     ClientsRepository clientsRepository;
 
+    @Autowired
+    CarService carService;
+
+    @Autowired
+    DriversRepository driversRepository;
+
     @Autowired private EmailService emailService;
 
-    public ClientsAccount saveClient(ClientsAccount clientsAccount) throws ApiRequestException {
+    public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
         if(userRepository.findUserByEmail(clientsAccount.getUser().getEmail()) != null) {
-            throw new ApiRequestException("Email in use.");
+            throw new EmailExistException("Email in use.");
         }
         final Address address = addressService.save(clientsAccount.getAddress());
         clientsAccount.setAddress(address);
@@ -49,10 +51,26 @@ public class UserService {
         return clientsRepository.save(clientsAccount);
     }
 
-    public void registerConfirm(String email) throws ApiRequestException {
+    public DriversAccount saveDriver(DriversAccount driversAccount) throws EmailExistException, PlateNumberExistException {
+        if(userRepository.findUserByEmail(driversAccount.getUser().getEmail()) != null){
+            throw new EmailExistException("Email in use.");
+        }
+
+        final Car car = carService.save(driversAccount.getCar());
+        driversAccount.setCar(car);
+
+        driversAccount.getUser().setStatus(Status.ACTIVE);
+        final User user = userRepository.save(driversAccount.getUser());
+
+        driversAccount.setUser(user);
+
+        return driversRepository.save(driversAccount);
+    }
+
+    public void registerConfirm(String email) throws EmailExistException {
         User u = userRepository.findUserByEmail(email);
         if(u == null) {
-            throw new ApiRequestException("Email not found.");
+            throw new EmailExistException("Email not found.");
         }
         u.setStatus(Status.ACTIVE);
         userRepository.save(u);

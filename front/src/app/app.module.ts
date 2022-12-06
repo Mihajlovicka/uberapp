@@ -10,19 +10,25 @@ import { RegisterComponent } from './register/register.component';
 import { RouterModule, Routes } from '@angular/router';
 import { RegistrationConfirmComponent } from './registration-confirm/registration-confirm.component';
 import {UserRegistrationService} from "./user-registration.service";
+import { AddDriverComponent } from './add-driver/add-driver.component';
+import { AddCarComponent } from './add-car/add-car.component';
 
 
 
 const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
-  { path:'registerConfirm/:email', component:RegistrationConfirmComponent}
+  { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
+  {path: 'driver-info', component: AddDriverComponent},
+  {path:'car-info', component:AddCarComponent}
 ]
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
-    RegistrationConfirmComponent
+    RegistrationConfirmComponent,
+    AddDriverComponent,
+    AddCarComponent
   ],
 
 
