@@ -19,7 +19,7 @@ export class AddDriverComponent implements OnInit {
     phone: '',
     password: '',
     checkPassword: '',
-    role: Role.DRIVER,
+    role: Role.ROLE_DRIVER,
     car: {
       brand:'',
       model:'',
@@ -81,8 +81,8 @@ export class AddDriverComponent implements OnInit {
 
     else if(this.info.password==='')alert("Unesite lozinku!")
     else if(this.info.checkPassword==='')alert("Potvrdite lozinku")
-    
-    
+
+
     else if(!this.matchingPasswords(this.info.password, this.info.checkPassword))alert("Lozinke se ne poklapaju!")
 
     else{
@@ -93,7 +93,7 @@ export class AddDriverComponent implements OnInit {
       const navigationPath: string[] = ['/car-info'];
       this.router.navigate(navigationPath);
     }
-  } 
+  }
 
 
 }

@@ -27,7 +27,7 @@ import { DriversAccount } from "./model/driversAccount.model";
         phone: '',
         password: '',
         checkPassword: '',
-        role: Role.DRIVER,
+        role: Role.ROLE_DRIVER,
         car: {
           brand:'',
           model:'',
@@ -36,22 +36,22 @@ import { DriversAccount } from "./model/driversAccount.model";
           bodyType: CarBodyType.HATCHBACK,
           fuelType: Fuel.GASOLINE
 
-        } 
+        }
       }
-     
-      
+
+
       private dataSubject = new BehaviorSubject(this.emptyDriverCar);
       currentData = this.dataSubject.asObservable();
 
 
       constructor(private http: HttpClient) {
-        
-       
+
+
 
       }
 
 
-    
+
 
 
      public register(registerForm: RegisterForm): Observable<ClientsAccount>{
@@ -79,7 +79,7 @@ import { DriversAccount } from "./model/driversAccount.model";
         console.error(error); // log to console instead
 
         if(error.error.message === "Registration plate number exist."){
-  
+
         alert("Registacioni broj vec postoji!");
 
       }
@@ -91,10 +91,10 @@ import { DriversAccount } from "./model/driversAccount.model";
       else{
         alert("Registration failed.");
       }
-  
+
         return of(result as T);
       };
-      
+
 
 
       }
@@ -106,32 +106,32 @@ import { DriversAccount } from "./model/driversAccount.model";
         console.error(error); // log to console instead
 
         if(error.error.message === "Email in use."){
-  
+
         alert("E-mail je u upotrebi!");
 
       }
       else{
         alert("Registration failed.");
       }
-  
+
         return of(result as T);
       };
      }
 
-    
-     
+
+
       private handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
           // TODO: send the error to remote logging infrastructure
           console.error(error); // log to console instead
-    
+
           // TODO: better job of transforming error for user consumption
           alert(`${operation} failed.`);
-    
+
           // Let the app keep running by returning an empty result.
           return of(result as T);
         };
       }
-    
+
   }
-  
+

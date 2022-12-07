@@ -6,6 +6,11 @@ import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
 import com.example.demo.model.*;
+import com.example.demo.model.Address;
+import com.example.demo.model.ClientsAccount;
+import com.example.demo.model.User;
+import com.example.demo.service.AddressService;
+import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(value = "http://localhost:4200", allowedHeaders="*")
 public class UserController {
 
     @Autowired
@@ -24,6 +28,9 @@ public class UserController {
 
     @Autowired
     UserConverter userConverter;
+
+    @Autowired
+    RoleService roleService;
 
     @PostMapping(value="api/register")
     public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws EmailExistException {
@@ -35,7 +42,6 @@ public class UserController {
         user.setSurname(registerFormDTO.getSurname());
         user.setEmail(registerFormDTO.getEmail());
         user.setPassword(registerFormDTO.getPassword());
-        user.setRole(registerFormDTO.getRole());
 
         address.setCity(registerFormDTO.getAddress().getCity());
         address.setStreet(registerFormDTO.getAddress().getStreet());
@@ -48,8 +54,10 @@ public class UserController {
         clientsAccount.setPhone(registerFormDTO.getPhone());
 
 
+        user.setRole(roleService.findByName(registerFormDTO.getRole()));
         final ClientsAccount savedAccount = userService.saveClient(clientsAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
+
 
     }
 

@@ -1,0 +1,15 @@
+mat-card {
+  max-width: 400px;
+  text-align: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+mat-form-field {
+  display: block;
+  margin-top:20px;
+}

@@ -11,11 +11,11 @@ public class RegisterFormDTO {
     private String password;
     private String checkPassword;
 
-    private Role role;
+    private String role;
 
     public RegisterFormDTO(){}
 
-    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO addressDTO, String password, String checkPassword, Role role){
+    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO addressDTO, String password, String checkPassword, String role){
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -78,7 +78,7 @@ public class RegisterFormDTO {
         this.checkPassword = checkPassword;
     }
 
-    public Role getRole(){return role;}
+    public String getRole(){return role;}
 
-    public void setRole(Role role){this.role = role;}
+    public void setRole(String role){this.role = role;}
 }

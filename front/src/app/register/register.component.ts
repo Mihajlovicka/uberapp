@@ -23,10 +23,10 @@ export class RegisterComponent implements OnInit {
     },
     password:'',
     checkPassword:'',
-    role: Role.CLIENT
+    role: Role.ROLE_CLIENT
   }
 
- 
+
 
   clientsAccount: ClientsAccount = {
     user:{
@@ -34,7 +34,7 @@ export class RegisterComponent implements OnInit {
       surname:'',
       email:'',
       status: Status.ACTIVE,
-      role: Role.CLIENT
+      role: Role.ROLE_CLIENT
     },
     address:{
       city:'',
@@ -101,7 +101,7 @@ export class RegisterComponent implements OnInit {
     else{
 
     this.capitalizeForm();
-    
+
     this.appService.register(this.registerForm).subscribe((resp: ClientsAccount) => {
         this.clientsAccount = resp;
         //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")

@@ -26,7 +26,7 @@ export class AddCarComponent implements OnInit {
     phone: '',
     password: '',
     checkPassword: '',
-    role: Role.DRIVER,
+    role: Role.ROLE_DRIVER,
     car: {
       brand:'',
       model:'',
@@ -45,7 +45,7 @@ export class AddCarComponent implements OnInit {
       surname:'',
       email:'',
       status: Status.ACTIVE,
-      role: Role.DRIVER
+      role: Role.ROLE_DRIVER
     },
     picture:'',
     phone:'',
@@ -104,14 +104,14 @@ export class AddCarComponent implements OnInit {
 
  //fja za kad idemo nazad i da ona sacuiva u servisu te podatke(znaci samo set data postavi na ovo trenutno odavde)
   back(){
-  
+
     this.mappBodyOptions();
     this.mappFuelOptions();
-  
+
     this.service.setData(this.info);
     const navigationPath: string[] = ['/driver-info'];
     this.router.navigate(navigationPath);
-    
+
   }
 
   save(){
@@ -139,7 +139,7 @@ export class AddCarComponent implements OnInit {
     console.log("ovo pre cuvankja")
     console.log(this.info);
 
-    
+
     this.service.addDriverCarAccount(this.info).subscribe((resp: DriversAccount) => {
       this.driversAcc = resp;
       //alert("Uspesno ste dodali novog vozaca u sistem!")

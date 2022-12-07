@@ -8,9 +8,9 @@ export enum Status {
 }
 
 export enum Role {
-    CLIENT = 'CLIENT',
-    DRIVER = 'DRIVER',
-    ADMINISTRATOR = 'ADMINISTRATOR'
+    ROLE_DRIVER = 'ROLE_DRIVER',
+    ROLE_ADMINISTRATOR = 'ROLE_ADMINISTRATOR',
+    ROLE_CLIENT = 'ROLE_CLIENT',
 }
 
 

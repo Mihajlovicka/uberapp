@@ -9,6 +9,9 @@ import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.DriversRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,10 +33,16 @@ public class UserService {
 
     @Autowired private EmailService emailService;
 
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
+
         if(userRepository.findUserByEmail(clientsAccount.getUser().getEmail()) != null) {
             throw new EmailExistException("Email in use.");
         }
+        clientsAccount.getUser().setPassword(passwordEncoder.encode(clientsAccount.getUser().getPassword()));
         final Address address = addressService.save(clientsAccount.getAddress());
         clientsAccount.setAddress(address);
 
@@ -72,7 +81,17 @@ public class UserService {
         if(u == null) {
             throw new EmailExistException("Email not found.");
         }
+        u.setEnabled(true);
         u.setStatus(Status.ACTIVE);
         userRepository.save(u);
+    }
+
+    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+        } else {
+            return user;
+        }
     }
 }

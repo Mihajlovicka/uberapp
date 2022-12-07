@@ -1,0 +1,18 @@
+<nav class="navbar navbar-dark bg-dark justify-content-between">
+  <a class="navbar-brand">Hajd da vas vozamo</a>
+  <div>
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" routerLink="/client" *ngIf="service.roleMatch('ROLE_CLIENT')">Pocetna klijent</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/driver" *ngIf="service.roleMatch('ROLE_DRIVER')">Pocenta vozac</a>
+      </li>
+    </ul>
+  </div>
+
+  <form class="form-inline">
+    <button mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
+    <button mat-raised-button color="primary" *ngIf="isLoggedIn()" (click)="logout()">Odjava</button>
+  </form>
+</nav>
