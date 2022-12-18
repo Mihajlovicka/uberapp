@@ -71,8 +71,16 @@ public class UserController {
         }
     }
 
+    @PostMapping(value="api/updateClient")
+    public ResponseEntity updateClient(@RequestBody ClientAccountDTO clientAccountDTO) {
+        ClientsAccount newClient = userConverter.fromDTO(clientAccountDTO);
 
-    @PostMapping(value = "api/add-driver")
+        return new ResponseEntity(userConverter.toDTO(userService.updateClient(newClient)), HttpStatus.OK);
+
+    }
+
+
+        @PostMapping(value = "api/add-driver")
     public ResponseEntity addDriver(@RequestBody AddDriverCarFormDTO addDriverCarFormDTO) throws EmailExistException, PlateNumberExistException {
         User user = new User();
         Car car = new Car();

@@ -117,5 +117,15 @@ public class UserService {
         }
     }
 
-
+    public ClientsAccount updateClient(ClientsAccount newClient){
+        ClientsAccount oldClient = getClientByEmail(newClient.getUser().getEmail());
+        oldClient.getUser().setName(newClient.getUser().getName());
+        oldClient.getUser().setSurname(newClient.getUser().getSurname());
+        oldClient.setPhone(newClient.getPhone());
+        oldClient.getAddress().setCity(newClient.getAddress().getCity());
+        oldClient.getAddress().setStreet(newClient.getAddress().getStreet());
+        oldClient.getAddress().setNumber(newClient.getAddress().getNumber());
+        clientsRepository.save(oldClient);
+        return oldClient;
+    }
 }

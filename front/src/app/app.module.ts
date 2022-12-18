@@ -41,7 +41,7 @@ const appRoutes: Routes = [
   {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path:'forbidden', component:ForbiddenComponent},
-  {path:'profile', component:ProfileViewComponent}
+  {path:'clientProfile', component:ProfileViewComponent}
 ]
 
 @NgModule({

@@ -28,12 +28,12 @@
                             <!-- Form Group (first name)-->
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputFirstName">Ime </label>
-                                <input class="form-control" id="inputFirstName" type="text" placeholder="Unesite ime.." [(ngModel)]="clientsAccount.user.name" name="firstname">
+                                <input disabled="{{disabled}}" class="form-control" id="inputFirstName" type="text" placeholder="Unesite ime.." [(ngModel)]="clientsAccount.user.name" name="firstname">
                             </div>
                             <!-- Form Group (last name)-->
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputLastName">Prezime</label>
-                                <input class="form-control" id="inputLastName" type="text" placeholder="Unesite prezime.." [(ngModel)]="clientsAccount.user.surname" name="surname">
+                                <input disabled="{{disabled}}" class="form-control" id="inputLastName" type="text" placeholder="Unesite prezime.." [(ngModel)]="clientsAccount.user.surname" name="surname">
                             </div>
                         </div>
                         <!-- Form Row-->
@@ -41,12 +41,12 @@
                             <!-- Form Group (email address)-->
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputEmailAddress">Email</label>
-                                <input class="form-control" id="inputEmailAddress" type="email" placeholder="Unesite email.." [(ngModel)]="clientsAccount.user.email" name="email">
+                                <input disabled="true" class="form-control" id="inputEmailAddress" type="email" placeholder="Unesite email.." [(ngModel)]="clientsAccount.user.email" name="email">
                             </div>
                             <!-- Form Group (phone number)-->
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputPhone">Broj telefona</label>
-                                <input class="form-control" id="inputPhone" type="tel" placeholder="Unesite broj telefona" [(ngModel)]="clientsAccount.phone" name="phone">
+                                <input disabled="{{disabled}}" class="form-control" id="inputPhone" type="tel" placeholder="Unesite broj telefona" [(ngModel)]="clientsAccount.phone" name="phone">
                             </div>
                             
                         </div>
@@ -55,24 +55,29 @@
                             <!-- Form Group (organization name)-->
                             <div class="col-md-4">
                                 <label class="small mb-1" for="inputTown">Grad</label>
-                                <input class="form-control" id="inputTown" type="text" placeholder="Unesite grad" [(ngModel)]="clientsAccount.address.city" name="city" >
+                                <input disabled="{{disabled}}" class="form-control" id="inputTown" type="text" placeholder="Unesite grad" [(ngModel)]="clientsAccount.address.city" name="city" >
                             </div>
                             <!-- Form Group (location)-->
                             <div class="col-md-6">
                                 <label class="small mb-1" for="inputStreet">Ulica</label>
-                                <input class="form-control" id="inputStreet" type="text" placeholder="Unesite ulicu" [(ngModel)]="clientsAccount.address.street" name="street">
+                                <input disabled="{{disabled}}" class="form-control" id="inputStreet" type="text" placeholder="Unesite ulicu" [(ngModel)]="clientsAccount.address.street" name="street">
                             </div>
                             <!-- Form Group (location)-->
                             <div class="col-md-2">
                                 <label class="small mb-1" for="inputStreetNum">Broj</label>
-                                <input class="form-control" id="inputStreetNum" type="text" placeholder="Broj" [(ngModel)]="clientsAccount.address.number" name="number">
+                                <input disabled="{{disabled}}" class="form-control" id="inputStreetNum" type="text" placeholder="Broj" [(ngModel)]="clientsAccount.address.number" name="number">
                             </div>
                         </div>
                         
                         
                         <!-- Save changes button-->
                         <div class="row">
-                            <button class="btn btn-secondary" type="button" id="saveProfileInfo" >{{izmena}}</button>
+                            <div id="buttonsDiv">
+                                <button class="btn btn-secondary" type="button" id="cancelProfileInfo" *ngIf="!disabled" (click)="cancelChange()">Cancel</button>
+                                <button class="btn btn-secondary" type="button" id="saveProfileInfo" (click)="change()">{{izmena}}</button>
+                               
+                                
+                            </div>
                         </div>
                     </form>
                 </div>

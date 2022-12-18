@@ -3,6 +3,7 @@ package com.example.demo.converter;
 import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
@@ -28,6 +29,27 @@ public class UserConverter {
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){
         return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), driversAccount.getPicture(), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()));
+    }
+
+    public ClientsAccount fromDTO(ClientAccountDTO clientAccountDTO){
+        ClientsAccount clientsAccount = new ClientsAccount();
+        clientsAccount.setUser(new User());
+        clientsAccount.setAddress(new Address());
+        clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
+        clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
+        clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
+        clientsAccount.getUser().setRole(clientAccountDTO.getUser().getRole());
+        clientsAccount.getUser().setStatus(clientAccountDTO.getUser().getStatus());
+
+
+        clientsAccount.getAddress().setCity(clientAccountDTO.getAddress().getCity());
+        clientsAccount.getAddress().setStreet(clientAccountDTO.getAddress().getStreet());
+        clientsAccount.getAddress().setNumber(clientAccountDTO.getAddress().getNumber());
+
+        clientsAccount.setPhone(clientAccountDTO.getPhone());
+        clientsAccount.setPicture(clientAccountDTO.getPicture());
+
+        return clientsAccount;
     }
 
 }

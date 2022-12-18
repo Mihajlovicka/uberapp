@@ -16,6 +16,7 @@ import { DriversAccount } from "./model/driversAccount.model";
     private registerUrl = 'http://localhost:8080/api/register';
     private addDriverUrl = 'http://localhost:8080/api/add-driver';
     private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+    private updateClientUrl = 'http://localhost:8080/api/updateClient';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -74,6 +75,12 @@ import { DriversAccount } from "./model/driversAccount.model";
         return this.http.post<DriversAccount>(`${this.addDriverUrl}`, addForm, this.httpOptions).pipe(
           catchError(this.handleAddDriverCarError<DriversAccount>())
         )
+     }
+
+     public updateClient(client: ClientsAccount): Observable<ClientsAccount> {
+      return this.http.post<ClientsAccount>(`${this.updateClientUrl}`, client, this.httpOptions).pipe(
+        catchError(this.handleError<ClientsAccount>())
+      )
      }
 
 

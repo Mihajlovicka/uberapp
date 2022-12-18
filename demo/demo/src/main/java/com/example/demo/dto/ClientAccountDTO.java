@@ -9,7 +9,10 @@ public class ClientAccountDTO {
 
    private String phone;
 
-   public ClientAccountDTO(UserDTO userDTO, AddressDTO addressDTO, String picture, String phone){
+    public ClientAccountDTO() {
+    }
+
+    public ClientAccountDTO(UserDTO userDTO, AddressDTO addressDTO, String picture, String phone){
        this.user = userDTO;
        this.address = addressDTO;
        this.picture = picture;
