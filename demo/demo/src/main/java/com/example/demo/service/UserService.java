@@ -14,6 +14,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class UserService {
     @Autowired
@@ -94,4 +96,26 @@ public class UserService {
             return user;
         }
     }
+
+    private ClientsAccount getClientByEmail(String email){
+        ClientsAccount client = null;
+        for(ClientsAccount c : clientsRepository.findAll()){
+            if(c.getUser().getEmail().equals(email)){
+                client = c;
+                break;
+            }
+        }
+        return client;
+    }
+
+    public ClientsAccount getClient(String email) {
+        ClientsAccount client = getClientByEmail(email);
+        if (client == null) {
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+        } else {
+            return client;
+        }
+    }
+
+
 }

@@ -29,6 +29,7 @@ import { MatInputModule } from '@angular/material/input';
 import {MatCardModule} from "@angular/material/card";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {AuthGuard} from "./_auth/auth.guard";
+import { ProfileViewComponent } from './profile-view/profile-view.component';
 
 
 const appRoutes: Routes = [
@@ -39,7 +40,8 @@ const appRoutes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
-  {path:'forbidden', component:ForbiddenComponent}
+  {path:'forbidden', component:ForbiddenComponent},
+  {path:'profile', component:ProfileViewComponent}
 ]
 
 @NgModule({
@@ -54,6 +56,7 @@ const appRoutes: Routes = [
     ClientHomeComponent,
     DriverHomeComponent,
     ForbiddenComponent,
+    ProfileViewComponent,
   ],
 
 

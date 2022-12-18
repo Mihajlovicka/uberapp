@@ -14,7 +14,8 @@ import { DriversAccount } from "./model/driversAccount.model";
 
   export class AppService{
     private registerUrl = 'http://localhost:8080/api/register';
-    private addDriverUrl = 'http://localhost:8080/api/add-driver'
+    private addDriverUrl = 'http://localhost:8080/api/add-driver';
+    private getClientUrl = 'http://localhost:8080/api/getClient?email=';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -52,6 +53,12 @@ import { DriversAccount } from "./model/driversAccount.model";
 
 
 
+
+      public getClient(email:string): Observable<ClientsAccount>{
+        
+        return this.http.get<ClientsAccount>(`${this.getClientUrl+email}`).pipe(
+          catchError(this.handleError<ClientsAccount>()));
+      }
 
 
      public register(registerForm: RegisterForm): Observable<ClientsAccount>{

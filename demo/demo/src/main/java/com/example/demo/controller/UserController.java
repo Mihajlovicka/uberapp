@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.converter.UserConverter;
 import com.example.demo.dto.AddDriverCarFormDTO;
+import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
@@ -15,10 +16,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -59,6 +57,18 @@ public class UserController {
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
 
+    }
+
+    @GetMapping(value = "/api/getClient")
+    public ResponseEntity getClient(@RequestParam String email) {
+
+        try {
+            ClientsAccount ca = userService.getClient(email);
+            ClientAccountDTO clientAccountDTO = userConverter.toDTO(ca);
+            return new ResponseEntity(clientAccountDTO, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        }
     }
 
 
