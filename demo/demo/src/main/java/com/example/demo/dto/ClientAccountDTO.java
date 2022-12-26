@@ -1,35 +1,35 @@
 package com.example.demo.dto;
 
 public class ClientAccountDTO {
-   private UserDTO userDTO;
+   private UserDTO user;
 
-   private AddressDTO addressDTO;
+   private AddressDTO address;
 
    private String picture;
 
    private String phone;
 
-   public ClientAccountDTO(UserDTO userDTO, AddressDTO addressDTO, String picture, String phone){
-       this.userDTO = userDTO;
-       this.addressDTO = addressDTO;
+   public ClientAccountDTO(UserDTO user, AddressDTO address, String picture, String phone){
+       this.user = user;
+       this.address = address;
        this.picture = picture;
        this.phone = phone;
    }
 
-    public UserDTO getUserDTO() {
-        return userDTO;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
-    public AddressDTO getAddressDTO() {
-        return addressDTO;
+    public AddressDTO getAddress() {
+        return address;
     }
 
-    public void setAddressDTO(AddressDTO addressDTO) {
-        this.addressDTO = addressDTO;
+    public void setAddress(AddressDTO address) {
+        this.address = address;
     }
 
     public String getPicture() {

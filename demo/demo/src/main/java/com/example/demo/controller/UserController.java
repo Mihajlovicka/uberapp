@@ -8,6 +8,7 @@ import com.example.demo.exception.PlateNumberExistException;
 import com.example.demo.model.*;
 import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
+import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
 import com.example.demo.service.AddressService;
 import com.example.demo.service.RoleService;
@@ -15,10 +16,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -72,7 +70,7 @@ public class UserController {
         user.setSurname(addDriverCarFormDTO.getSurname());
         user.setEmail(addDriverCarFormDTO.getEmail());
         user.setPassword(addDriverCarFormDTO.getPassword());
-        user.setRole(addDriverCarFormDTO.getRole());
+
 
         car.setBrand(addDriverCarFormDTO.getCar().getBrand());
         car.setModel(addDriverCarFormDTO.getCar().getModel());
@@ -86,6 +84,7 @@ public class UserController {
         driverAccount.setPhone(addDriverCarFormDTO.getPhone());
         driverAccount.setCar(car);
 
+        user.setRole(roleService.findByName(addDriverCarFormDTO.getRole()));
         final DriversAccount savedAccount = userService.saveDriver(driverAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
@@ -96,4 +95,5 @@ public class UserController {
         userService.registerConfirm(email);
         return new ResponseEntity(email, HttpStatus.OK);
     }
+
 }

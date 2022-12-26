@@ -8,7 +8,6 @@ public class UserDTO {
     private String surname;
     private String email;
 
-
     private Status status;
 
     private Role role;
