@@ -10,12 +10,12 @@ public class AddDriverCarFormDTO {
     private String phone;
     private String password;
     private String checkPassword;
-    private Role role;
+    private String role;
     private CarDTO car;
 
     public AddDriverCarFormDTO(){}
 
-    public AddDriverCarFormDTO(String name, String surname, String email, String phone, String password, String checkPassword, Role role, CarDTO car){
+    public AddDriverCarFormDTO(String name, String surname, String email, String phone, String password, String checkPassword, String role, CarDTO car){
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -74,11 +74,11 @@ public class AddDriverCarFormDTO {
         this.checkPassword = checkPassword;
     }
 
-    public Role getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(Role role) {
+    public void setRole(String role) {
         this.role = role;
     }
 

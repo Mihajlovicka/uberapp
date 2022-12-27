@@ -15,12 +15,12 @@ public class RegisterFormDTO {
 
     public RegisterFormDTO(){}
 
-    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO addressDTO, String password, String checkPassword, String role){
+    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO address, String password, String checkPassword, String role){
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.phone = phone;
-        this.address = addressDTO;
+        this.address = address;
         this.password = password;
         this.checkPassword = checkPassword;
         this.role = role;

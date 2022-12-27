@@ -1,29 +1,29 @@
 package com.example.demo.dto;
 
 public class DriverAccountDTO {
-    private UserDTO userDTO;
+    private UserDTO user;
 
     private String picture;
 
     private String phone;
 
-    private CarDTO carDTO;
+    private CarDTO car;
 
     public DriverAccountDTO(){}
 
-    public DriverAccountDTO(UserDTO userDTO, String picture, String phone, CarDTO carDTO){
-        this.userDTO = userDTO;
+    public DriverAccountDTO(UserDTO user, String picture, String phone, CarDTO car){
+        this.user = user;
         this.picture = picture;
         this.phone = phone;
-        this.carDTO = carDTO;
+        this.car = car;
     }
 
-    public UserDTO getUserDTO() {
-        return userDTO;
+    public UserDTO getUser() {
+        return user;
     }
 
-    public void setUserDTO(UserDTO userDTO) {
-        this.userDTO = userDTO;
+    public void setUser(UserDTO user) {
+        this.user = user;
     }
 
     public String getPicture() {
@@ -42,11 +42,11 @@ public class DriverAccountDTO {
         this.phone = phone;
     }
 
-    public CarDTO getCarDTO() {
-        return carDTO;
+    public CarDTO getCar() {
+        return car;
     }
 
-    public void setCarDTO(CarDTO carDTO) {
-        this.carDTO = carDTO;
+    public void setCar(CarDTO car) {
+        this.car = car;
     }
 }

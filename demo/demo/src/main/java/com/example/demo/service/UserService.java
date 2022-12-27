@@ -88,6 +88,35 @@ public class UserService {
         userRepository.save(u);
     }
 
+    public User getByEmail(String email){
+        User user = userRepository.findUserByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+        } else {
+            return user;
+        }
+
+    }
+
+    public ClientsAccount findClientsAccount(String email){
+        ClientsAccount clientsAccount = clientsRepository.findClientsAccountByUserEmail(email);
+        if (clientsAccount == null) {
+            throw new UsernameNotFoundException(String.format("No client found with username '%s'.", email));
+        } else {
+            return clientsAccount;
+        }
+    }
+
+    public DriversAccount findDriversAccount(String email){
+        DriversAccount driversAccount = driversRepository.findDriversAccountByUserEmail(email);
+        if (driversAccount == null) {
+            throw new UsernameNotFoundException(String.format("No driver found with username '%s'.", email));
+        } else {
+            return driversAccount;
+        }
+    }
+
+
     public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {

@@ -9,6 +9,7 @@ import com.example.demo.exception.PlateNumberExistException;
 import com.example.demo.model.*;
 import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
+import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
 import com.example.demo.service.AddressService;
 import com.example.demo.service.RoleService;
@@ -90,7 +91,7 @@ public class UserController {
         user.setSurname(addDriverCarFormDTO.getSurname());
         user.setEmail(addDriverCarFormDTO.getEmail());
         user.setPassword(addDriverCarFormDTO.getPassword());
-        user.setRole(addDriverCarFormDTO.getRole());
+
 
         car.setBrand(addDriverCarFormDTO.getCar().getBrand());
         car.setModel(addDriverCarFormDTO.getCar().getModel());
@@ -104,6 +105,7 @@ public class UserController {
         driverAccount.setPhone(addDriverCarFormDTO.getPhone());
         driverAccount.setCar(car);
 
+        user.setRole(roleService.findByName(addDriverCarFormDTO.getRole()));
         final DriversAccount savedAccount = userService.saveDriver(driverAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
@@ -114,4 +116,5 @@ public class UserController {
         userService.registerConfirm(email);
         return new ResponseEntity(email, HttpStatus.OK);
     }
+
 }
