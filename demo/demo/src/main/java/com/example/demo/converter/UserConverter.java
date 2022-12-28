@@ -3,10 +3,7 @@ package com.example.demo.converter;
 import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.UserDTO;
-import com.example.demo.model.Address;
-import com.example.demo.model.ClientsAccount;
-import com.example.demo.model.DriversAccount;
-import com.example.demo.model.User;
+import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +47,29 @@ public class UserConverter {
         clientsAccount.setPicture(clientAccountDTO.getPicture());
 
         return clientsAccount;
+    }
+
+    public DriversAccount fromDTO(DriverAccountDTO driverAccountDTO){
+        DriversAccount driversAccount = new DriversAccount();
+        driversAccount.setUser(new User());
+        driversAccount.setCar(new Car());
+        driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
+        driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
+        driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
+        driversAccount.getUser().setRole(driverAccountDTO.getUser().getRole());
+        driversAccount.getUser().setStatus(driverAccountDTO.getUser().getStatus());
+
+        driversAccount.getCar().setBodyType(driverAccountDTO.getCar().getBodyType());
+        driversAccount.getCar().setBrand(driverAccountDTO.getCar().getBrand());
+        driversAccount.getCar().setColor(driverAccountDTO.getCar().getColor());
+        driversAccount.getCar().setModel(driverAccountDTO.getCar().getModel());
+        driversAccount.getCar().setFuelType(driverAccountDTO.getCar().getFuelType());
+        driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
+
+        driversAccount.setPhone(driverAccountDTO.getPhone());
+        driversAccount.setPicture(driverAccountDTO.getPicture());
+
+        return driversAccount;
     }
 
 }

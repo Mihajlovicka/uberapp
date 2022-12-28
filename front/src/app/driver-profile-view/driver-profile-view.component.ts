@@ -56,5 +56,67 @@ export class DriverProfileViewComponent implements OnInit {
       console.log(resp);
     });
   }
-  
+  change(){
+    if(this.izmena==="Izmeni podatke"){
+      this.izmena="Sacuvaj podatke";
+      this.disabled=false;
+    }
+    else{
+      this.saveChanges();
+      this.izmena="Izmeni podatke";
+      this.disabled=true;
+    }
+    
+  }
+     
+  cancelChange(){
+    this.izmena="Izmeni podatke";
+    this.disabled=true;
+    this.loadDriver();
+  }
+  validateNums(str: string): boolean{
+    var regex =  /^.+?\d{7,15}$/;
+    return regex.test(str);
+  }
+
+  validateChars(str: string): boolean{
+    var regex = /^[a-zA-Z]+\s?[a-zA-Z]+$/;
+    return regex.test(str);
+  }
+
+  capitalizeForm(){
+    this.driversAccount.user.name.charAt(0).toUpperCase();
+    this.driversAccount.user.surname.charAt(0).toUpperCase();
+    this.driversAccount.car.brand.charAt(0).toUpperCase();
+    this.driversAccount.car.model.charAt(0).toUpperCase();
+  }
+
+  saveChanges(){
+  if(this.driversAccount.user.name==='')alert("Unesite ime!")
+  else if(!this.validateChars(this.driversAccount.user.name))alert("Ime nije validno")
+
+  else if(this.driversAccount.user.surname==='')alert("Unesite prezime!")
+  else if(!this.validateChars(this.driversAccount.user.surname))alert("Prezime nije validno")
+
+  else if(this.driversAccount.phone==='')alert("Unesite telefon!")
+  else if(!this.validateNums(this.driversAccount.phone))alert("Telefon nije validan!")
+
+  else if(this.driversAccount.car.brand==='')alert("Unesite breand auta!")
+  else if(this.driversAccount.car.model==='')alert("Unesite model auta!")
+  else if(this.driversAccount.car.plateNumber==='')alert("Unesite broj tablica!")
+  else if(!this.validateChars(this.driversAccount.car.brand)) alert("Brend auta nije validan!")
+  else if(!this.validateChars(this.driversAccount.car.color)) alert("Boja auta nije validna!")
+
+  else{
+
+  this.capitalizeForm();
+
+  this.appService.updateDriver(this.driversAccount).subscribe((resp: DriversAccount) => {
+      this.driversAccount = resp;
+      //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
+      
+      alert("Zahtev za izmenu podataka je poslat administratoru sistema.");
+    })
+  }
+}
 }

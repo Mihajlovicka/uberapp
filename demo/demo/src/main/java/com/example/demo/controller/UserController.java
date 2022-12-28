@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.converter.UserConverter;
 import com.example.demo.dto.AddDriverCarFormDTO;
 import com.example.demo.dto.ClientAccountDTO;
+import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
@@ -72,11 +73,31 @@ public class UserController {
         }
     }
 
+    @GetMapping(value = "/api/getDriver")
+    public ResponseEntity getDriver(@RequestParam String email) {
+
+        try {
+            DriversAccount da = userService.getDriver(email);
+            DriverAccountDTO driverAccountDTO = userConverter.toDTO(da);
+            return new ResponseEntity(driverAccountDTO, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @PostMapping(value="api/updateClient")
     public ResponseEntity updateClient(@RequestBody ClientAccountDTO clientAccountDTO) {
         ClientsAccount newClient = userConverter.fromDTO(clientAccountDTO);
 
         return new ResponseEntity(userConverter.toDTO(userService.updateClient(newClient)), HttpStatus.OK);
+
+    }
+
+    @PostMapping(value="api/updateDriver")
+    public ResponseEntity updateDriver(@RequestBody DriverAccountDTO driverAccountDTO) {
+        DriversAccount newDriver = userConverter.fromDTO(driverAccountDTO);
+
+        return new ResponseEntity(userConverter.toDTO(userService.updateDriver(newDriver)), HttpStatus.OK);
 
     }
 

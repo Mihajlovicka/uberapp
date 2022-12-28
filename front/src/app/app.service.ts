@@ -16,7 +16,9 @@ import { DriversAccount } from "./model/driversAccount.model";
     private registerUrl = 'http://localhost:8080/api/register';
     private addDriverUrl = 'http://localhost:8080/api/add-driver';
     private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+    private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
     private updateClientUrl = 'http://localhost:8080/api/updateClient';
+    private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -60,6 +62,12 @@ import { DriversAccount } from "./model/driversAccount.model";
         return this.http.get<ClientsAccount>(`${this.getClientUrl+email}`).pipe(
           catchError(this.handleError<ClientsAccount>()));
       }
+      
+      public getDriver(email:string): Observable<DriversAccount>{
+        
+        return this.http.get<DriversAccount>(`${this.getDriverUrl+email}`).pipe(
+          catchError(this.handleError<DriversAccount>()));
+      }
 
 
      public register(registerForm: RegisterForm): Observable<ClientsAccount>{
@@ -80,6 +88,11 @@ import { DriversAccount } from "./model/driversAccount.model";
      public updateClient(client: ClientsAccount): Observable<ClientsAccount> {
       return this.http.post<ClientsAccount>(`${this.updateClientUrl}`, client, this.httpOptions).pipe(
         catchError(this.handleError<ClientsAccount>())
+      )
+     }
+     public updateDriver(driver: DriversAccount): Observable<DriversAccount> {
+      return this.http.post<DriversAccount>(`${this.updateDriverUrl}`, driver, this.httpOptions).pipe(
+        catchError(this.handleError<DriversAccount>())
       )
      }
 

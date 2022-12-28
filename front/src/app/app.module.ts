@@ -30,6 +30,7 @@ import {MatCardModule} from "@angular/material/card";
 import {AuthInterceptor} from "./_auth/auth.interceptor";
 import {AuthGuard} from "./_auth/auth.guard";
 import { ProfileViewComponent } from './profile-view/profile-view.component';
+import { DriverProfileViewComponent } from './driver-profile-view/driver-profile-view.component';
 
 
 const appRoutes: Routes = [
@@ -41,7 +42,8 @@ const appRoutes: Routes = [
   {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path:'forbidden', component:ForbiddenComponent},
-  {path:'clientProfile', component:ProfileViewComponent}
+  {path:'clientProfile', component:ProfileViewComponent},
+  {path:'driversProfile', component:DriverProfileViewComponent}
 ]
 
 @NgModule({
@@ -57,6 +59,7 @@ const appRoutes: Routes = [
     DriverHomeComponent,
     ForbiddenComponent,
     ProfileViewComponent,
+    DriverProfileViewComponent,
   ],
 
 

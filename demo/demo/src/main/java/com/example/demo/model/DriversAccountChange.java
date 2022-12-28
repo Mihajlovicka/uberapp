@@ -18,6 +18,24 @@ public class DriversAccountChange{
     @Column(nullable = false)
     private String email;
 
+    @Column(nullable = false)
+    private String carBrand;
+
+    @Column(nullable = false)
+    private String carModel;
+
+    @Column(nullable = false)
+    private String carColor;
+
+    @Column(nullable = false)
+    private String carPlateNumber;
+
+    @Column(nullable = true)
+    private CarBodyType carBodyType;
+
+    @Column(nullable = true)
+    private Fuel carFuelType;
+
 
 
     @Column
@@ -31,12 +49,18 @@ public class DriversAccountChange{
     public DriversAccountChange(){}
 
 
-    public DriversAccountChange(Long id, Long user_changing_id, String name, String surname, String email, String picture, String phone) {
+    public DriversAccountChange(Long id, Long user_changing_id, String name, String surname, String email, String carBrand, String carModel, String carColor, String carPlateNumber, CarBodyType carBodyType, Fuel carFuelType, String picture, String phone) {
         this.id = id;
         this.user_changing_id = user_changing_id;
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.carBrand = carBrand;
+        this.carModel = carModel;
+        this.carColor = carColor;
+        this.carPlateNumber = carPlateNumber;
+        this.carBodyType = carBodyType;
+        this.carFuelType = carFuelType;
         this.picture = picture;
         this.phone = phone;
     }
@@ -95,5 +119,53 @@ public class DriversAccountChange{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand;
+    }
+
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getCarColor() {
+        return carColor;
+    }
+
+    public void setCarColor(String carColor) {
+        this.carColor = carColor;
+    }
+
+    public String getCarPlateNumber() {
+        return carPlateNumber;
+    }
+
+    public void setCarPlateNumber(String carPlateNumber) {
+        this.carPlateNumber = carPlateNumber;
+    }
+
+    public CarBodyType getCarBodyType() {
+        return carBodyType;
+    }
+
+    public void setCarBodyType(CarBodyType carBodyType) {
+        this.carBodyType = carBodyType;
+    }
+
+    public Fuel getCarFuelType() {
+        return carFuelType;
+    }
+
+    public void setCarFuelType(Fuel carFuelType) {
+        this.carFuelType = carFuelType;
     }
 }

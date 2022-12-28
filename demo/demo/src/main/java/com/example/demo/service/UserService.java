@@ -6,6 +6,7 @@ import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
 import com.example.demo.model.*;
 import com.example.demo.repository.ClientsRepository;
+import com.example.demo.repository.DriversChangeRepository;
 import com.example.demo.repository.DriversRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class UserService {
 
     @Autowired
     ClientsRepository clientsRepository;
+
+    @Autowired
+    DriversChangeRepository driversChangeRepository;
 
     @Autowired
     CarService carService;
@@ -54,7 +58,7 @@ public class UserService {
         //sanje meila
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setSubject("Potrvda registracije UberApp");
-        emailDetails.setRecipient("saramihajlovic94@gmail.com");
+        emailDetails.setRecipient("srki0505@gmail.com");
         emailDetails.setMsgBody("Kliknite na link kako bi se registrovali. \n " +
                 "<a href=\"localhost:4200/registerConfirm/"+emailDetails.getRecipient()+"\">Potvrda registracije</a>");
         emailService.send(emailDetails);
@@ -137,6 +141,17 @@ public class UserService {
         return client;
     }
 
+    private DriversAccount getDriverByEmail(String email){
+        DriversAccount driver = null;
+        for(DriversAccount d : driversRepository.findAll()){
+            if(d.getUser().getEmail().equals(email)){
+                driver = d;
+                break;
+            }
+        }
+        return driver;
+    }
+
     public ClientsAccount getClient(String email) {
         ClientsAccount client = getClientByEmail(email);
         if (client == null) {
@@ -156,5 +171,42 @@ public class UserService {
         oldClient.getAddress().setNumber(newClient.getAddress().getNumber());
         clientsRepository.save(oldClient);
         return oldClient;
+    }
+
+    public DriversAccount getDriver(String email) {
+        DriversAccount driver = getDriverByEmail(email);
+        if (driver == null) {
+            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+        } else {
+            return driver;
+        }
+    }
+
+    private DriversAccountChange checkChanging(String email){
+        for(DriversAccountChange dac : driversChangeRepository.findAll()){
+            if(dac.getEmail().equals(email)) return dac;
+        }
+        return new DriversAccountChange();
+    }
+
+    public DriversAccount updateDriver(DriversAccount newDriver) {
+        DriversAccount oldDriver = getDriverByEmail(newDriver.getUser().getEmail());
+        DriversAccountChange driversAccountChange = checkChanging(newDriver.getUser().getEmail());
+
+        driversAccountChange.setName(newDriver.getUser().getName());
+        driversAccountChange.setSurname(newDriver.getUser().getSurname());
+        driversAccountChange.setPhone(newDriver.getPhone());
+        driversAccountChange.setPicture(newDriver.getPicture());
+        driversAccountChange.setCarBrand(newDriver.getCar().getBrand());
+        driversAccountChange.setCarBodyType(newDriver.getCar().getBodyType());
+        driversAccountChange.setCarModel(newDriver.getCar().getModel());
+        driversAccountChange.setCarFuelType(newDriver.getCar().getFuelType());
+        driversAccountChange.setCarColor(newDriver.getCar().getColor());
+        driversAccountChange.setCarPlateNumber(newDriver.getCar().getPlateNumber());
+        driversAccountChange.setUser_changing_id(oldDriver.getId());
+        driversAccountChange.setEmail(newDriver.getUser().getEmail());
+
+        driversChangeRepository.save(driversAccountChange);
+        return oldDriver;
     }
 }
