@@ -34,6 +34,8 @@ public class BankController {
         }
 
         clientsBankAccount.setVerificationEmail(addBankAccountDTO.getEmail());
+        clientsBankAccount.setOwnerName(addBankAccountDTO.getName());
+        clientsBankAccount.setOwnerSurname(addBankAccountDTO.getSurname());
 
 
 

@@ -46,7 +46,10 @@ export class RegisterComponent implements OnInit {
     phone:'',
     clientsBankAccount:{
       balance:0,
-      bankAccountNumber:''
+      bankAccountNumber:'',
+      verificationEmail:'',
+      ownerName:'',
+      ownerSurname:''
     },
     bankStatus: BankStatus.EMPTY
   }

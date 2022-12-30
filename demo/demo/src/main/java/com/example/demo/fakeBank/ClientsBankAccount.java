@@ -21,13 +21,21 @@ public class ClientsBankAccount {
     @Column(nullable = true)
     private String verificationEmail;
 
+    @Column(nullable = true)
+    private String ownerName;
+
+    @Column(nullable = true)
+    private String ownerSurname;
+
     public ClientsBankAccount(){}
 
-    public ClientsBankAccount(Long id,Long balance, String accountNumber, String verificationEmail){
+    public ClientsBankAccount(Long id,Long balance, String accountNumber, String verificationEmail, String ownerName, String ownerSurname){
         this.id = id;
         this.balance = balance;
         this.accountNumber = accountNumber;
         this.verificationEmail = verificationEmail;
+        this.ownerName = ownerName;
+        this.ownerSurname = ownerSurname;
     }
 
     public Long getId() {
@@ -60,5 +68,21 @@ public class ClientsBankAccount {
 
     public void setVerificationEmail(String verificationEmail) {
         this.verificationEmail = verificationEmail;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getOwnerSurname() {
+        return ownerSurname;
+    }
+
+    public void setOwnerSurname(String ownerSurname) {
+        this.ownerSurname = ownerSurname;
     }
 }

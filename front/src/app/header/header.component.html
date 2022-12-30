@@ -13,6 +13,9 @@
 
   <form class="form-inline">
     <button mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
+    
+    <button mat-raised-button color="primary" style="margin-left:8px" routerLink="/register" *ngIf="! isLoggedIn()">Registracija</button>
+    
     <button mat-raised-button color="primary" *ngIf="isLoggedIn()" (click)="logout()">Odjava</button>
   </form>
 </nav>
