@@ -50,7 +50,7 @@ public class AuthenticationController {
 
 		// Kreiraj token za tog korisnika
 		User user = (User) authentication.getPrincipal();
-		if(!user.getStatus().equals(Status.ACTIVE)){
+		if(!(user.getStatus().equals(Status.ACTIVE) || user.getStatus().equals(Status.UNDERREVISION))){
 			return new ResponseEntity<UserTokenState>(HttpStatus.UNAUTHORIZED);
 		}
 		String jwt = tokenUtils.generateToken(user.getUsername());

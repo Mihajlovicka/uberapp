@@ -229,6 +229,10 @@ public class UserService {
         driversAccountChange.setUser_changing_id(oldDriver.getId());
         driversAccountChange.setEmail(newDriver.getUser().getEmail());
 
+        //status postojeceg na underrevision
+        oldDriver.getUser().setStatus(Status.UNDERREVISION);
+        userRepository.save(oldDriver.getUser());
+
         driversChangeRepository.save(driversAccountChange);
         return oldDriver;
     }
