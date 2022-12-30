@@ -34,5 +34,27 @@ public class ApiExceptionHandler {
 
         return new ResponseEntity<>(plateNumberExist, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(value = {EmailNotFoundException.class})
+    public ResponseEntity<Object> handlerEmailNotFoundExist(EmailNotFoundException e){
+        EmailNotFountBean emailNotFount = new EmailNotFountBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(emailNotFount, HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(value = {BankAccountNumberDoNotExistException.class})
+    public ResponseEntity<Object> handlerBankAccountNumberDoNotExist(BankAccountNumberDoNotExistException e){
+        BankAccountNumberDoNotExistBean bankAccountNumberDoNotExist = new BankAccountNumberDoNotExistBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(bankAccountNumberDoNotExist, HttpStatus.CONFLICT);
+    }
 
 }

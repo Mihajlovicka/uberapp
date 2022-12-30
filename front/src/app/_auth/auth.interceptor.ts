@@ -25,9 +25,19 @@ export class AuthInterceptor implements HttpInterceptor {
     req = this.addToken(req, token);
     return next.handle(req).pipe(
       catchError(
-        (err:HttpErrorResponse) => {
+        (err:any) => {
           console.log(err.status);
-          if(err.status === 401){
+          console.log(err);
+          if(err.error.message === "Email in use."){
+
+            return throwError("Email in use.");
+    
+          }
+          else if(err.error.message === "Account number does not exist.")
+          {
+            return throwError("Account number does not exist.");
+          }
+          else if(err.status === 401){
             this.router.navigate(['/login']);
           }else if(err.status === 403){
             this.router.navigate(['/forbidden']);

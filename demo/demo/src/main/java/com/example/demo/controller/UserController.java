@@ -6,15 +6,15 @@ import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.EmailExistException;
+import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.PlateNumberExistException;
-import com.example.demo.fakeBank.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.BankAccountNumberDoNotExistException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.model.*;
 import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
-import com.example.demo.service.AddressService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,6 +83,8 @@ public class UserController {
             ClientAccountDTO clientAccountDTO = userConverter.toDTO(ca);
             return new ResponseEntity(clientAccountDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        } catch (EmailNotFoundException e) {
             return new ResponseEntity("", HttpStatus.BAD_REQUEST);
         }
     }

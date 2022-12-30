@@ -132,10 +132,14 @@ import { DriversAccount } from "./model/driversAccount.model";
       return (error: any): Observable<T> => {
         console.error(error); // log to console instead
 
-        if(error.error.message === "Email in use."){
+        if(error === "Email in use."){
 
         alert("E-mail je u upotrebi!");
 
+      }
+      else if(error === "Account number does not exist.")
+      {
+        alert("Ne postoji racun sa ovim brojem.");
       }
       else{
         alert("Registration failed.");

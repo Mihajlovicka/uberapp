@@ -24,7 +24,7 @@ export class RegisterComponent implements OnInit {
     password:'',
     checkPassword:'',
     role: Role.ROLE_CLIENT,
-    bankAccountNumber: '123456789012345678'
+    bankAccountNumber: ''
   }
 
 
@@ -71,6 +71,11 @@ export class RegisterComponent implements OnInit {
     return regex.test(str);
   }
 
+  validateBankAccountNumber(str: string): boolean {
+    var regex =  /^.+?\d{18}$/;
+    return regex.test(str);
+  }
+
   capitalizeForm(){
     this.registerForm.name.charAt(0).toUpperCase();
     this.registerForm.surname.charAt(0).toUpperCase();
@@ -104,6 +109,7 @@ export class RegisterComponent implements OnInit {
     else if(this.registerForm.password==='')alert("Unesite lozinku!")
     else if(this.registerForm.checkPassword==='')alert("Potvrdite lozinku")
     else if(!this.matchingPasswords(this.registerForm.password, this.registerForm.checkPassword))alert("Lozinke se ne poklapaju!")
+    else if(!this.validateBankAccountNumber(this.registerForm.bankAccountNumber))alert("Broj racuna nije u validnom formatu.")
     else{
 
     this.capitalizeForm();

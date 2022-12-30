@@ -3,8 +3,9 @@ package com.example.demo.service;
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailExistException;
+import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.PlateNumberExistException;
-import com.example.demo.fakeBank.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.BankAccountNumberDoNotExistException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
@@ -17,8 +18,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 
 @Component
 public class UserService {
@@ -98,39 +97,39 @@ public class UserService {
         userRepository.save(u);
     }
 
-    public User getByEmail(String email){
+    public User getByEmail(String email) throws EmailNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No user found with email '%s'.", email));
         } else {
             return user;
         }
 
     }
 
-    public ClientsAccount findClientsAccount(String email){
+    public ClientsAccount findClientsAccount(String email) throws EmailNotFoundException {
         ClientsAccount clientsAccount = clientsRepository.findClientsAccountByUserEmail(email);
         if (clientsAccount == null) {
-            throw new UsernameNotFoundException(String.format("No client found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No client found with email '%s'.", email));
         } else {
             return clientsAccount;
         }
     }
 
-    public DriversAccount findDriversAccount(String email){
+    public DriversAccount findDriversAccount(String email) throws EmailNotFoundException {
         DriversAccount driversAccount = driversRepository.findDriversAccountByUserEmail(email);
         if (driversAccount == null) {
-            throw new UsernameNotFoundException(String.format("No driver found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No driver found with email '%s'.", email));
         } else {
             return driversAccount;
         }
     }
 
 
-    public UserDetails loadUserByEmail(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByEmail(String email) throws EmailNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No user found with username '%s'.", email));
         } else {
             return user;
         }
@@ -140,7 +139,7 @@ public class UserService {
     public ClientsAccount connectBankAccount(String bankAccNumber, ClientsAccount clientsAccount) throws BankAccountNumberDoNotExistException {
         ClientsBankAccount clientsBankAccount = bankService.findByAccountNumber(bankAccNumber);
         if(clientsBankAccount == null){
-            throw new BankAccountNumberDoNotExistException(String.format("No bank account found with account number '%s'.", bankAccNumber));
+            throw new BankAccountNumberDoNotExistException("Account number does not exist.");
 
         }
         clientsAccount.setClientsBankAccount(clientsBankAccount);
@@ -173,10 +172,10 @@ public class UserService {
         return driver;
     }
 
-    public ClientsAccount getClient(String email) {
+    public ClientsAccount getClient(String email) throws EmailNotFoundException {
         ClientsAccount client = getClientByEmail(email);
         if (client == null) {
-            throw new UsernameNotFoundException(String.format("No user found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No user found with email '%s'.", email));
         } else {
             return client;
         }
