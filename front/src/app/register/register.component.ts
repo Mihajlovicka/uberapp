@@ -109,7 +109,7 @@ export class RegisterComponent implements OnInit {
     else if(this.registerForm.password==='')alert("Unesite lozinku!")
     else if(this.registerForm.checkPassword==='')alert("Potvrdite lozinku")
     else if(!this.matchingPasswords(this.registerForm.password, this.registerForm.checkPassword))alert("Lozinke se ne poklapaju!")
-    else if(!this.validateBankAccountNumber(this.registerForm.bankAccountNumber))alert("Broj racuna nije u validnom formatu.")
+    else if(this.registerForm.bankAccountNumber != "" && !this.validateBankAccountNumber(this.registerForm.bankAccountNumber))alert("Broj racuna nije u validnom formatu.")
     else{
 
     this.capitalizeForm();
