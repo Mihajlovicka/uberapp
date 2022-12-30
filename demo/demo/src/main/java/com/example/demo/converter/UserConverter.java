@@ -53,6 +53,7 @@ public class UserConverter {
 
         clientsAccount.setPhone(clientAccountDTO.getPhone());
         clientsAccount.setPicture(clientAccountDTO.getPicture());
+        clientsAccount.setBankStatus(clientAccountDTO.getBankStatus());
 
         return clientsAccount;
     }

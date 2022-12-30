@@ -16,6 +16,8 @@ public class ClientAccountDTO {
 
     private BankStatus bankStatus;
 
+    public ClientAccountDTO(){}
+
 
    public ClientAccountDTO(UserDTO user, AddressDTO address, String picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus){
        this.user = user;

@@ -9,6 +9,7 @@ import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.PlateNumberExistException;
 import com.example.demo.exception.BankAccountNumberDoNotExistException;
+import com.example.demo.fakeBank.BankConverter;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.model.*;
 import com.example.demo.model.Address;
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    BankConverter bankConverter;
 
     @PostMapping(value="api/register")
     public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws EmailExistException, BankAccountNumberDoNotExistException {
@@ -77,6 +81,7 @@ public class UserController {
 
     @GetMapping(value = "/api/getClient")
     public ResponseEntity getClient(@RequestParam String email) {
+        System.out.println(email);
 
         try {
             ClientsAccount ca = userService.getClient(email);
@@ -103,17 +108,52 @@ public class UserController {
 
     @PostMapping(value="api/updateClient")
     public ResponseEntity updateClient(@RequestBody ClientAccountDTO clientAccountDTO) {
-        ClientsAccount newClient = userConverter.fromDTO(clientAccountDTO);
+        //ClientsAccount newClient = userConverter.fromDTO(clientAccountDTO);
+        ClientsAccount clientsAccount = new ClientsAccount();
+        clientsAccount.setUser(new User());
+        clientsAccount.setAddress(new Address());
+        clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
+        clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
+        clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
+        clientsAccount.getUser().setRole(clientAccountDTO.getUser().getRole());
+        clientsAccount.getUser().setStatus(clientAccountDTO.getUser().getStatus());
 
-        return new ResponseEntity(userConverter.toDTO(userService.updateClient(newClient)), HttpStatus.OK);
+        clientsAccount.getAddress().setCity(clientAccountDTO.getAddress().getCity());
+        clientsAccount.getAddress().setStreet(clientAccountDTO.getAddress().getStreet());
+        clientsAccount.getAddress().setNumber(clientAccountDTO.getAddress().getNumber());
+
+        clientsAccount.setPhone(clientAccountDTO.getPhone());
+        clientsAccount.setPicture(clientAccountDTO.getPicture());
+        clientsAccount.setBankStatus(clientAccountDTO.getBankStatus());
+        clientsAccount.setClientsBankAccount(bankConverter.fromDto(clientAccountDTO.getClientsBankAccount()));
+
+        return new ResponseEntity(userConverter.toDTO(userService.updateClient(clientsAccount)), HttpStatus.OK);
 
     }
 
     @PostMapping(value="api/updateDriver")
     public ResponseEntity updateDriver(@RequestBody DriverAccountDTO driverAccountDTO) {
-        DriversAccount newDriver = userConverter.fromDTO(driverAccountDTO);
+        //DriversAccount newDriver = userConverter.fromDTO(driverAccountDTO);
+        DriversAccount driversAccount = new DriversAccount();
+        driversAccount.setUser(new User());
+        driversAccount.setCar(new Car());
+        driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
+        driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
+        driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
+        driversAccount.getUser().setRole(driverAccountDTO.getUser().getRole());
+        driversAccount.getUser().setStatus(driverAccountDTO.getUser().getStatus());
 
-        return new ResponseEntity(userConverter.toDTO(userService.updateDriver(newDriver)), HttpStatus.OK);
+        driversAccount.getCar().setBodyType(driverAccountDTO.getCar().getBodyType());
+        driversAccount.getCar().setBrand(driverAccountDTO.getCar().getBrand());
+        driversAccount.getCar().setColor(driverAccountDTO.getCar().getColor());
+        driversAccount.getCar().setModel(driverAccountDTO.getCar().getModel());
+        driversAccount.getCar().setFuelType(driverAccountDTO.getCar().getFuelType());
+        driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
+
+        driversAccount.setPhone(driverAccountDTO.getPhone());
+        driversAccount.setPicture(driverAccountDTO.getPicture());
+
+        return new ResponseEntity(userConverter.toDTO(userService.updateDriver(driversAccount)), HttpStatus.OK);
 
     }
 

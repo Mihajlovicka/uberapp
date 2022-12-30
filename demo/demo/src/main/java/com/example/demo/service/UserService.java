@@ -76,10 +76,13 @@ public class UserService {
             throw new EmailExistException("Email in use.");
         }
 
+
         final Car car = carService.save(driversAccount.getCar());
         driversAccount.setCar(car);
 
         driversAccount.getUser().setStatus(Status.ACTIVE);
+        driversAccount.getUser().setPassword(passwordEncoder.encode(driversAccount.getUser().getPassword()));
+        driversAccount.getUser().setEnabled(true);
         final User user = userRepository.save(driversAccount.getUser());
 
         driversAccount.setUser(user);

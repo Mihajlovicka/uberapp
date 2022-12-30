@@ -53,6 +53,7 @@ export class ProfileViewComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       
       this.email = params['email']
+      console.log(this.email);
      });
 
      this.appService.getClient(this.email).subscribe((resp: ClientsAccount) => {
