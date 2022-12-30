@@ -3,6 +3,7 @@ package com.example.demo.converter;
 import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.fakeBank.BankConverter;
 import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,12 +17,19 @@ public class UserConverter {
     @Autowired
     CarConverter carConverter;
 
+    @Autowired
+    BankConverter bankConverter;
+
     public UserDTO toDTO(User user){
         return new UserDTO(user.getName(), user.getSurname(), user.getEmail(), user.getStatus(), user.getRole());
     }
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
-        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), clientsAccount.getPicture(), clientsAccount.getPhone());
+        if(clientsAccount.getClientsBankAccount() == null){
+            return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), clientsAccount.getPicture(), clientsAccount.getPhone(), null, clientsAccount.getBankStatus());
+
+        }
+        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), clientsAccount.getPicture(), clientsAccount.getPhone(), bankConverter.toDto(clientsAccount.getClientsBankAccount()), clientsAccount.getBankStatus());
     }
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){

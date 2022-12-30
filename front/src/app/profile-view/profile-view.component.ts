@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AppService } from '../app.service';
-import { ClientsAccount } from '../model/clientsAccount.model';
+import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
 import { Role, Status } from '../model/user.model';
 
 @Component({
@@ -30,7 +30,12 @@ export class ProfileViewComponent implements OnInit {
       number:''
     },
     picture:'',
-    phone:''
+    phone:'',
+    clientsBankAccount:{
+      balance:0,
+      bankAccountNumber:''
+    },
+    bankStatus: BankStatus.EMPTY
   }
 
 

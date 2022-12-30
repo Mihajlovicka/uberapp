@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.fakeBank.ClientsBankAccount;
+
 import javax.persistence.*;
 
 @Entity
@@ -23,14 +25,23 @@ public class ClientsAccount {
     @Column
     private String phone;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "clients_bank_account_id", nullable = true)
+    private ClientsBankAccount clientsBankAccount;
+
+    @Column(nullable = false)
+    private BankStatus bankStatus;
+
     public ClientsAccount(){}
 
-    public ClientsAccount(Long id, User user, Address address, String picture, String phone){
+    public ClientsAccount(Long id, User user, Address address, String picture, String phone, ClientsBankAccount clientsBankAccount, BankStatus bankStatus){
         this.id = id;
         this.user = user;
         this.address = address;
         this.picture = picture;
         this.phone = phone;
+        this.clientsBankAccount = clientsBankAccount;
+        this.bankStatus = bankStatus;
     }
 
     public Long getId(){return id;}
@@ -52,4 +63,20 @@ public class ClientsAccount {
     public String getPhone(){return phone;}
 
     public void setPhone(String phone){ this.phone = phone;}
+
+    public ClientsBankAccount getClientsBankAccount() {
+        return clientsBankAccount;
+    }
+
+    public void setClientsBankAccount(ClientsBankAccount clientsBankAccount) {
+        this.clientsBankAccount = clientsBankAccount;
+    }
+
+    public BankStatus getBankStatus() {
+        return bankStatus;
+    }
+
+    public void setBankStatus(BankStatus bankStatus) {
+        this.bankStatus = bankStatus;
+    }
 }

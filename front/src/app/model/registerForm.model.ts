@@ -10,6 +10,7 @@ interface RegisterFormInterface{
     password: string;
     checkPassword: string;
     role: Role;
+    bankAccountNumber: string;
 
 }
 
@@ -22,6 +23,7 @@ export class RegisterForm implements RegisterFormInterface{
     public password: string;
     public checkPassword: string;
     public role: Role;
+    public bankAccountNumber: string;
 
     constructor(registerFormInt: RegisterFormInterface){
         this.name = registerFormInt.name;
@@ -32,5 +34,6 @@ export class RegisterForm implements RegisterFormInterface{
         this.password = registerFormInt.password;
         this.checkPassword = registerFormInt.checkPassword;
         this.role = registerFormInt.role;
+        this.bankAccountNumber = registerFormInt.bankAccountNumber;
     }
 }

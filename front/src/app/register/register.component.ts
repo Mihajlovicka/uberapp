@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppService } from '../app.service';
-import { ClientsAccount } from '../model/clientsAccount.model';
+import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
 import { RegisterForm } from '../model/registerForm.model';
 import { User, Status, Role } from '../model/user.model';
 
@@ -23,7 +23,8 @@ export class RegisterComponent implements OnInit {
     },
     password:'',
     checkPassword:'',
-    role: Role.ROLE_CLIENT
+    role: Role.ROLE_CLIENT,
+    bankAccountNumber: '123456789012345678'
   }
 
 
@@ -42,7 +43,12 @@ export class RegisterComponent implements OnInit {
       number:''
     },
     picture:'',
-    phone:''
+    phone:'',
+    clientsBankAccount:{
+      balance:0,
+      bankAccountNumber:''
+    },
+    bankStatus: BankStatus.EMPTY
   }
 
   constructor(private appService: AppService) { }

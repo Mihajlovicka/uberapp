@@ -1,11 +1,20 @@
 import { Address } from "./address.model";
+import { BankAccount } from "./bankAccount.model";
 import { User } from "./user.model";
+
+export enum BankStatus {
+    ACTIVE = 'ACTIVE',
+    NOTCONFIRMED = 'NOTCONFIRMED',
+    EMPTY = 'EMPTY'
+}
 
 interface ClientsAccountInterface{
     user: User;
     address: Address;
     picture: string;
     phone: string;
+    clientsBankAccount: BankAccount;
+    bankStatus: BankStatus;
 }
 
 export class ClientsAccount implements ClientsAccountInterface{
@@ -13,11 +22,15 @@ export class ClientsAccount implements ClientsAccountInterface{
     public address: Address;
     public picture: string;
     public phone: string;
+    public clientsBankAccount: BankAccount;
+    public bankStatus: BankStatus;
 
     constructor(clientsInt: ClientsAccountInterface){
         this.user = clientsInt.user;
         this.address = clientsInt.address;
         this.picture = clientsInt.picture;
         this.phone = clientsInt.phone;
+        this.clientsBankAccount = clientsInt.clientsBankAccount;
+        this.bankStatus = clientsInt.bankStatus;
     }
 }

@@ -1,5 +1,8 @@
 package com.example.demo.dto;
 
+import com.example.demo.fakeBank.ClientsBankAccountDTO;
+import com.example.demo.model.BankStatus;
+
 public class ClientAccountDTO {
    private UserDTO user;
 
@@ -9,12 +12,18 @@ public class ClientAccountDTO {
 
    private String phone;
 
+    private ClientsBankAccountDTO clientsBankAccount;
 
-   public ClientAccountDTO(UserDTO user, AddressDTO address, String picture, String phone){
+    private BankStatus bankStatus;
+
+
+   public ClientAccountDTO(UserDTO user, AddressDTO address, String picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus){
        this.user = user;
        this.address = address;
        this.picture = picture;
        this.phone = phone;
+       this.clientsBankAccount = clientsBankAccount;
+       this.bankStatus = bankStatus;
    }
 
     public UserDTO getUser() {
@@ -47,5 +56,21 @@ public class ClientAccountDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public ClientsBankAccountDTO getClientsBankAccount() {
+        return clientsBankAccount;
+    }
+
+    public void setClientsBankAccount(ClientsBankAccountDTO clientsBankAccount) {
+        this.clientsBankAccount = clientsBankAccount;
+    }
+
+    public BankStatus getBankStatus() {
+        return bankStatus;
+    }
+
+    public void setBankStatus(BankStatus bankStatus) {
+        this.bankStatus = bankStatus;
     }
 }

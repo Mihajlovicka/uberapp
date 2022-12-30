@@ -4,6 +4,9 @@ import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
+import com.example.demo.fakeBank.BankAccountNumberDoNotExistException;
+import com.example.demo.fakeBank.BankService;
+import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
 import com.example.demo.repository.ClientsRepository;
 import com.example.demo.repository.DriversChangeRepository;
@@ -21,6 +24,9 @@ import java.util.Optional;
 public class UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    BankService bankService;
 
     @Autowired
     AddressService addressService;
@@ -129,6 +135,21 @@ public class UserService {
             return user;
         }
     }
+
+
+    public ClientsAccount connectBankAccount(String bankAccNumber, ClientsAccount clientsAccount) throws BankAccountNumberDoNotExistException {
+        ClientsBankAccount clientsBankAccount = bankService.findByAccountNumber(bankAccNumber);
+        if(clientsBankAccount == null){
+            throw new BankAccountNumberDoNotExistException(String.format("No bank account found with account number '%s'.", bankAccNumber));
+
+        }
+        clientsAccount.setClientsBankAccount(clientsBankAccount);
+        clientsAccount.setBankStatus(BankStatus.NOTCONFIRMED);
+        //slanje emaila
+        bankService.sendVerificationEmail(clientsAccount);
+        return clientsAccount;
+    }
+
 
     private ClientsAccount getClientByEmail(String email){
         ClientsAccount client = null;

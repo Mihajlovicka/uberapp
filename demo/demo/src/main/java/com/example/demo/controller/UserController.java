@@ -7,6 +7,8 @@ import com.example.demo.dto.DriverAccountDTO;
 import com.example.demo.dto.RegisterFormDTO;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.PlateNumberExistException;
+import com.example.demo.fakeBank.BankAccountNumberDoNotExistException;
+import com.example.demo.fakeBank.BankService;
 import com.example.demo.model.*;
 import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
@@ -27,21 +29,26 @@ public class UserController {
     UserService userService;
 
     @Autowired
+    BankService bankService;
+
+    @Autowired
     UserConverter userConverter;
 
     @Autowired
     RoleService roleService;
 
     @PostMapping(value="api/register")
-    public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws EmailExistException {
+    public ResponseEntity register(@RequestBody RegisterFormDTO registerFormDTO) throws EmailExistException, BankAccountNumberDoNotExistException {
         User user = new User();
         Address address = new Address();
         ClientsAccount clientsAccount = new ClientsAccount();
+
 
         user.setName(registerFormDTO.getName());
         user.setSurname(registerFormDTO.getSurname());
         user.setEmail(registerFormDTO.getEmail());
         user.setPassword(registerFormDTO.getPassword());
+        user.setRole(roleService.findByName(registerFormDTO.getRole()));
 
         address.setCity(registerFormDTO.getAddress().getCity());
         address.setStreet(registerFormDTO.getAddress().getStreet());
@@ -53,8 +60,15 @@ public class UserController {
         clientsAccount.setPicture("");
         clientsAccount.setPhone(registerFormDTO.getPhone());
 
+        if(registerFormDTO.getBankAccountNumber() != ""){
+            clientsAccount = userService.connectBankAccount(registerFormDTO.getBankAccountNumber(), clientsAccount);
 
-        user.setRole(roleService.findByName(registerFormDTO.getRole()));
+        }
+
+        else{
+            clientsAccount.setBankStatus(BankStatus.EMPTY);
+        }
+
         final ClientsAccount savedAccount = userService.saveClient(clientsAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 
@@ -112,6 +126,7 @@ public class UserController {
         user.setSurname(addDriverCarFormDTO.getSurname());
         user.setEmail(addDriverCarFormDTO.getEmail());
         user.setPassword(addDriverCarFormDTO.getPassword());
+            user.setRole(roleService.findByName(addDriverCarFormDTO.getRole()));
 
 
         car.setBrand(addDriverCarFormDTO.getCar().getBrand());
@@ -126,7 +141,7 @@ public class UserController {
         driverAccount.setPhone(addDriverCarFormDTO.getPhone());
         driverAccount.setCar(car);
 
-        user.setRole(roleService.findByName(addDriverCarFormDTO.getRole()));
+
         final DriversAccount savedAccount = userService.saveDriver(driverAccount);
         return new ResponseEntity(userConverter.toDTO(savedAccount), HttpStatus.OK);
 

@@ -13,9 +13,11 @@ public class RegisterFormDTO {
 
     private String role;
 
+    private String bankAccountNumber;
+
     public RegisterFormDTO(){}
 
-    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO address, String password, String checkPassword, String role){
+    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO address, String password, String checkPassword, String role, String bankAccountNumber){
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -24,6 +26,7 @@ public class RegisterFormDTO {
         this.password = password;
         this.checkPassword = checkPassword;
         this.role = role;
+        this.bankAccountNumber = bankAccountNumber;
     }
 
     public String getName() {
@@ -36,6 +39,10 @@ public class RegisterFormDTO {
 
     public String getSurname() {
         return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getEmail() {
@@ -81,4 +88,12 @@ public class RegisterFormDTO {
     public String getRole(){return role;}
 
     public void setRole(String role){this.role = role;}
+
+    public String getBankAccountNumber() {
+        return bankAccountNumber;
+    }
+
+    public void setBankAccountNumber(String bankAccountNumber) {
+        this.bankAccountNumber = bankAccountNumber;
+    }
 }
