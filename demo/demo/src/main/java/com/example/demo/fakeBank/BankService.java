@@ -32,12 +32,12 @@ public class BankService {
     }
 
     public void sendVerificationEmail(ClientsAccount clientsAccount){
-        System.out.println("uso sam");
+
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setSubject("Pristup nalogu");
         emailDetails.setRecipient("jelenamanojlovic27062000@gmail.com");
         emailDetails.setMsgBody("Kliknite na link kako bi potvrdili/odbili zahtev za pristup. \n " +
-                "<a href=\"localhost:4200/bankConfirm/"+emailDetails.getRecipient()+"\">Potvrda pristupanju nalogu</a>");
+                "http://localhost:4200/bankConfirm/"+emailDetails.getRecipient());
         emailService.send(emailDetails);
 
     }

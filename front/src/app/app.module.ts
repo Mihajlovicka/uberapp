@@ -21,21 +21,23 @@ import { DriverHomeComponent } from './driver-home/driver-home.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule} from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-import {MatButtonModule} from '@angular/material/button';
-import {MatIconModule} from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import {MatCardModule} from "@angular/material/card";
-import {AuthInterceptor} from "./_auth/auth.interceptor";
-import {AuthGuard} from "./_auth/auth.guard";
+import { MatCardModule } from "@angular/material/card";
+import { AuthInterceptor } from "./_auth/auth.interceptor";
+import { AuthGuard } from "./_auth/auth.guard";
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DriverProfileViewComponent } from './driver-profile-view/driver-profile-view.component';
+import { AccountAccessReviewComponent } from './account-access-review/account-access-review.component';
 
 
 const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
+  { path:'bankConfirm/:email', component:AccountAccessReviewComponent},
   {path: 'driver-info', component: AddDriverComponent},
   {path:'car-info', component:AddCarComponent},
   {path:'login', component:LoginComponent},
@@ -60,6 +62,7 @@ const appRoutes: Routes = [
     ForbiddenComponent,
     ProfileViewComponent,
     DriverProfileViewComponent,
+    AccountAccessReviewComponent,
   ],
 
 
