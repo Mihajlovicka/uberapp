@@ -229,6 +229,7 @@ public class UserService {
         driversAccountChange.setCarPlateNumber(newDriver.getCar().getPlateNumber());
         driversAccountChange.setUser_changing_id(oldDriver.getId());
         driversAccountChange.setEmail(newDriver.getUser().getEmail());
+        driversAccountChange.setDriverStatus(newDriver.getDriverStatus());
 
         //status postojeceg na underrevision
         oldDriver.getUser().setStatus(Status.UNDERREVISION);

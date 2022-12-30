@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.model.DriverStatus;
+
 public class DriverAccountDTO {
     private UserDTO user;
 
@@ -9,13 +11,16 @@ public class DriverAccountDTO {
 
     private CarDTO car;
 
+    private DriverStatus driverStatus;
+
     public DriverAccountDTO(){}
 
-    public DriverAccountDTO(UserDTO user, String picture, String phone, CarDTO car){
+    public DriverAccountDTO(UserDTO user, String picture, String phone, CarDTO car, DriverStatus driverStatus){
         this.user = user;
         this.picture = picture;
         this.phone = phone;
         this.car = car;
+        this.driverStatus = driverStatus;
     }
 
     public UserDTO getUser() {
@@ -48,5 +53,13 @@ public class DriverAccountDTO {
 
     public void setCar(CarDTO car) {
         this.car = car;
+    }
+
+    public DriverStatus getDriverStatus() {
+        return driverStatus;
+    }
+
+    public void setDriverStatus(DriverStatus driverStatus) {
+        this.driverStatus = driverStatus;
     }
 }

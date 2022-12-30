@@ -149,6 +149,7 @@ public class UserController {
         driversAccount.getCar().setModel(driverAccountDTO.getCar().getModel());
         driversAccount.getCar().setFuelType(driverAccountDTO.getCar().getFuelType());
         driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
+        driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
         driversAccount.setPicture(driverAccountDTO.getPicture());
@@ -179,6 +180,7 @@ public class UserController {
         car.setBodyType(addDriverCarFormDTO.getCar().getBodyType());
 
         driverAccount.setUser(user);
+        driverAccount.setDriverStatus(DriverStatus.BUSY);
         driverAccount.setPicture("");
         driverAccount.setPhone(addDriverCarFormDTO.getPhone());
         driverAccount.setCar(car);

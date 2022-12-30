@@ -33,7 +33,7 @@ public class UserConverter {
     }
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){
-        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), driversAccount.getPicture(), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()));
+        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), driversAccount.getPicture(), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus());
     }
 
     public ClientsAccount fromDTO(ClientAccountDTO clientAccountDTO){
@@ -77,6 +77,7 @@ public class UserConverter {
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
         driversAccount.setPicture(driverAccountDTO.getPicture());
+        driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         return driversAccount;
     }

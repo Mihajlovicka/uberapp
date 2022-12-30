@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { DriverCarInfo } from '../model/driverCarInfo.model';
-import { DriversAccount } from '../model/driversAccount.model';
+import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
 import { Role, Status } from '../model/user.model';
 
 @Component({
@@ -56,7 +56,8 @@ export class AddCarComponent implements OnInit {
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE
-    }
+    },
+    driverStatus: DriverStatus.AVAILABLE
   }
 
   ngOnInit(): void {

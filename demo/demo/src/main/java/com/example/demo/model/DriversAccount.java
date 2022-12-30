@@ -23,14 +23,18 @@ public class DriversAccount{
     @JoinColumn(name = "car_id")
     private Car car;
 
+    @Column
+    private DriverStatus driverStatus;
+
     public DriversAccount(){}
 
-    public DriversAccount(Long id, User user, String picture, String phone, Car car) {
+    public DriversAccount(Long id, User user, String picture, String phone, Car car, DriverStatus driverStatus) {
         this.id = id;
         this.user = user;
         this.picture = picture;
         this.phone = phone;
         this.car = car;
+        this.driverStatus = driverStatus;
     }
 
     public Long getId(){return id;}
@@ -69,5 +73,13 @@ public class DriversAccount{
 
     public void setCar(Car car) {
         this.car = car;
+    }
+
+    public DriverStatus getDriverStatus() {
+        return driverStatus;
+    }
+
+    public void setDriverStatus(DriverStatus driverStatus) {
+        this.driverStatus = driverStatus;
     }
 }

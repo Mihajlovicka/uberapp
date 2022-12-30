@@ -44,12 +44,15 @@ public class DriversAccountChange{
     @Column
     private String phone;
 
+    @Column
+    private DriverStatus driverStatus;
+
 
 
     public DriversAccountChange(){}
 
 
-    public DriversAccountChange(Long id, Long user_changing_id, String name, String surname, String email, String carBrand, String carModel, String carColor, String carPlateNumber, CarBodyType carBodyType, Fuel carFuelType, String picture, String phone) {
+    public DriversAccountChange(Long id, Long user_changing_id, String name, String surname, String email, String carBrand, String carModel, String carColor, String carPlateNumber, CarBodyType carBodyType, Fuel carFuelType, String picture, String phone, DriverStatus driverStatus) {
         this.id = id;
         this.user_changing_id = user_changing_id;
         this.name = name;
@@ -63,6 +66,7 @@ public class DriversAccountChange{
         this.carFuelType = carFuelType;
         this.picture = picture;
         this.phone = phone;
+        this.driverStatus = driverStatus;
     }
 
     public Long getId() {
@@ -167,5 +171,13 @@ public class DriversAccountChange{
 
     public void setCarFuelType(Fuel carFuelType) {
         this.carFuelType = carFuelType;
+    }
+
+    public DriverStatus getDriverStatus() {
+        return driverStatus;
+    }
+
+    public void setDriverStatus(DriverStatus driverStatus) {
+        this.driverStatus = driverStatus;
     }
 }
