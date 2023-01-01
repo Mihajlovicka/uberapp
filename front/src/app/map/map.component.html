@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row">
+    <div class="map-container">
+      <div class="map-frame">
+        <div id="map"></div>
+      </div>
+    </div>
+    <form class="data col">
+      <div class="row">
+        <h4>Unos adresa</h4>
+      </div>
+      <div class="row">
+        <app-address-item #address1 class="address" [addressText]="'Pocetna adresa'" [removeRequired]="false" (isValid)="isValid($event)" (addressChange)="addressChanged($event, 0)"></app-address-item>
+        <app-address-item #address2 class="address" [addressText]="'Krajnja adresa'" [removeRequired]="false" (isValid)="isValid($event)" (addressChange)="addressChanged($event, 4)"></app-address-item>
+      </div>
+
+      <div  class="row">
+        <h4 class="additionalStopsHidden additionalAddresses">Usputne stanice</h4>
+        <button mat-raised-button type="button" id="additionalButton" (click)="makeAdditionalVisible()">Dodaj usputne stanice</button>
+      </div >
+      <div class="row additionalStopsHidden additionalAddresses">
+        <app-address-item class="address" [addressText]="'Stanica 1'" [removeRequired]="true" (addressChange)="addressChanged($event, 1)"></app-address-item>
+        <app-address-item class="address" [addressText]="'Stanica 2'" [removeRequired]="true" (addressChange)="addressChanged($event, 2)"></app-address-item>
+        <app-address-item class="address" [addressText]="'Stanica 3'" [removeRequired]="true" (addressChange)="addressChanged($event, 3)"></app-address-item>
+     </div>
+      <div class="row row justify-content-end">
+       <button mat-raised-button type="button" class="col-4" color="primary" (click)="save()">Dalje</button>
+      </div>
+    </form>
+  </div>
+</div>

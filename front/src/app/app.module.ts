@@ -34,6 +34,12 @@ import { DriverProfileViewComponent } from './driver-profile-view/driver-profile
 import { AccountAccessReviewComponent } from './account-access-review/account-access-review.component';
 
 
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { MapComponent } from './map/map.component';
+import { AddressItemComponent } from './address-item/address-item.component';
+
+
 const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
@@ -45,7 +51,8 @@ const appRoutes: Routes = [
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path:'forbidden', component:ForbiddenComponent},
   {path:'clientProfile', component:ProfileViewComponent},
-  {path:'driversProfile', component:DriverProfileViewComponent}
+  {path:'driversProfile', component:DriverProfileViewComponent},
+  {path:'map', component:MapComponent}
 ]
 
 @NgModule({
@@ -63,6 +70,8 @@ const appRoutes: Routes = [
     ProfileViewComponent,
     DriverProfileViewComponent,
     AccountAccessReviewComponent,
+    MapComponent,
+    AddressItemComponent,
   ],
 
 
@@ -82,7 +91,9 @@ const appRoutes: Routes = [
     MatIconModule,
     MatInputModule,
     FormsModule,
-    MatCardModule
+    MatCardModule,
+    LeafletModule,
+    MatAutocompleteModule
   ],
   providers: [
     AppService,
