@@ -31,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
           if(err.error.message === "Email in use."){
 
             return throwError("Email in use.");
-    
+
           }
           else if(err.error.message === "Account number does not exist.")
           {
@@ -50,13 +50,13 @@ export class AuthInterceptor implements HttpInterceptor {
   }
 
   private addToken(req: HttpRequest<any>, token: string | null){
-    return req.clone(
+    return !req.headers.has('Authorization') ? req.clone(
       {
         setHeaders:{
           Authorization:`Barer ${token}`
         }
       }
-    );
+    ) : req;
   }
 
 }

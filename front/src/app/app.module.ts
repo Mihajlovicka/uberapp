@@ -27,8 +27,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from "@angular/material/card";
+import {MatDialogModule} from '@angular/material/dialog';
+
 import { AuthInterceptor } from "./_auth/auth.interceptor";
 import { AuthGuard } from "./_auth/auth.guard";
+
 import { ProfileViewComponent } from './profile-view/profile-view.component';
 import { DriverProfileViewComponent } from './driver-profile-view/driver-profile-view.component';
 import { AccountAccessReviewComponent } from './account-access-review/account-access-review.component';
@@ -38,6 +41,11 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapComponent } from './map/map.component';
 import { AddressItemComponent } from './address-item/address-item.component';
+import { AdminHomeComponent } from './admin-home/admin-home.component';
+import { RoutesDialogComponent } from './dialog-template/routes-dialog/routes-dialog.component';
+import {MatRadioModule} from '@angular/material/radio';
+import {MapService} from "./service/map.service";
+import { ErrorDialogComponent } from './dialog-template/error-dialog/error-dialog.component';
 
 
 const appRoutes: Routes = [
@@ -49,6 +57,7 @@ const appRoutes: Routes = [
   {path:'login', component:LoginComponent},
   {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
+  {path:'admin', component:AdminHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_ADMINISTRATOR'}},
   {path:'forbidden', component:ForbiddenComponent},
   {path:'clientProfile', component:ProfileViewComponent},
   {path:'driversProfile', component:DriverProfileViewComponent},
@@ -72,6 +81,9 @@ const appRoutes: Routes = [
     AccountAccessReviewComponent,
     MapComponent,
     AddressItemComponent,
+    AdminHomeComponent,
+    RoutesDialogComponent,
+    ErrorDialogComponent,
   ],
 
 
@@ -93,7 +105,9 @@ const appRoutes: Routes = [
     FormsModule,
     MatCardModule,
     LeafletModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatDialogModule,
+    MatRadioModule
   ],
   providers: [
     AppService,
@@ -101,7 +115,8 @@ const appRoutes: Routes = [
     {provide:HTTP_INTERCEPTORS,
     useClass:AuthInterceptor,
     multi:true},
-    UserRegistrationService
+    UserRegistrationService,
+    MapService
   ],
   bootstrap: [AppComponent]
 

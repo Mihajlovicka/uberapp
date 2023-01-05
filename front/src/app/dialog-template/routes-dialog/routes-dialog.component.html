@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Izaberi opciju trazenja optimalne rute</h1>
+<div mat-dialog-content>
+  <mat-radio-group
+    aria-labelledby="example-radio-group-label"
+    class="example-radio-group"
+    [(ngModel)]="routeOption.option">
+    <mat-radio-button class="example-radio-button" *ngFor="let o of options" [value]="o.option">
+      {{o.desc}}
+    </mat-radio-button>
+  </mat-radio-group>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Odustani</button>
+  <button mat-button [mat-dialog-close]="routeOption.option" cdkFocusInitial>Potvrdi</button>
+</div>
