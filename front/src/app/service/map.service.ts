@@ -11,6 +11,7 @@ import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog
 import {MatDialog} from "@angular/material/dialog";
 import {DriversAccount} from "../model/driversAccount.model";
 import {AppService} from "../app.service";
+import {Stop} from "../model/drive.model";
 
 @Injectable({
   providedIn: 'root'
@@ -110,7 +111,7 @@ export class MapService {
     return results
   }
 
-  public getBestRouteCombination(results: number[],combinations:number[][], stops:[number, number][]): [number, number][]{
+  public getBestRouteCombination(results: number[],combinations:number[][], stops:Stop[]): Stop[]{
     var minIndex = 0
     var minSum = results[0]
     for(let i = 1; i < results.length;i++){
@@ -119,7 +120,7 @@ export class MapService {
         minIndex = i
       }
     }
-    var stopsInOrder:[number, number][] = []
+    var stopsInOrder:Stop[] = []
     var minCombination = combinations[minIndex]
     stopsInOrder.push(stops[0])
     minCombination.forEach((stopIndex) => {

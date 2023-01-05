@@ -78,11 +78,6 @@ export class AddressItemComponent implements OnInit {
             address.address = el.address.label
             this.options.push(address)
           })}
-        else{
-          var address = {} as MapAddress;
-          address.name = this.noResult
-          this.options.push(address)
-        }
         this.filteredOptions = this.myControl.valueChanges.pipe(
           startWith(''),
           map(value => {
@@ -100,10 +95,8 @@ export class AddressItemComponent implements OnInit {
 
   formsubmit(){
     this.showErrors = true;
-    if(this.address?.name !== this.noResult)
+    if(this.address?.name !== '')
       this.isValid.emit(this.myControl.valid);
-    else
-      this.myControl.setValue('')
   }
 
 }

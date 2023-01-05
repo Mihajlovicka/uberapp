@@ -16,13 +16,13 @@
                           (isValid)="isValid($event)" (addressChange)="addressChanged($event, 4)"></app-address-item>
       </div>
 
-      <div class="row" *ngIf="service.isLoggedIn()">
+      <div class="row" >
         <h4 class="additionalStopsHidden additionalAddresses">Usputne stanice</h4>
         <button mat-raised-button type="button" id="additionalButton" (click)="makeAdditionalVisible()">Dodaj usputne
           stanice
         </button>
       </div>
-      <div class="row additionalStopsHidden additionalAddresses" *ngIf="service.isLoggedIn()">
+      <div class="row additionalStopsHidden additionalAddresses">
         <app-address-item class="address" [addressText]="'Stanica 1'" [removeRequired]="true"
                           (addressChange)="addressChanged($event, 1)"></app-address-item>
         <app-address-item class="address" [addressText]="'Stanica 2'" [removeRequired]="true"
