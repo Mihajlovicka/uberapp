@@ -1,16 +1,18 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, catchError, Observable, of, Subject } from "rxjs";
-import { RegisterForm } from "./model/registerForm.model";
-import { Role, User } from "./model/user.model";
-import { ClientsAccount } from "./model/clientsAccount.model";
-import { CarBodyType, Fuel } from "./model/car.model";
-import { DriverCarInfo } from "./model/driverCarInfo.model";
-import { DriversAccount } from "./model/driversAccount.model";
+import {Injectable} from "@angular/core";
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {BehaviorSubject, catchError, Observable, of, Subject} from "rxjs";
+import {RegisterForm} from "./model/registerForm.model";
+import {Role, User} from "./model/user.model";
+import {ClientsAccount} from "./model/clientsAccount.model";
+import {CarBodyType, Fuel} from "./model/car.model";
+import {DriverCarInfo} from "./model/driverCarInfo.model";
+import {DriversAccount} from "./model/driversAccount.model";
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root'
+})
 
   export class AppService{
     private registerUrl = 'http://localhost:8080/api/register';
@@ -26,31 +28,33 @@ import { DriversAccount } from "./model/driversAccount.model";
       };
 
 
-      private emptyDriverCar: DriverCarInfo = {
-        name: '',
-        surname: '',
-        email: '',
-        phone: '',
-        password: '',
-        checkPassword: '',
-        role: Role.ROLE_DRIVER,
-        car: {
-          brand:'',
-          model:'',
-          color:'',
-          plateNumber:'',
-          bodyType: CarBodyType.HATCHBACK,
-          fuelType: Fuel.GASOLINE
 
-        }
-      }
+  private emptyDriverCar: DriverCarInfo = {
+    name: '',
+    surname: '',
+    email: '',
+    phone: '',
+    password: '',
+    checkPassword: '',
+    role: Role.ROLE_DRIVER,
+    car: {
+      brand: '',
+      model: '',
+      color: '',
+      plateNumber: '',
+      bodyType: CarBodyType.HATCHBACK,
+      fuelType: Fuel.GASOLINE
 
-
-      private dataSubject = new BehaviorSubject(this.emptyDriverCar);
-      currentData = this.dataSubject.asObservable();
+    }
+  }
 
 
-      constructor(private http: HttpClient) {
+  private dataSubject = new BehaviorSubject(this.emptyDriverCar);
+  currentData = this.dataSubject.asObservable();
+
+
+  constructor(private http: HttpClient,
+              public dialog: MatDialog) {
 
 
 
@@ -166,7 +170,7 @@ import { DriversAccount } from "./model/driversAccount.model";
 
 
 
-      private handleError<T>(operation = 'operation', result?: T) {
+      public handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
           // TODO: send the error to remote logging infrastructure
           console.error(error); // log to console instead
@@ -179,5 +183,24 @@ import { DriversAccount } from "./model/driversAccount.model";
         };
       }
 
+
+
+
+  private openErrorDialog(message: string) {
+    this.dialog.open(ErrorDialogComponent, {
+      data: {
+        errorMessage: message,
+      },
+    });
   }
+
+
+
+
+  }
+
+
+
+
+
 

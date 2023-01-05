@@ -2,20 +2,10 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
-import * as L from 'leaflet';
-
-export interface Position {
-  lat:number,
-  lng:number
-}
-
-export interface Address {
-  name: string;
-  position: Position,
-  address: string,
-  number:string,
-  marker:L.Marker
-}
+import {MapAddress, Position} from '../model/mapAddress.model'
+import {MapService} from "../service/map.service";
+import {MatDialog} from "@angular/material/dialog";
+import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog.component";
 
 @Component({
   selector: 'app-address-item',
@@ -24,49 +14,36 @@ export interface Address {
 })
 export class AddressItemComponent implements OnInit {
 // @ts-ignore
-  myControl = new FormControl<string | Address>('');
-  options: Address[] = [];
-  filteredOptions: Observable<Address[]> | undefined;
+  myControl = new FormControl<string | MapAddress>('');
+  options: MapAddress[] = [];
+  filteredOptions: Observable<MapAddress[]> | undefined;
+
+  private noResult:string = 'Nema rezultata pretrage..'
 
   @Input() addressText = '';
   @Input() removeRequired:boolean = false;
   @Input() showErrors:boolean = false;
 
-  address: Address | undefined;
-  @Output() addressChange = new EventEmitter<Address>();
+  address: MapAddress | undefined;
+  @Output() addressChange = new EventEmitter<MapAddress>();
   @Output() isValid = new EventEmitter<boolean>();
 
-  constructor() { }
+
+  constructor(private mapService:MapService,
+              public dialog: MatDialog, ) { }
 
   ngOnInit(): void {
     if(!this.removeRequired){
       this.myControl.setValidators([Validators.required]);
       this.myControl.updateValueAndValidity();
     }
-    for(let i = 0; i<4;i++){
-      var pos = {} as Position;
-      pos.lat = 45.2608651+i
-      pos.lng = 19.8319339+i*2
-      var address = {} as Address;
-      address.name = i.toString()
-      address.position = pos
-      address.address = i.toString() + "l"
-      this.options.push(address)
-      this.filteredOptions = this.myControl.valueChanges.pipe(
-        startWith(''),
-        map(value => {
-          const name = typeof value === 'string' ? value : value?.name;
-          return name ? this._filter(name as string) : this.options.slice();
-        }),
-      );
-    }
   }
 
-  displayFn(user: Address): string {
+  displayFn(user: MapAddress): string {
     return user && user.name ? user.name : '';
   }
 
-  private _filter(name: string): Address[] {
+  private _filter(name: string): MapAddress[] {
     const filterValue = name.toLowerCase();
 
     return this.options.filter(option => option.name.toLowerCase().includes(filterValue));
@@ -77,51 +54,50 @@ export class AddressItemComponent implements OnInit {
     this.addressChange.emit(this.address);
   }
 
-  changeAddress(e: any) {
-    // var platform = new H.service.Platform({
-    //   apikey
-    // });
-    // const places = platform.getSearchService();
-    // places.autosuggest({
-    //   at: '45.251787,19.837155',
-    //   q: this.myControl.value
-    // }, (data: any) => {
-    //   console.log(data)
-    //   this.options = []
-    //   if(data.items.length !== 0){
-    //   data.items.forEach((el: any) => {
-    //     var pos = {} as Position;
-    //     pos.lat = el.position.lat;
-    //     pos.lng = el.position.lng;
-    //     var address = {} as Address;
-    //     address.name = el.title
-    //     address.position = pos
-    //     address.address = el.address.label
-    //     this.options.push(address)
-    //   })}
-    //   else{
-    //     var address = {} as Address;
-    //     address.name = "Nema rezultata pretrage.."
-    //     this.options.push(address)
-    //   }
-    //   this.filteredOptions = this.myControl.valueChanges.pipe(
-    //     startWith(''),
-    //     map(value => {
-    //       const name = typeof value === 'string' ? value : value?.name;
-    //       return name ? this._filter(name as string) : this.options.slice();
-    //     }),
-    //   );
-    // }, (err: any) => {
-    //   console.log(err)
-    // })
+  changeAddress() {
+    if(this.myControl.value.length % 5 === 0)
+      this.makeRequest()
   }
+
+  makeRequest(){
+    const places = this.mapService.getHPlatform().getSearchService();
+    places.autosuggest({
+      at: '45.251787,19.837155',
+      q: this.myControl.value
+    }, (data: any) => {
+      if(data !== null){
+        this.options = []
+        if(data.items.length !== 0){
+          data.items.forEach((el: any) => {
+            var pos = {} as Position;
+            pos.lat = el.position.lat;
+            pos.lng = el.position.lng;
+            var address = {} as MapAddress;
+            address.name = el.title
+            address.position = pos
+            address.address = el.address.label
+            this.options.push(address)
+          })}
+        this.filteredOptions = this.myControl.valueChanges.pipe(
+          startWith(''),
+          map(value => {
+            const name = typeof value === 'string' ? value : value?.name;
+            return name ? this._filter(name as string) : this.options.slice();
+          }),
+        );
+      }
+    }, (err) => {
+      this.mapService.openErrorDialog("Doslo je do greske pri povezivanju sa serverom. molimo pokusajte ponovo kasnije.")
+    })
+
+  }
+
 
   formsubmit(){
     this.showErrors = true;
-    this.isValid.emit(this.myControl.valid);
-    // if(this.myControl.valid){
-    //   //navigate
-    // }
+    if(this.address?.name !== '')
+      this.isValid.emit(this.myControl.valid);
   }
 
 }
+

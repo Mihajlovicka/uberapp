@@ -1,7 +1,10 @@
 <form class="example-form">
   <mat-form-field class="example-full-width" appearance="fill">
     <mat-label>{{addressText}}</mat-label>
-    <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" (keyup)="changeAddress($event)">
+    <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" (keyup)="changeAddress()">
+    <button *ngIf="myControl" matSuffix mat-icon-button aria-label="Clear" (click)="myControl.setValue('')">
+      <mat-icon>close</mat-icon>
+    </button>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addressChosen($event)">
       <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
         {{option.name}}
