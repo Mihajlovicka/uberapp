@@ -148,6 +148,9 @@ public class UserService {
         }
         clientsAccount.setClientsBankAccount(clientsBankAccount);
         clientsAccount.setBankStatus(BankStatus.NOTCONFIRMED);
+
+
+
         //slanje emaila
         bankService.sendVerificationEmail(clientsAccount);
         return clientsAccount;
@@ -195,6 +198,18 @@ public class UserService {
         oldClient.getAddress().setNumber(newClient.getAddress().getNumber());
         clientsRepository.save(oldClient);
         return oldClient;
+    }
+
+    public ClientsAccount changeBankStatus(String email, BankStatus bankStatus){
+        ClientsAccount client = getClientByEmail(email);
+
+        if(bankStatus.equals(BankStatus.EMPTY)){
+            client.setClientsBankAccount(null);
+        }
+
+
+        client.setBankStatus(bankStatus);
+        return clientsRepository.save(client);
     }
 
     public DriversAccount getDriver(String email) {

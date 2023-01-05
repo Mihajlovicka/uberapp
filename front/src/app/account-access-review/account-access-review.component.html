@@ -1,30 +1,37 @@
 <div class="col-md-6" style="margin:2% auto; border: solid 1px darkgreen;margin-bottom:10%">
     <div class="row">
         <div class="col-md-3" style="margin:5% auto">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Otp_bank_Logo.svg" style="width:100%;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Otp_bank_Logo.svg" style="width:80%;">
         </div>
        
         <div class="col-md-8" style="margin:5% auto">
-            <label style="font-size:30px; color:darkgreen"><strong>Zahtev za pristup nalogu pod brojem: </strong></label>
-            <label style="font-size:20px; color:rgba(10, 17, 4, 0.733);"><strong> 1234567891234567890 </strong></label>
+            <label style="font-size:30px; color:darkgreen"><strong>Zahtev za omogucavanje placanja</strong></label>
+           
         </div>
     </div>
+
+    <label>Zahtev za pristup Vasem nalogu preko aplikacije <strong>YUBER</strong> u svrhu online placanja.</label><br><br>
+    <label> Prihvatanjem zahteva, omogucili ste podnosiocu zahteva da Vam nalog koristi kao novcani izvor prilikom novcanih online transakcija izvrsenih preko aplikacije <strong>YUBER</strong>.</label>
     <div class="row" style="margin:5% auto">
        
-        <label><strong>Jelena Manojlovic </strong> zeli da pristupi Vasem nalogu preko aplikacije <strong>YUBER</strong>.</label>
-    </div>
-    <div style="margin:5% auto; border:solid 1px darkgreen; padding:2%">
-        <label>Ime:<strong> Jelena</strong> </label><br>
-        <label>Prezime: <strong>Manojlovic</strong></label><br>
-        <label>Kontak email: <strong>jelenamanojlovic27062000@gmail.com</strong></label>
-        <label>Zahtev: Zelim da registrujem nalog pod brojem <strong>1234567891234567890</strong> za mogucnost placanja.</label>
+        </div>
+    <div style="margin:2% auto; border:solid 1px darkgreen; padding:2%; ">
+        <label>Ime: </label>
+        <input disabled id="clientsInfo" name="clientsName" [(ngModel)]="this.clientsAccount.user.name"><br>
+        <label>Prezime: </label>
+        <input disabled id="clientsInfo" name="clientsSurname" [(ngModel)]="this.clientsAccount.user.surname"><br>
+
+        <label>Kontak email: </label>
+        <input disabled id="clientsInfo" name="clientsEmail" [(ngModel)]="this.clientsAccount.user.email"><br>
+
+        
     </div>
 
-    <div style="display:flex; margin-bottom:2% ; justify-content: space-between;">
-        <button class="btn btn-success" >
+    <div style="display:flex; margin-bottom:5% ; justify-content: space-between;">
+        <button class="btn btn-success" (click)="accept()">
             Odobri
         </button>
-        <button class="btn btn-danger">Odbij</button>
+        <button class="btn btn-danger" (click)="decline()">Odbij</button>
     </div>
 
   

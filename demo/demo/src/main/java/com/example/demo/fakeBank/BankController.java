@@ -1,6 +1,9 @@
 package com.example.demo.fakeBank;
 
+import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.exception.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.model.ClientsAccount;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,11 +47,6 @@ public class BankController {
         return new ResponseEntity(bankConverter.toDto(saved), HttpStatus.CREATED);
     }
 
-    //poziva se sa fronta da se povezu nalog i korisnik
-    //ukoliko nalog postoji..samo spoj
-    //ukoliko nalog ne postoji baciti exc da nalog ne postoji i da ne moze da doda nepostojeci nalog
-    //eventualno provera da li postoji korisnik..ali ovo ce se dodati za logged korisnika al aj za svaki slucaj
-    //proveriti da li taj nalog pripada korisniku?
 
 
     }

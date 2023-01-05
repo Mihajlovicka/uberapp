@@ -197,4 +197,22 @@ public class UserController {
         return new ResponseEntity(email, HttpStatus.OK);
     }
 
+    @PostMapping(value="api/acceptBankAccountAccess")
+    public ResponseEntity bankAccessAccepted(@RequestBody ClientAccountDTO clientAccountDTO) {
+
+        ClientsAccount client = userService.changeBankStatus(clientAccountDTO.getUser().getEmail(), BankStatus.ACTIVE);
+
+
+        return new ResponseEntity(userConverter.toDTO(client), HttpStatus.OK);
+    }
+
+    @PostMapping(value="api/declineBankAccountAccess")
+    public ResponseEntity bankAccessDeclined(@RequestBody ClientAccountDTO clientAccountDTO) {
+
+        ClientsAccount client = userService.changeBankStatus(clientAccountDTO.getUser().getEmail(), BankStatus.EMPTY);
+
+
+        return new ResponseEntity(userConverter.toDTO(client), HttpStatus.OK);
+    }
+
 }

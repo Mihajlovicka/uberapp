@@ -19,6 +19,8 @@ import { DriversAccount } from "./model/driversAccount.model";
     private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
     private updateClientUrl = 'http://localhost:8080/api/updateClient';
     private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
+    private bankUrlAccept = 'http://localhost:8080/api/acceptBankAccountAccess';
+    private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -54,9 +56,22 @@ import { DriversAccount } from "./model/driversAccount.model";
 
       }
 
+      declineBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount>{
+        return this.http.post<ClientsAccount>(`${this.bankUrlDecline}`, client, this.httpOptions).pipe(
+          catchError(this.handleError<ClientsAccount>())
+        )
+      }
 
+      
 
+      acceptBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount>{
+        return this.http.post<ClientsAccount>(`${this.bankUrlAccept}`, client, this.httpOptions).pipe(
+          catchError(this.handleError<ClientsAccount>())
+        )
+      }
 
+ 
+   
       public getClient(email:string): Observable<ClientsAccount>{
         
         return this.http.get<ClientsAccount>(`${this.getClientUrl+email}`).pipe(

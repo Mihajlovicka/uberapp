@@ -75,7 +75,7 @@ export class RegisterComponent implements OnInit {
   }
 
   validateBankAccountNumber(str: string): boolean {
-    var regex =  /^.+?\d{18}$/;
+    var regex =  /^.+?\d{17}$/;
     return regex.test(str);
   }
 

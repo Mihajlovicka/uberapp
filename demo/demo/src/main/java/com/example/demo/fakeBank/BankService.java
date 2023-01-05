@@ -2,7 +2,11 @@ package com.example.demo.fakeBank;
 
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
+import com.example.demo.exception.EmailExistException;
+import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.model.BankStatus;
 import com.example.demo.model.ClientsAccount;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +17,9 @@ public class BankService {
 
     @Autowired
     EmailService emailService;
+
+
+
 
     public ClientsBankAccount create(ClientsBankAccount clientsBankAccount){
         return bankRepository.save(clientsBankAccount);
@@ -31,13 +38,16 @@ public class BankService {
         return bankRepository.getClientsBankAccountByAccountNumber(accountNumber);
     }
 
+
+
+
     public void sendVerificationEmail(ClientsAccount clientsAccount){
 
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setSubject("Pristup nalogu");
         emailDetails.setRecipient("jelenamanojlovic27062000@gmail.com");
         emailDetails.setMsgBody("Kliknite na link kako bi potvrdili/odbili zahtev za pristup. \n " +
-                "http://localhost:4200/bankConfirm/"+emailDetails.getRecipient());
+                "http://localhost:4200/bankConfirm/"+clientsAccount.getUser().getEmail());
         emailService.send(emailDetails);
 
     }

@@ -108,7 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// Zahtevi koji se mecuju za web.ignoring().antMatchers() nemaju pristup SecurityContext-u
 
 		// Dozvoljena POST metoda na ruti /auth/login, za svaki drugi tip HTTP metode greska je 401 Unauthorized
-		 web.ignoring().antMatchers("/bank/create","/auth/login","/", "/webjars/**", "/*.html", "favicon.ico", "/**/*.html",
+		 web.ignoring().antMatchers("/api/declineBankAccountAccess","/api/acceptBankAccountAccess","/bank/create","/auth/login","/", "/webjars/**", "/*.html", "favicon.ico", "/**/*.html",
 				"/**/*.css", "/**/*.js");
 	}
 

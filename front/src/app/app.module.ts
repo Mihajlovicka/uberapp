@@ -40,6 +40,7 @@ import { MapComponent } from './map/map.component';
 import { AddressItemComponent } from './address-item/address-item.component';
 
 
+
 const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent},
   { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
@@ -71,7 +72,7 @@ const appRoutes: Routes = [
     DriverProfileViewComponent,
     AccountAccessReviewComponent,
     MapComponent,
-    AddressItemComponent,
+    AddressItemComponent
   ],
 
 
