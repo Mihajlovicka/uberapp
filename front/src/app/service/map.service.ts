@@ -11,7 +11,7 @@ import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog
 import {MatDialog} from "@angular/material/dialog";
 import {DriversAccount} from "../model/driversAccount.model";
 import {AppService} from "../app.service";
-import {Stop} from "../model/drive.model";
+import { Stop } from '../model/stop.model';
 
 @Injectable({
   providedIn: 'root'

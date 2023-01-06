@@ -23,6 +23,7 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
     private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
     private bankUrlAccept = 'http://localhost:8080/api/acceptBankAccountAccess';
     private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
+    private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -72,6 +73,11 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
         return this.http.post<ClientsAccount>(`${this.bankUrlAccept}`, client, this.httpOptions).pipe(
           catchError(this.handleError<ClientsAccount>())
         )
+      }
+
+
+      public getAllClients(): Observable<ClientsAccount[]>{
+        return this.http.get<ClientsAccount[]>(`${this.allActiveClients}`).pipe(catchError(this.handleError<ClientsAccount[]>()));
       }
 
  
@@ -126,16 +132,16 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 
         if(error.error.message === "Registration plate number exist."){
 
-        alert("Registacioni broj vec postoji!");
+          this.openErrorDialog("Registacioni broj vec postoji!");
 
       }
 
         else if(error.error.message === "Email in use."){
-          alert("E-mail je u upotrebi!");
+          this.openErrorDialog("E-mail je u upotrebi!");
         }
 
       else{
-        alert("Registration failed.");
+        this.openErrorDialog("Registration failed.");
       }
 
         return of(result as T);
@@ -153,15 +159,15 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 
         if(error === "Email in use."){
 
-        alert("E-mail je u upotrebi!");
+          this.openErrorDialog("E-mail je u upotrebi!");
 
       }
       else if(error === "Account number does not exist.")
       {
-        alert("Ne postoji racun sa ovim brojem.");
+        this.openErrorDialog("Ne postoji racun sa ovim brojem.");
       }
       else{
-        alert("Registration failed.");
+        this.openErrorDialog("Registration failed.");
       }
 
         return of(result as T);
@@ -176,7 +182,7 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
           console.error(error); // log to console instead
 
           // TODO: better job of transforming error for user consumption
-          alert(`${operation} failed.`);
+          this.openErrorDialog(`${operation} failed.`);
 
           // Let the app keep running by returning an empty result.
           return of(result as T);

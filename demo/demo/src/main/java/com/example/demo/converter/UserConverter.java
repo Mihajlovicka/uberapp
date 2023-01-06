@@ -8,6 +8,9 @@ import com.example.demo.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
 public class UserConverter {
 
@@ -80,6 +83,17 @@ public class UserConverter {
         driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         return driversAccount;
+    }
+
+    public List<ClientAccountDTO> toDTOs(List<ClientsAccount> clients){
+        List<ClientAccountDTO> dtos = new ArrayList<ClientAccountDTO>();
+
+        for (ClientsAccount client:
+             clients) {
+            dtos.add(this.toDTO(client));
+        }
+
+        return dtos;
     }
 
 }

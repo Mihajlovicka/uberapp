@@ -48,6 +48,10 @@ import {MapService} from "./service/map.service";
 import { ErrorDialogComponent } from './dialog-template/error-dialog/error-dialog.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { AddressViewComponent } from './address-view/address-view.component';
+import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clients-into-drive.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
+
 
 
 
@@ -64,7 +68,8 @@ const appRoutes: Routes = [
   {path:'forbidden', component:ForbiddenComponent},
   {path:'clientProfile', component:ProfileViewComponent},
   {path:'driversProfile', component:DriverProfileViewComponent},
-  {path:'map', component:MapComponent}
+  {path:'map', component:MapComponent},
+  {path:'add-clients', component:AddClientsIntoDriveComponent}
 ]
 
 @NgModule({
@@ -88,6 +93,7 @@ const appRoutes: Routes = [
     RoutesDialogComponent,
     ErrorDialogComponent,
     AddressViewComponent,
+    AddClientsIntoDriveComponent,
   ],
 
 
@@ -112,7 +118,8 @@ const appRoutes: Routes = [
     MatAutocompleteModule,
     MatDialogModule,
     MatRadioModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSlideToggleModule
   ],
   providers: [
     AppService,

@@ -19,6 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class UserService {
     @Autowired
@@ -252,5 +254,10 @@ public class UserService {
 
         driversChangeRepository.save(driversAccountChange);
         return oldDriver;
+    }
+
+    public List<ClientsAccount> getAllActiveCliens(){
+        //treba samo izbaciti trenutno ulogovanog ukoliko je trenutno ulogovani klijent
+        return clientsRepository.findAllByUserStatus(Status.ACTIVE);
     }
 }

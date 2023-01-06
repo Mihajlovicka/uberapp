@@ -215,4 +215,9 @@ public class UserController {
         return new ResponseEntity(userConverter.toDTO(client), HttpStatus.OK);
     }
 
+    @GetMapping(value="api/getAllActiveClients")
+    public ResponseEntity getAllActiveClients(){
+        return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveCliens()), HttpStatus.OK);
+    }
+
 }

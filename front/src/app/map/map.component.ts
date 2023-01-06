@@ -7,7 +7,8 @@ import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dia
 import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
 import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
-import {Drive, Stop} from "../model/drive.model";
+import {Drive } from "../model/drive.model";
+import { Stop } from '../model/stop.model';
 
 
 L.Icon.Default.imagePath = 'assets/';
@@ -32,9 +33,17 @@ export class MapComponent implements OnInit {
 
   public nextPage: boolean = false;
   public showAdditional: boolean = false
-  private drive: Drive = {} as Drive;
+  
   private route: any = undefined
   private routePopupText:string = 'Odabrana putanja'
+
+  private drive:Drive = {
+    stops: [],
+    distance: 0,
+    duration: 0,
+    price: 0,
+    clients: []
+  };
 
   public draggingIndex: number = -1;
 
@@ -265,7 +274,10 @@ export class MapComponent implements OnInit {
   openNextPage() {
     if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
-      this.drive.price = this.drive.distance * 120
+
+      this.drive.price = this.drive.distance*120
+      console.log(this.drive)
+
     }
   }
 
