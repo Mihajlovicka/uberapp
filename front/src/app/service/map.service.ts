@@ -4,7 +4,7 @@ import {HttpClient, HttpHeaders} from "@angular/common/http";
 import * as L from "leaflet";
 import {Observable, map, lastValueFrom, catchError} from "rxjs";
 import {ClientsAccount} from "../model/clientsAccount.model";
-import {Position} from "../model/mapAddress.model";
+import {MapAddress, Position} from "../model/mapAddress.model";
 import {DomEvent} from "leaflet";
 import stop = DomEvent.stop;
 import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog.component";
@@ -111,7 +111,7 @@ export class MapService {
     return results
   }
 
-  public getBestRouteCombination(results: number[],combinations:number[][], stops:Stop[]): Stop[]{
+  public getBestRouteCombination(results: number[],combinations:number[][], stops:MapAddress[]): MapAddress[]{
     var minIndex = 0
     var minSum = results[0]
     for(let i = 1; i < results.length;i++){
@@ -120,7 +120,7 @@ export class MapService {
         minIndex = i
       }
     }
-    var stopsInOrder:Stop[] = []
+    var stopsInOrder:MapAddress[] = []
     var minCombination = combinations[minIndex]
     stopsInOrder.push(stops[0])
     minCombination.forEach((stopIndex) => {

@@ -10,33 +10,65 @@
         <h4>Unos adresa</h4>
       </div>
       <div class="row">
-        <app-address-item #address1 class="address" [addressText]="'Pocetna adresa'" [removeRequired]="false"
-                          (isValid)="isValid($event)" (addressChange)="addressChanged($event, 0)"></app-address-item>
-        <app-address-item #address2 class="address" [addressText]="'Krajnja adresa'" [removeRequired]="false"
-                          (isValid)="isValid($event)" (addressChange)="addressChanged($event, 4)"></app-address-item>
+        <app-address-item #address1 class="address" [addressText]="'Pocetna adresa'" [isRequired]="true"
+                          (isValid)="isValid($event)"
+                          (addressChange)="addressChanged($event, 'start')"></app-address-item>
       </div>
 
-      <div class="row" >
-        <h4 class="additionalStopsHidden additionalAddresses">Usputne stanice</h4>
-        <button mat-raised-button type="button" id="additionalButton" (click)="makeAdditionalVisible()">Dodaj usputne
-          stanice
-        </button>
+      <div>
+        <div class="row">
+          <div class="example-button-row">
+            <div *ngIf="!showAdditional; then thenBlock else elseBlock"></div>
+            <ng-template #thenBlock>
+              <button mat-icon-button matTooltip="Dodaj usputne stanice" aria-label="Usputne stanice"
+                      (click)="showAdditional = true">
+                <mat-icon>add</mat-icon>
+              </button>
+            </ng-template>
+            <ng-template #elseBlock>
+              <button mat-icon-button matTooltip="Sakri" aria-label="Usputne stanice" (click)="showAdditional = false">
+                <mat-icon>remove</mat-icon>
+              </button>
+            </ng-template>
+
+          </div>
+        </div>
+        <div *ngIf="showAdditional">
+          <div class="row justify-content-center">
+            <app-address-item class="address" [addressText]="'Upisi adresu'" [isRequired]="false"
+                              (addressChange)="addressChanged($event)"></app-address-item>
+          </div>
+          <div>
+            <div class="drag-wrapper"
+                 *ngFor="let row of stops; let index = index"
+                 [draggable]="true"
+                 [class.dragging]="index === this.draggingIndex"
+                 (dragstart)="onDragStart(index)"
+                 (dragenter)="onDragEnter(index)"
+                 (dragend)="onDragEnd()">
+              <div class="card">
+                <app-address-view class="address-view" [address]="row" (remove)="removeAddressFromAdditional(index)"></app-address-view>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="row additionalStopsHidden additionalAddresses">
-        <app-address-item class="address" [addressText]="'Stanica 1'" [removeRequired]="true"
-                          (addressChange)="addressChanged($event, 1)"></app-address-item>
-        <app-address-item class="address" [addressText]="'Stanica 2'" [removeRequired]="true"
-                          (addressChange)="addressChanged($event, 2)"></app-address-item>
-        <app-address-item class="address" [addressText]="'Stanica 3'" [removeRequired]="true"
-                          (addressChange)="addressChanged($event, 3)"></app-address-item>
+
+      <div class="row">
+        <app-address-item #address2 class="address" [addressText]="'Krajnja adresa'" [isRequired]="true"
+                          (isValid)="isValid($event)"
+                          (addressChange)="addressChanged($event, 'end')"></app-address-item>
       </div>
-      <div class="row row justify-content-end">
-        <div *ngIf="nextPage; then thenBlock else elseBlock"></div>
-        <ng-template #thenBlock>
+
+
+      <div class="row justify-content-end">
+        <div *ngIf="nextPage; then thenBlockNext else elseBlockNext"></div>
+        <ng-template #thenBlockNext>
           <button mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
         </ng-template>
-        <ng-template #elseBlock>
-          <button mat-raised-button type="button" class="col-4" color="primary" (click)="showRoute()">Prikazi putanju</button>
+        <ng-template #elseBlockNext>
+          <button mat-raised-button type="button" class="col-4" color="primary" (click)="showRoute()">Prikazi putanju
+          </button>
         </ng-template>
       </div>
     </form>

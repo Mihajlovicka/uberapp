@@ -1,0 +1,10 @@
+.example-full-width {
+  width: 90%;
+}
+.close{
+  display: flex;
+}
+.address-view{
+  margin-left: 20px;
+  margin-top: 10px;
+}

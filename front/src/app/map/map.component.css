@@ -7,7 +7,7 @@
   width: 50%;
 }
 .map-frame{
-  border: 2px solid black;
+  border: 2px solid darkslateblue;
   height: 100%;
 }
 #map{
@@ -20,19 +20,33 @@
 
 .address{
   min-width: 150px;
-  max-width: 500px;
-  width: 80%;
+  width: 100%;
   margin-left: 20px;
   margin-top: 10px;
 }
 
-.additionalStopsHidden{
-  visibility: hidden;
+.address-view{
+  min-width: 150px;
+  width: 100%;
 }
 
-.additionalButtonHidden{
-  visibility: hidden;
+.example-button-row button{
+  margin-right: 8px;
 }
-.leaflet-control-container .leaflet-routing-container-hide {
-  display: none;
+
+.example-disabled {
+  display: inline-block;
 }
+
+/*.drag-wrapper {*/
+/*  padding: 4px 0;*/
+/*  width: 90%;*/
+/*}*/
+
+/*.drag-wrapper.dragging {*/
+/*  opacity: 0.5;*/
+/*}*/
+
+/*.card {*/
+/*  padding: 4px;*/
+/*}*/

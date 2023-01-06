@@ -2,7 +2,7 @@
   <mat-form-field class="example-full-width" appearance="fill">
     <mat-label>{{addressText}}</mat-label>
     <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto" (keyup)="changeAddress()">
-    <button *ngIf="myControl" matSuffix mat-icon-button aria-label="Clear" (click)="myControl.setValue('')">
+    <button *ngIf="myControl" matSuffix mat-icon-button aria-label="Clear" (click)="remove()">
       <mat-icon>close</mat-icon>
     </button>
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="addressChosen($event)">
@@ -10,6 +10,6 @@
         {{option.name}}
       </mat-option>
     </mat-autocomplete>
-    <mat-error *ngIf="myControl.touched && myControl.errors?.['required'] && showErrors">Ovo polje je obavezno</mat-error>
+    <mat-error *ngIf="(myControl.errors?.['required'] && showErrors) || (showErrors && !isRealAddress)">Ovo polje je obavezno</mat-error>
   </mat-form-field>
 </form>

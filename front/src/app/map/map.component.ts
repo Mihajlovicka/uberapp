@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Output, ViewChild} from '@angular/core';
+import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef} from '@angular/core';
 import * as L from 'leaflet';
 import {UserRegistrationService} from "../user-registration.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -6,7 +6,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dialog.component";
 import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
-import {firstValueFrom, lastValueFrom} from "rxjs";
+import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
 import {Drive, Stop} from "../model/drive.model";
 
 
@@ -21,43 +21,82 @@ export class MapComponent implements OnInit {
 
   private map!: L.Map;
 
-  private stops: MapAddress[] = [{} as MapAddress, {} as MapAddress, {} as MapAddress, {} as MapAddress, {} as MapAddress];
-  private finalStopsOrder: Stop[] = []
+  private start: MapAddress = {} as MapAddress
+  private end: MapAddress = {} as MapAddress
+  public stops: MapAddress[] = [];
+  private finalStopsOrder: MapAddress[] = []
 
   @ViewChild('address1') addr1: any;
   @ViewChild('address2') addr2: any;
-  private allValid: boolean = false;
+  private allValid: boolean = true;
 
-  public nextPage:boolean = false;
-  private drive:Drive = {} as Drive;
+  public nextPage: boolean = false;
+  public showAdditional: boolean = false
+  private drive: Drive = {} as Drive;
+  private route: any = undefined
+  private routePopupText:string = 'Odabrana putanja'
 
-  private route:any = undefined
+  public draggingIndex: number = -1;
 
-  public addressChanged(newAddress: any, addressNum: number) {
-    this.nextPage = false
-    this.removeMarker(addressNum)
-    this.stops[addressNum] = newAddress;
-    if (addressNum === 0) {
-      this.addMarker(addressNum, newAddress.position, "Pocenta stanica")
-    } else if (addressNum === 4) {
-      this.addMarker(addressNum, newAddress.position, "Krajnja stanica")
-    } else {
-      this.addMarker(addressNum, newAddress.position, "Stanica broj" + addressNum)
-    }
+  private title = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+  })
+
+  constructor(private el: ElementRef,
+              public service: UserRegistrationService,
+              public dialog: MatDialog,
+              private mapService: MapService,
+              private cdr: ChangeDetectorRef,) {
   }
 
+  ngOnInit(): void {
+    this.initMap()
+    this.addCurrentLocation()
+  }
+
+  public addressChanged(newAddress: any, addressNum: string = '') {
+    this.nextPage = false
+    if (addressNum === 'start') {
+      if (this.start.address !== undefined)
+        this.removeMarker(0)
+      this.start = newAddress
+      this.addMarker(0, newAddress.position)
+    } else if (addressNum === 'end') {
+      if (this.start.address === undefined)
+        this.mapService.openErrorDialog("Prvo unesite pocetnu adresu.")
+      else{
+        if (this.end.address !== undefined)
+          this.removeMarker(1)
+        this.end = newAddress
+        this.addMarker(1, newAddress.position)
+      }
+    } else {
+      if (this.start.name === undefined || this.end.name === undefined)
+        this.mapService.openErrorDialog("Prvo unesite pocetnu i krajnju adresu.")
+      else if(newAddress.position !== undefined){
+        this.stops.push(newAddress)
+        this.cdr.detectChanges()
+        this.addMarker(this.stops.length-1, newAddress.position)
+      }
+    }
+
+  }
+
+  public removeAddressFromAdditional(index: number) {
+    this.removeMarker(index)
+    this.stops.splice(index, 1)
+    this.cdr.detectChanges()
+  }
 
   private initMap(): void {
     this.map = L.map('map');
+  }
 
-    var title = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-    })
-    this.map.addLayer(title);
+  private addCurrentLocation(){
+    this.map.addLayer(this.title);
     this.map.setView([45.251787, 19.837155], 19);
     navigator.geolocation.getCurrentPosition(position => {
       const {latitude, longitude} = position.coords;
-      console.log(latitude, longitude)
       this.map.panTo({lat: latitude, lng: longitude});
     }, () => {
       console.log("error")
@@ -68,56 +107,64 @@ export class MapComponent implements OnInit {
     })
   }
 
-  constructor(private el: ElementRef,
-              public service: UserRegistrationService,
-              public dialog: MatDialog,
-              private mapService:MapService) {
-  }
 
-  ngOnInit(): void {
-    this.initMap()
-  }
-
-  addMarker(number: number, coords: any, message: string) {
+  addMarker(number: number, coords: any) {
     let iconOptions = {
       icon: L.icon({
         iconUrl: "assets/startMark.png",
         iconSize: [30, 30]
       })
     }
-    var marker = L.marker([coords.lat, coords.lng], iconOptions).bindPopup(message);
+    var marker = L.marker([coords.lat, coords.lng], iconOptions);
     this.map.addLayer(marker);
     this.map.panTo({lat: coords.lat, lng: coords.lng});
-    this.setMarker(number, marker)
+    if(number === 0)
+      this.start.marker = marker
+    else if(number === 1)
+      this.end.marker = marker
+    else
+      this.stops[this.stops.length-1].marker = marker
   }
 
 
   removeMarker(i: number) {
-    if (this.stops[i].marker !== undefined)
-      if (this.map.hasLayer(this.stops[i].marker))
-        this.map.removeLayer(this.stops[i].marker)
+    var marker:any;
+    if(i === 0)
+      marker = this.start.marker
+    else if(i === 1)
+      marker = this.end.marker
+    else marker = this.stops[i].marker
+
+    this.map.removeLayer(marker)
   }
 
-  updateMarker(i: number, lat: number, lng: number) {
-    this.stops[i].marker.setLatLng({lat, lng});
+  restoreMarkers(){
+    var i = 0
+    if(this.start.position!== undefined)
+      this.addMarker(i, this.start.position)
+    else if(this.end.position!== undefined)
+      this.addMarker(++i, this.end.position)
+    else
+      this.stops.forEach(el => this.addMarker(++i, el.position))
+
   }
 
-  setMarker(i: number, marker: any) {
-    this.stops[i].marker = marker
-  }
-
-  makeAdditionalVisible() {
-    var elem = this.el.nativeElement.querySelectorAll('.additionalAddresses');
-    elem.forEach((el: any) => {
-      return el.classList.remove('additionalStopsHidden');
-    });
-    elem = this.el.nativeElement.querySelector('#additionalButton');
-    elem.classList.add('additionalButtonHidden');
+  removePath(){
+    if(this.route !== undefined)
+    {
+      this.map.eachLayer((layer)=> {
+        this.map.removeLayer(layer);
+      });
+      this.addCurrentLocation()
+      this.restoreMarkers()
+    }
   }
 
   dialogOC(): Promise<any> {
     const dialogRef = this.dialog.open(RoutesDialogComponent);
-    return dialogRef.afterClosed().toPromise().then((value:string)=>{return value})
+    return dialogRef.afterClosed().toPromise().then((value: string) => {
+      return value
+    })
   }
 
   async openRouteDialog() {
@@ -129,60 +176,54 @@ export class MapComponent implements OnInit {
       var matrix: Array<Array<number>> = await firstValueFrom(matrix$);
       var results: number[] = this.mapService.getRouteSums(matrix, combinations, n)
       this.finalStopsOrder = this.mapService.getBestRouteCombination(results, combinations, this.finalStopsOrder)
+      this.reorderAdditionalStops()
     }
     this.showRoutesPathSame()
 
   }
 
   //lng, lat
-  getCoordinates():[number, number][]{
-    var coord:[number, number][] = []
+  getCoordinates(): [number, number][] {
+    var coord: [number, number][] = []
     this.finalStopsOrder.forEach(el => {
       coord.push([el.position.lng, el.position.lat])
     })
     return coord
   }
 
-  getStops(){
-    for(let i = 0; i< this.stops.length;i++){
-      if(this.stops[i].position !== undefined){
-        var s = {} as Stop;
-        var pos = {} as Position;
-        pos.lat = this.stops[i].position.lat;
-        pos.lng = this.stops[i].position.lng;
-        s.position = pos
-        s.address = this.stops[i].address
-        s.name = this.stops[i].name
-        this.finalStopsOrder.push(s)
-      }
+  getAllStops() {
+    this.finalStopsOrder = []
+    this.finalStopsOrder.push(this.start)
+    for (let i = 0; i < this.stops.length; i++) {
+        this.finalStopsOrder.push(this.stops[i])
     }
+    this.finalStopsOrder.push(this.end)
   }
 
   isValid(e: any) {
-    this.allValid = e;
+    this.allValid = e && this.allValid;
   }
 
   showRoutesPathSame() {
+    this.removePath()
     this.mapService.showRoute(this.getCoordinates()).subscribe((res) => {
       this.drive.distance = res.features[0].properties.summary.distance
       this.drive.duration = res.features[0].properties.summary.duration
-      this.drive.stops = this.finalStopsOrder
-      // L.geoJson(res).addTo(this.map)
+      this.drive.stops = this.getRealStops()
+      this.route = L.geoJson(res).addTo(this.map)
       this.map.fitBounds(L.geoJson(res).getBounds())
-      this.map.addLayer(L.geoJson(res))
+      this.route = res
     })
-
   }
 
-
-  showRoute(){
+  showRoute() {
     this.addr1.formsubmit()
     this.addr2.formsubmit()
-    if(this.allValid) {
-      this.getStops()
+    if (this.allValid) {
+      this.getAllStops()
       // if (this.service.isLoggedIn()) {
-      if (true){
-        if(this.finalStopsOrder.length > 2)
+      if (true) {
+        if (this.finalStopsOrder.length > 2)
           this.openRouteDialog()
         else this.showRoutesPathSame()
       } else {
@@ -194,13 +235,63 @@ export class MapComponent implements OnInit {
       this.mapService.openErrorDialog("Adrese nisu unete.")
   }
 
-  openNextPage(){
-    if(this.drive.stops !== undefined){
+  getRealStops(){
+    var s:Stop[] = []
+    var p = {} as Position;
+    p.lat = this.start.position.lat
+    p.lng = this.start.position.lng
+    var st = {} as Stop
+    st.position = p
+    st.name = this.start.name
+    st.address = this.start.address
+    s.push(st)
+    this.finalStopsOrder.forEach(el => {
+      p.lat = el.position.lat
+      p.lng = el.position.lng
+      st.position = p
+      st.name = el.name
+      st.address = el.address
+      s.push(st)
+    })
+    p.lat = this.end.position.lat
+    p.lng = this.end.position.lng
+    st.position = p
+    st.name = this.end.name
+    st.address = this.end.address
+    s.push(st)
+    return s
+  }
+
+  openNextPage() {
+    if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
-      this.drive.price = this.drive.distance*120
+      this.drive.price = this.drive.distance * 120
     }
   }
 
+  private reorderAdditionalStops(){
+    this.stops = this.finalStopsOrder.slice(1,this.finalStopsOrder.length-1)
+  }
+
+  private _reorderItem(fromIndex: number, toIndex: number): void {
+    const itemToBeReordered = this.stops.splice(fromIndex, 1)[0];
+    this.stops.splice(toIndex, 0, itemToBeReordered);
+    this.draggingIndex = toIndex;
+  }
+
+  onDragStart(index: number): void {
+    this.draggingIndex = index;
+  }
+
+  onDragEnter(index: number): void {
+    if (this.draggingIndex !== index) {
+      this._reorderItem(this.draggingIndex, index);
+    }
+  }
+
+  onDragEnd(): void {
+    this.draggingIndex = -1;
+  }
 
 }
 

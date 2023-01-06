@@ -21,8 +21,9 @@ export class AddressItemComponent implements OnInit {
   private noResult:string = 'Nema rezultata pretrage..'
 
   @Input() addressText = '';
-  @Input() removeRequired:boolean = false;
+  @Input() isRequired:boolean = false;
   @Input() showErrors:boolean = false;
+  isRealAddress:boolean = false;
 
   address: MapAddress | undefined;
   @Output() addressChange = new EventEmitter<MapAddress>();
@@ -33,7 +34,7 @@ export class AddressItemComponent implements OnInit {
               public dialog: MatDialog, ) { }
 
   ngOnInit(): void {
-    if(!this.removeRequired){
+    if(this.isRequired){
       this.myControl.setValidators([Validators.required]);
       this.myControl.updateValueAndValidity();
     }
@@ -51,15 +52,23 @@ export class AddressItemComponent implements OnInit {
 
   addressChosen(e:any){
     this.address = e.option.value;
+    this.isRealAddress = true
     this.addressChange.emit(this.address);
   }
 
   changeAddress() {
-    if(this.myControl.value.length % 5 === 0)
+    if(this.myControl.value.length % 5 === 0 && this.myControl.value.length !== 0)
       this.makeRequest()
   }
 
+  remove(){
+    this.myControl.setValue('');
+    this.isRealAddress = false;
+    this.addressChange.emit({} as MapAddress);
+  }
+
   makeRequest(){
+    this.isRealAddress = false
     const places = this.mapService.getHPlatform().getSearchService();
     places.autosuggest({
       at: '45.251787,19.837155',
@@ -95,8 +104,14 @@ export class AddressItemComponent implements OnInit {
 
   formsubmit(){
     this.showErrors = true;
-    if(this.address?.name !== '')
+    if(this.isRealAddress) {
       this.isValid.emit(this.myControl.valid);
+    }
+    else {
+      this.myControl.setValue('')
+      this.myControl.markAllAsTouched()
+      this.isValid.emit(false)
+    }
   }
 
 }

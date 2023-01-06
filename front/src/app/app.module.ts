@@ -46,6 +46,8 @@ import { RoutesDialogComponent } from './dialog-template/routes-dialog/routes-di
 import {MatRadioModule} from '@angular/material/radio';
 import {MapService} from "./service/map.service";
 import { ErrorDialogComponent } from './dialog-template/error-dialog/error-dialog.component';
+import {MatTooltipModule} from "@angular/material/tooltip";
+import { AddressViewComponent } from './address-view/address-view.component';
 
 
 
@@ -85,6 +87,7 @@ const appRoutes: Routes = [
     AdminHomeComponent,
     RoutesDialogComponent,
     ErrorDialogComponent,
+    AddressViewComponent,
   ],
 
 
@@ -108,7 +111,8 @@ const appRoutes: Routes = [
     LeafletModule,
     MatAutocompleteModule,
     MatDialogModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTooltipModule
   ],
   providers: [
     AppService,
