@@ -2,6 +2,7 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+import {MatStepperModule} from '@angular/material/stepper';
 
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
@@ -46,10 +47,14 @@ import { RoutesDialogComponent } from './dialog-template/routes-dialog/routes-di
 import {MatRadioModule} from '@angular/material/radio';
 import {MapService} from "./service/map.service";
 import { ErrorDialogComponent } from './dialog-template/error-dialog/error-dialog.component';
+
 import {MatTooltipModule} from "@angular/material/tooltip";
 import { AddressViewComponent } from './address-view/address-view.component';
+
 import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clients-into-drive.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
+
 
 
 
@@ -69,7 +74,8 @@ const appRoutes: Routes = [
   {path:'clientProfile', component:ProfileViewComponent},
   {path:'driversProfile', component:DriverProfileViewComponent},
   {path:'map', component:MapComponent},
-  {path:'add-clients', component:AddClientsIntoDriveComponent}
+  {path:'add-clients', component:AddClientsIntoDriveComponent},
+  {path: 'make-drive-reservation', component:MakeDriveReservationComponent}
 ]
 
 @NgModule({
@@ -94,6 +100,7 @@ const appRoutes: Routes = [
     ErrorDialogComponent,
     AddressViewComponent,
     AddClientsIntoDriveComponent,
+    MakeDriveReservationComponent,
   ],
 
 
@@ -109,6 +116,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
+    MatStepperModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,

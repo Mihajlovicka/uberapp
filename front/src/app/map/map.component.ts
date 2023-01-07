@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef} from '@angular/core';
+import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit} from '@angular/core';
 import * as L from 'leaflet';
 import {UserRegistrationService} from "../user-registration.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -10,15 +10,32 @@ import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
 import {Drive } from "../model/drive.model";
 import { Stop } from '../model/stop.model';
 
+import {FormBuilder, Validators} from '@angular/forms';
+import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+
 
 L.Icon.Default.imagePath = 'assets/';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.css']
+  styleUrls: ['./map.component.css'],
+  providers: [
+    {
+      provide: STEPPER_GLOBAL_OPTIONS,
+      useValue: {showError: true},
+    },
+  ],
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements AfterViewInit {
+
+
+  firstFormGroup = this._formBuilder.group({
+    firstCtrl: ['', Validators.required],
+  });
+  secondFormGroup = this._formBuilder.group({
+    secondCtrl: ['', Validators.required],
+  });
 
   private map!: L.Map;
 
@@ -55,10 +72,10 @@ export class MapComponent implements OnInit {
               public service: UserRegistrationService,
               public dialog: MatDialog,
               private mapService: MapService,
-              private cdr: ChangeDetectorRef,) {
+              private cdr: ChangeDetectorRef,private _formBuilder: FormBuilder) {
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.initMap()
     this.addCurrentLocation()
   }
