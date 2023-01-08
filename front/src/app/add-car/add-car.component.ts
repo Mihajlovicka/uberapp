@@ -20,6 +20,7 @@ export class AddCarComponent implements OnInit {
 
 
   info: DriverCarInfo = {
+    username:'',
     name: '',
     surname: '',
     email: '',
@@ -41,6 +42,7 @@ export class AddCarComponent implements OnInit {
 
   driversAcc: DriversAccount = {
     user:{
+      username:'',
       name:'',
       surname:'',
       email:'',

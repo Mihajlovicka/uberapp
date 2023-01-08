@@ -9,6 +9,9 @@ public class DriversAccountChange{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String username;
+
     @Column(nullable = false)
     private Long user_changing_id;
     @Column(nullable = false)
@@ -52,8 +55,9 @@ public class DriversAccountChange{
     public DriversAccountChange(){}
 
 
-    public DriversAccountChange(Long id, Long user_changing_id, String name, String surname, String email, String carBrand, String carModel, String carColor, String carPlateNumber, CarBodyType carBodyType, Fuel carFuelType, String picture, String phone, DriverStatus driverStatus) {
+    public DriversAccountChange(Long id, String username,Long user_changing_id, String name, String surname, String email, String carBrand, String carModel, String carColor, String carPlateNumber, CarBodyType carBodyType, Fuel carFuelType, String picture, String phone, DriverStatus driverStatus) {
         this.id = id;
+        this.username = username;
         this.user_changing_id = user_changing_id;
         this.name = name;
         this.surname = surname;
@@ -75,6 +79,14 @@ public class DriversAccountChange{
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getUser_changing_id() {

@@ -15,6 +15,9 @@ import java.util.List;
 public class User implements UserDetails {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private String username;
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
@@ -33,8 +36,9 @@ public class User implements UserDetails {
     private boolean enabled = false;
     public User(){}
 
-    public User(Long id, String name, String surname, String email, String password, Status status, Role role){
+    public User(Long id, String username,String name, String surname, String email, String password, Status status, Role role){
         this.id = id;
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -49,6 +53,12 @@ public class User implements UserDetails {
 
     public void setId(Long id){
         this.id = id;
+    }
+
+    public String getUsername(){return username;}
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName(){
@@ -98,10 +108,7 @@ public class User implements UserDetails {
         return password;
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
+
 
 
     public Timestamp getLastPasswordResetDate() {

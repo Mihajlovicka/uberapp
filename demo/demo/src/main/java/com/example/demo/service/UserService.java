@@ -14,6 +14,7 @@ import com.example.demo.repository.DriversChangeRepository;
 import com.example.demo.repository.DriversRepository;
 import com.example.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -135,7 +136,7 @@ public class UserService {
     public UserDetails loadUserByEmail(String email) throws EmailNotFoundException {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
-            throw new EmailNotFoundException(String.format("No user found with username '%s'.", email));
+            throw new EmailNotFoundException(String.format("No user found with email '%s'.", email));
         } else {
             return user;
         }
@@ -192,6 +193,7 @@ public class UserService {
 
     public ClientsAccount updateClient(ClientsAccount newClient){
         ClientsAccount oldClient = getClientByEmail(newClient.getUser().getEmail());
+        oldClient.getUser().setUsername(newClient.getUser().getUsername());
         oldClient.getUser().setName(newClient.getUser().getName());
         oldClient.getUser().setSurname(newClient.getUser().getSurname());
         oldClient.setPhone(newClient.getPhone());
@@ -234,6 +236,7 @@ public class UserService {
         DriversAccount oldDriver = getDriverByEmail(newDriver.getUser().getEmail());
         DriversAccountChange driversAccountChange = checkChanging(newDriver.getUser().getEmail());
 
+        driversAccountChange.setUsername(newDriver.getUser().getUsername());
         driversAccountChange.setName(newDriver.getUser().getName());
         driversAccountChange.setSurname(newDriver.getUser().getSurname());
         driversAccountChange.setPhone(newDriver.getPhone());
@@ -258,6 +261,7 @@ public class UserService {
 
     public List<ClientsAccount> getAllActiveCliens(){
         //treba samo izbaciti trenutno ulogovanog ukoliko je trenutno ulogovani klijent
+
         return clientsRepository.findAllByUserStatus(Status.ACTIVE);
     }
 }

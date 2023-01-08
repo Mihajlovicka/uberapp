@@ -12,6 +12,7 @@ import { User, Status, Role } from '../model/user.model';
 export class RegisterComponent implements OnInit {
 
   registerForm: RegisterForm = {
+    username:'hehe',
     name:'',
     surname:'',
     email:'',
@@ -31,6 +32,7 @@ export class RegisterComponent implements OnInit {
 
   clientsAccount: ClientsAccount = {
     user:{
+      username:'',
       name:'',
       surname:'',
       email:'',

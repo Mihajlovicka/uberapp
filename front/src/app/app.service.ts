@@ -31,6 +31,7 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 
 
   private emptyDriverCar: DriverCarInfo = {
+    username:'',
     name: '',
     surname: '',
     email: '',

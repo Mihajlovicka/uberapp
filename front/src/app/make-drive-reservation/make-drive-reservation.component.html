@@ -5,20 +5,8 @@
    <app-map></app-map>
      
     </mat-step>
-    <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
-      <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Fill out your address</ng-template>
-        <mat-form-field appearance="fill">
-          <mat-label>Address</mat-label>
-          <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
-                 required>
-        </mat-form-field>
-        <div>
-          <p>Go to a different step to see the error state</p>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
+    <mat-step>
+      <app-add-clients-into-drive></app-add-clients-into-drive>
     </mat-step>
     <mat-step>
       <ng-template matStepLabel>Done</ng-template>

@@ -15,6 +15,7 @@ export enum Role {
 
 
 interface UserInterface{
+    username: string;
     name: string;
     surname: string;
     email: string;
@@ -24,6 +25,7 @@ interface UserInterface{
 }
 
 export class User implements UserInterface{
+    public username: string;
     public name: string;
     public surname: string;
     public email: string;
@@ -31,6 +33,7 @@ export class User implements UserInterface{
     public role: Role;
 
     constructor(userInt: UserInterface){
+        this.username = userInt.username;
         this.name = userInt.name;
         this.surname = userInt.surname;
         this.email = userInt.email;

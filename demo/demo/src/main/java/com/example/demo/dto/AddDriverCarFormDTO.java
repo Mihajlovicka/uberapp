@@ -3,6 +3,8 @@ package com.example.demo.dto;
 import com.example.demo.model.Role;
 
 public class AddDriverCarFormDTO {
+
+    private String username;
     private String name;
     private String surname;
     private String email;
@@ -15,7 +17,8 @@ public class AddDriverCarFormDTO {
 
     public AddDriverCarFormDTO(){}
 
-    public AddDriverCarFormDTO(String name, String surname, String email, String phone, String password, String checkPassword, String role, CarDTO car){
+    public AddDriverCarFormDTO(String username, String name, String surname, String email, String phone, String password, String checkPassword, String role, CarDTO car){
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -24,6 +27,14 @@ public class AddDriverCarFormDTO {
         this.checkPassword = checkPassword;
         this.role = role;
         this.car = car;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

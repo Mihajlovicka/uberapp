@@ -3,6 +3,8 @@ package com.example.demo.dto;
 import com.example.demo.model.Role;
 
 public class RegisterFormDTO {
+
+    private String username;
     private String name;
     private String surname;
     private String email;
@@ -17,7 +19,8 @@ public class RegisterFormDTO {
 
     public RegisterFormDTO(){}
 
-    public RegisterFormDTO(String name, String surname, String email, String phone, AddressDTO address, String password, String checkPassword, String role, String bankAccountNumber){
+    public RegisterFormDTO(String username, String name, String surname, String email, String phone, AddressDTO address, String password, String checkPassword, String role, String bankAccountNumber){
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
@@ -27,6 +30,14 @@ public class RegisterFormDTO {
         this.checkPassword = checkPassword;
         this.role = role;
         this.bankAccountNumber = bankAccountNumber;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

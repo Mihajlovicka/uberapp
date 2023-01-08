@@ -21,6 +21,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -48,6 +49,7 @@ public class UserController {
         ClientsAccount clientsAccount = new ClientsAccount();
 
 
+        user.setUsername(registerFormDTO.getUsername());
         user.setName(registerFormDTO.getName());
         user.setSurname(registerFormDTO.getSurname());
         user.setEmail(registerFormDTO.getEmail());
@@ -112,6 +114,7 @@ public class UserController {
         ClientsAccount clientsAccount = new ClientsAccount();
         clientsAccount.setUser(new User());
         clientsAccount.setAddress(new Address());
+        clientsAccount.getUser().setUsername(clientAccountDTO.getUser().getUsername());
         clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
         clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
         clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
@@ -137,6 +140,7 @@ public class UserController {
         DriversAccount driversAccount = new DriversAccount();
         driversAccount.setUser(new User());
         driversAccount.setCar(new Car());
+        driversAccount.getUser().setUsername(driverAccountDTO.getUser().getUsername());
         driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
         driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
         driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
@@ -165,6 +169,7 @@ public class UserController {
         Car car = new Car();
         DriversAccount driverAccount = new DriversAccount();
 
+        user.setUsername(addDriverCarFormDTO.getUsername());
         user.setName(addDriverCarFormDTO.getName());
         user.setSurname(addDriverCarFormDTO.getSurname());
         user.setEmail(addDriverCarFormDTO.getEmail());
@@ -217,6 +222,7 @@ public class UserController {
 
     @GetMapping(value="api/getAllActiveClients")
     public ResponseEntity getAllActiveClients(){
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveCliens()), HttpStatus.OK);
     }
 

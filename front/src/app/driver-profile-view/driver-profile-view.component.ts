@@ -19,6 +19,7 @@ export class DriverProfileViewComponent implements OnInit {
   
   driversAccount : DriversAccount = {
     user:{
+      username:'',
       name:'SRRRRR',
       surname:'',
       email:'',

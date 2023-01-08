@@ -13,6 +13,7 @@ import { AppService } from '../app.service';
 export class AddDriverComponent implements OnInit {
 
   info: DriverCarInfo = {
+    username:'',
     name: '',
     surname: '',
     email: '',

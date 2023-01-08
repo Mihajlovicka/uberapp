@@ -73,9 +73,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			// ovo nije slucaj kao sa sesijama koje se cuvaju na serverskoj strani - STATEFULL aplikacija
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
+
 			// sve neautentifikovane zahteve obradi uniformno i posalji 401 gresku
 			.exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
-
 			// svim korisnicima dopusti da pristupe sledecim putanjama:
 			.authorizeRequests().antMatchers("/auth/**").permitAll()		// /auth/**
 								.antMatchers("/h2-console/**").permitAll()	// /h2-console/** ako se koristi H2 baza)

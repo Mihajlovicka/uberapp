@@ -20,6 +20,7 @@ export class AddClientsIntoDriveComponent implements OnInit {
   userCtrl = new FormControl('');
   filteredUsers: Observable<ClientsAccount[]>;
 
+ 
 
   constructor(private service: AppService) {
     this.filteredUsers = this.userCtrl.valueChanges.pipe(
@@ -32,6 +33,11 @@ export class AddClientsIntoDriveComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.users.filter(user => user.user.email.toLowerCase().includes(filterValue));
+  }
+
+  clientChosen(e:any){
+  
+    console.log(this.userCtrl.value)
   }
 
   ngOnInit(): void {

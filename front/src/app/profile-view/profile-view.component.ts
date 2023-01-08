@@ -18,6 +18,7 @@ export class ProfileViewComponent implements OnInit {
   
   clientsAccount: ClientsAccount = {
     user:{
+      username:'',
       name:'SRRRRR',
       surname:'',
       email:'',

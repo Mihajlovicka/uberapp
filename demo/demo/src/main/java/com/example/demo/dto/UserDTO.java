@@ -4,6 +4,8 @@ import com.example.demo.model.Role;
 import com.example.demo.model.Status;
 
 public class UserDTO {
+
+    private String username;
     private String name;
     private String surname;
     private String email;
@@ -15,12 +17,21 @@ public class UserDTO {
 
     public UserDTO(){}
 
-    public UserDTO(String name, String surname, String email, Status status, Role role){
+    public UserDTO(String username, String name, String surname, String email, Status status, Role role){
+        this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.status = status;
         this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

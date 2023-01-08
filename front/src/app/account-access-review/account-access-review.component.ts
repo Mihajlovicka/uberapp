@@ -15,6 +15,7 @@ export class AccountAccessReviewComponent implements OnInit {
 
   clientsAccount: ClientsAccount={
     user:{
+      username:'',
       email:'',
       role:Role.ROLE_CLIENT,
       name:'',
