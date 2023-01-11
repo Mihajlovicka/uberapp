@@ -61,6 +61,7 @@ public class UserService {
         final Address address = addressService.save(clientsAccount.getAddress());
         clientsAccount.setAddress(address);
 
+        clientsAccount.getUser().setUsername(clientsAccount.getUser().getEmail());
         clientsAccount.getUser().setStatus(Status.NOTACTIVATED);
         final User user = userRepository.save(clientsAccount.getUser());
         clientsAccount.setUser(user);
@@ -84,12 +85,14 @@ public class UserService {
         final Car car = carService.save(driversAccount.getCar());
         driversAccount.setCar(car);
 
+        driversAccount.getUser().setUsername(driversAccount.getUser().getEmail());
         driversAccount.getUser().setStatus(Status.ACTIVE);
         driversAccount.getUser().setPassword(passwordEncoder.encode(driversAccount.getUser().getPassword()));
         driversAccount.getUser().setEnabled(true);
         final User user = userRepository.save(driversAccount.getUser());
 
         driversAccount.setUser(user);
+        driversAccount.setDriverStatus(DriverStatus.AVAILABLE);
 
         return driversRepository.save(driversAccount);
     }
@@ -259,9 +262,24 @@ public class UserService {
         return oldDriver;
     }
 
-    public List<ClientsAccount> getAllActiveCliens(){
-        //treba samo izbaciti trenutno ulogovanog ukoliko je trenutno ulogovani klijent
+    public List<ClientsAccount> getAllActiveClients(){
 
-        return clientsRepository.findAllByUserStatus(Status.ACTIVE);
+        List<ClientsAccount> all = clientsRepository.findAllByUserStatus(Status.ACTIVE);
+
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){
+            User logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            if(logged.getRole().getName().equals("ROLE_CLIENT")){
+                for (ClientsAccount client:
+                     all) {
+                    if(client.getUser().getEmail().equals(logged.getEmail())){
+                        all.remove(client);
+                        return all;
+                    }
+                }
+            }
+        }
+
+        return all;
+
     }
 }

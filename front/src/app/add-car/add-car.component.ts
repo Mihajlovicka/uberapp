@@ -17,6 +17,7 @@ export class AddCarComponent implements OnInit {
 
   selectedFuelType:string='';
   selectedBodyType:string='';
+  selectedNumOfSeats:string='';
 
 
   info: DriverCarInfo = {
@@ -34,7 +35,8 @@ export class AddCarComponent implements OnInit {
       color:'',
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
-      fuelType: Fuel.GASOLINE
+      fuelType: Fuel.GASOLINE,
+      numOfSeats:5
 
     }
 
@@ -57,7 +59,8 @@ export class AddCarComponent implements OnInit {
       color:'',
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
-      fuelType: Fuel.GASOLINE
+      fuelType: Fuel.GASOLINE,
+      numOfSeats:5
     },
     driverStatus: DriverStatus.AVAILABLE
   }
@@ -68,6 +71,7 @@ export class AddCarComponent implements OnInit {
       this.info = data;
       this.selectedBodyType = this.info.car.bodyType;
       this.selectedFuelType = this.info.car.fuelType;
+      this.selectedNumOfSeats = this.info.car.numOfSeats.toString();
 
     });
   }
@@ -105,6 +109,8 @@ export class AddCarComponent implements OnInit {
     if(this.selectedBodyType === 'HATCHBACK')this.info.car.bodyType=CarBodyType.HATCHBACK;
   }
 
+ 
+
  //fja za kad idemo nazad i da ona sacuiva u servisu te podatke(znaci samo set data postavi na ovo trenutno odavde)
   back(){
 
@@ -133,6 +139,7 @@ export class AddCarComponent implements OnInit {
 
     this.mappBodyOptions();
     this.mappFuelOptions();
+    this.info.car.numOfSeats=parseInt(this.selectedNumOfSeats);
 
     this.capitalizeForm();
 

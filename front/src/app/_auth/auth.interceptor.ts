@@ -53,7 +53,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return !req.headers.has('Authorization') ? req.clone(
       {
         setHeaders:{
-          Authorization:`Barer ${token}`
+          Authorization:`Bearer ${token}`
         }
       }
     ) : req;

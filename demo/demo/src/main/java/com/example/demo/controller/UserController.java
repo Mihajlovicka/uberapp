@@ -49,7 +49,7 @@ public class UserController {
         ClientsAccount clientsAccount = new ClientsAccount();
 
 
-        user.setUsername(registerFormDTO.getUsername());
+        //user.setUsername(registerFormDTO.getUsername());
         user.setName(registerFormDTO.getName());
         user.setSurname(registerFormDTO.getSurname());
         user.setEmail(registerFormDTO.getEmail());
@@ -114,7 +114,7 @@ public class UserController {
         ClientsAccount clientsAccount = new ClientsAccount();
         clientsAccount.setUser(new User());
         clientsAccount.setAddress(new Address());
-        clientsAccount.getUser().setUsername(clientAccountDTO.getUser().getUsername());
+        clientsAccount.getUser().setUsername(clientAccountDTO.getUser().getEmail());
         clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
         clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
         clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
@@ -140,7 +140,7 @@ public class UserController {
         DriversAccount driversAccount = new DriversAccount();
         driversAccount.setUser(new User());
         driversAccount.setCar(new Car());
-        driversAccount.getUser().setUsername(driverAccountDTO.getUser().getUsername());
+        driversAccount.getUser().setUsername(driverAccountDTO.getUser().getEmail());
         driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
         driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
         driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
@@ -153,6 +153,7 @@ public class UserController {
         driversAccount.getCar().setModel(driverAccountDTO.getCar().getModel());
         driversAccount.getCar().setFuelType(driverAccountDTO.getCar().getFuelType());
         driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
+        driversAccount.getCar().setNumOfSeats(driverAccountDTO.getCar().getNumOfSeats());
         driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
@@ -169,7 +170,7 @@ public class UserController {
         Car car = new Car();
         DriversAccount driverAccount = new DriversAccount();
 
-        user.setUsername(addDriverCarFormDTO.getUsername());
+        //user.setUsername(addDriverCarFormDTO.getUsername());
         user.setName(addDriverCarFormDTO.getName());
         user.setSurname(addDriverCarFormDTO.getSurname());
         user.setEmail(addDriverCarFormDTO.getEmail());
@@ -183,6 +184,7 @@ public class UserController {
         car.setPlateNumber(addDriverCarFormDTO.getCar().getPlateNumber());
         car.setFuelType(addDriverCarFormDTO.getCar().getFuelType());
         car.setBodyType(addDriverCarFormDTO.getCar().getBodyType());
+        car.setNumOfSeats(addDriverCarFormDTO.getNumOfSeats());
 
         driverAccount.setUser(user);
         driverAccount.setDriverStatus(DriverStatus.BUSY);
@@ -222,8 +224,7 @@ public class UserController {
 
     @GetMapping(value="api/getAllActiveClients")
     public ResponseEntity getAllActiveClients(){
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveCliens()), HttpStatus.OK);
+        return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveClients()), HttpStatus.OK);
     }
 
 }

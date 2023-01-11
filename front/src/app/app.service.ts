@@ -45,7 +45,8 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
       color: '',
       plateNumber: '',
       bodyType: CarBodyType.HATCHBACK,
-      fuelType: Fuel.GASOLINE
+      fuelType: Fuel.GASOLINE,
+      numOfSeats:5
 
     }
   }

@@ -27,10 +27,13 @@ public class Car {
     @Column(nullable = true)
     private Fuel fuelType;
 
+    @Column(nullable=false)
+    private int numOfSeats;
+
 
    public Car(){}
 
-    public Car(Long id, String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType){
+    public Car(Long id, String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType, int numOfSeats){
        this.id = id;
        this.brand = brand;
        this.model = model;
@@ -38,6 +41,7 @@ public class Car {
        this.plateNumber = plateNumber;
        this.bodyType = bodyType;
        this.fuelType = fuelType;
+       this.numOfSeats = numOfSeats;
     }
 
     public Long getId() {
@@ -94,5 +98,13 @@ public class Car {
 
     public void setFuelType(Fuel fuelType) {
         this.fuelType = fuelType;
+    }
+
+    public int getNumOfSeats() {
+        return numOfSeats;
+    }
+
+    public void setNumOfSeats(int numOfSeats) {
+        this.numOfSeats = numOfSeats;
     }
 }

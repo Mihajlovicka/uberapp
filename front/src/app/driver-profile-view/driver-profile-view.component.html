@@ -135,6 +135,20 @@
                         
                           </div>
                           <hr>
+
+                          <div class="row gx-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="seats">Broj sedista</label>
+                              <select disabled="{{disabled}}" class="form-control" name="seats" [(ngModel)]="driversAccount.car.numOfSeats">
+                                <option>5</option>
+                                <option>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                              </select>
+                            </div>
+
+                          </div>
                         
                         <!-- Form Row        -->
                         

@@ -27,7 +27,8 @@ export class AddDriverComponent implements OnInit {
       color:'',
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
-      fuelType: Fuel.GASOLINE
+      fuelType: Fuel.GASOLINE,
+      numOfSeats:5
 
     }
 

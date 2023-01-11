@@ -16,13 +16,16 @@ public class CarDTO {
 
     private Fuel fuelType;
 
-    public CarDTO(String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType){
+    private int numOfSeats;
+
+    public CarDTO(String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType, int numOfSeats){
         this.brand = brand;
         this.model = model;
         this.color = color;
         this.plateNumber = plateNumber;
         this.bodyType = bodyType;
         this.fuelType = fuelType;
+        this.numOfSeats = numOfSeats;
     }
 
     public CarDTO(){}
@@ -73,5 +76,13 @@ public class CarDTO {
 
     public void setFuelType(Fuel fuelType) {
         this.fuelType = fuelType;
+    }
+
+    public int getNumOfSeats() {
+        return numOfSeats;
+    }
+
+    public void setNumOfSeats(int numOfSeats) {
+        this.numOfSeats = numOfSeats;
     }
 }

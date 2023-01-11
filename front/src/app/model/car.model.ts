@@ -19,6 +19,7 @@ interface CarInterface{
     plateNumber: string;
     bodyType: CarBodyType;
     fuelType: Fuel;
+    numOfSeats:number;
 }
 
 export class Car implements CarInterface{
@@ -28,6 +29,7 @@ export class Car implements CarInterface{
     public plateNumber: string;
     public bodyType: CarBodyType;
     public fuelType: Fuel;
+    public numOfSeats: number;
 
     constructor(carInt: CarInterface){
         this.brand = carInt.brand;
@@ -36,5 +38,6 @@ export class Car implements CarInterface{
         this.plateNumber = carInt.plateNumber;
         this.bodyType = carInt.bodyType;
         this.fuelType = carInt.fuelType;
+        this.numOfSeats = carInt.numOfSeats;
     }
 }

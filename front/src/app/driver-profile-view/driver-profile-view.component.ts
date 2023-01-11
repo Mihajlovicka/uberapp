@@ -34,7 +34,8 @@ export class DriverProfileViewComponent implements OnInit {
       color:'',
       plateNumber:'',
       bodyType: CarBodyType.COUPE,
-      fuelType: Fuel.AUTOGAS
+      fuelType: Fuel.AUTOGAS,
+      numOfSeats:5
     },
     driverStatus: DriverStatus.AVAILABLE
   }

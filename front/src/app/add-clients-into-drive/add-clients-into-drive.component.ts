@@ -19,6 +19,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
   users: ClientsAccount[] = [];
   userCtrl = new FormControl('');
   filteredUsers: Observable<ClientsAccount[]>;
+  selectedClients: ClientsAccount[]|any=[];
+ 
 
  
 
@@ -32,13 +34,45 @@ export class AddClientsIntoDriveComponent implements OnInit {
   private _filterUsers(value: string): ClientsAccount[] {
     const filterValue = value.toLowerCase();
 
-    return this.users.filter(user => user.user.email.toLowerCase().includes(filterValue));
+    return this.users.filter(user => user.user.email.toLowerCase().includes(filterValue) || user.user.name.toLowerCase().includes(filterValue) || user.user.surname.toLowerCase().includes(filterValue));
+  }
+
+  isSelected(client:string): boolean{
+  
+    for(let i = 0; i<this.selectedClients.length; i++){
+      if(this.selectedClients[i].user.email === client) return true;
+    }
+
+     return false;
+  }
+
+  addSelected(client: string){
+
+    if(!this.isSelected(client)){
+     
+
+      this.selectedClients.push(this.users.find(user => user.user.email === client));
+      }
+    
+    else{
+      alert("Vec ga imas majmune :D")
+    }
+    
+
   }
 
   clientChosen(e:any){
-  
-    console.log(this.userCtrl.value)
-  }
+    if(this.selectedClients.length>7){
+      alert("Ne moze dalje druuze");
+    }
+    else{
+     
+      this.addSelected(this.userCtrl.value);
+         
+    }
+      
+
+      }
 
   ngOnInit(): void {
     this.loadAllClients();
@@ -48,8 +82,12 @@ export class AddClientsIntoDriveComponent implements OnInit {
     this.service.getAllClients().subscribe((resp: ClientsAccount[]) => {
      
       this.users = resp;
-      console.log(resp);
+    
     })
+  }
+
+  removeClient(client: ClientsAccount){
+    this.selectedClients.splice(this.selectedClients.indexOf(client), 1)
   }
 
 }

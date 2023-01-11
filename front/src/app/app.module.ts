@@ -54,6 +54,7 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clients-into-drive.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
+import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
 
 
 
@@ -101,6 +102,7 @@ const appRoutes: Routes = [
     AddressViewComponent,
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
+    SelectVehicleTypeComponent,
   ],
 
 

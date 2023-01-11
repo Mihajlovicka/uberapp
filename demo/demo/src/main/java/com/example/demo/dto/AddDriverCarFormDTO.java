@@ -15,9 +15,11 @@ public class AddDriverCarFormDTO {
     private String role;
     private CarDTO car;
 
+    private int numOfSeats;
+
     public AddDriverCarFormDTO(){}
 
-    public AddDriverCarFormDTO(String username, String name, String surname, String email, String phone, String password, String checkPassword, String role, CarDTO car){
+    public AddDriverCarFormDTO(String username, String name, String surname, String email, String phone, String password, String checkPassword, String role, CarDTO car, int numOfSeats){
         this.username = username;
         this.name = name;
         this.surname = surname;
@@ -27,6 +29,7 @@ public class AddDriverCarFormDTO {
         this.checkPassword = checkPassword;
         this.role = role;
         this.car = car;
+        this.numOfSeats = numOfSeats;
     }
 
     public String getUsername() {
@@ -99,5 +102,13 @@ public class AddDriverCarFormDTO {
 
     public void setCar(CarDTO car) {
         this.car = car;
+    }
+
+    public int getNumOfSeats() {
+        return numOfSeats;
+    }
+
+    public void setNumOfSeats(int numOfSeats) {
+        this.numOfSeats = numOfSeats;
     }
 }

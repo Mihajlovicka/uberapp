@@ -55,6 +55,22 @@
 
   </div>
 
+  <div class="row">
+    <div class="form-group col-md-6">
+      <label for="seats">Broj sedista</label>
+      <select class="form-control" name="seats" [(ngModel)]="selectedNumOfSeats">
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option>9</option>
+      </select>
+    
+    
+    </div>
+
+  </div>
+
 
 
   <button type="button" class="btn btn-secondary" id="backButton" (click)="back()">
