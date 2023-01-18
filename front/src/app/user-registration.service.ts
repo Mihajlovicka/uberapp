@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Observable} from "rxjs";
+import {catchError, Observable} from "rxjs";
 import {AppService} from "./app.service";
+import {ClientsAccount} from "./model/clientsAccount.model";
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +14,7 @@ export class UserRegistrationService {
   requestHeader = new HttpHeaders({'No-Auth':'True'});
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private service: AppService) { }
 
   public registerConfirm(email: string | null): Observable<any> {
     const httpOptions : Object = {
@@ -28,7 +29,9 @@ export class UserRegistrationService {
     }
 
     public login(loginData: any){
-      return this.http.post(this.PATH_OF_API + 'auth/login', loginData, {headers: this.requestHeader});
+      return this.http.post(this.PATH_OF_API + 'auth/login', loginData, {headers: this.requestHeader}).pipe(
+        catchError(this.service.handleError<any>("Korisnicko ime ili lozinka nisu ispravni."))
+      );
     }
 
 

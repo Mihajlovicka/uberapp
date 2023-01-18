@@ -16,7 +16,7 @@
                           (addressChange)="addressChanged($event, 'start')"></app-address-item>
       </div>
 
-      <div>
+      <div *ngIf="service.isLoggedIn()">
         <div class="row">
           <div class="example-button-row">
             <div *ngIf="!showAdditional; then thenBlock else elseBlock"></div>

@@ -5,14 +5,13 @@ interface PositionInterface {
   lng:number
 }
 
-export class Position implements PositionInterface{
+export class Position{
   lat:number
   lng:number
 
-  constructor(positionI:PositionInterface) {
-    this.lat = positionI.lat
-    this.lng = positionI.lng
-
+  constructor( lat:number, lng:number) {
+    this.lat = lat
+    this.lng = lng
   }
 
 }
@@ -25,19 +24,17 @@ interface MapAddressInterface {
   marker:L.Marker
 }
 
-export class MapAddress implements MapAddressInterface{
+export class MapAddress{
   name: string
   position: Position
   address: string
-  number:string
-  marker:L.Marker
+  marker:L.Marker|undefined
 
-  constructor(mapI:MapAddressInterface) {
-    this.name = mapI.name
-    this.position = mapI.position
-    this.address = mapI.address
-    this.number = mapI.number
-    this.marker = mapI.marker
+  constructor(name:string, position:Position, address:string, marker:L.Marker|undefined) {
+    this.name = name
+    this.position = position
+    this.address = address
+    this.marker = marker
 
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, NgForm, Validators} from '@angular/forms';
 import {UserRegistrationService} from "../user-registration.service";
 import {Router} from "@angular/router";
@@ -9,7 +9,7 @@ import {Router} from "@angular/router";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  username = new FormControl('', [Validators.required, Validators.email]);
+  username = new FormControl('',[Validators.required, Validators.email])
   password = new FormControl('', [Validators.required]);
   hide = true;
 
@@ -23,24 +23,25 @@ export class LoginComponent implements OnInit {
   constructor(
     private service: UserRegistrationService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
   }
 
-  login(loginForm: NgForm){
+  login(loginForm: NgForm) {
     this.service.login(loginForm.value).subscribe(
-      (response:any) => {
+      (response: any) => {
         this.service.setToken(response.accessToken);
         this.service.setRole(response.role);
-        if(response.role === 'ROLE_CLIENT'){
+        if (response.role === 'ROLE_CLIENT') {
           this.router.navigate(['/client'])
-        }
-        else if(response.role === 'ROLE_DRIVER'){
+        } else if (response.role === 'ROLE_DRIVER') {
           this.router.navigate(['/driver'])
+        } else if (response.role === 'ROLE_ADMINISTRATOR') {
+          this.router.navigate(['/admin'])
         }
-        },
-      (error) => {console.log(error);}
+      }
     );
   }
 

@@ -5,14 +5,14 @@ export interface StopInterface{
     name:string
   }
 
-export class Stop implements StopInterface{
+export class Stop{
     public address: string;
     public position: Position;
     public name: string;
 
-    constructor(stopInt: StopInterface){
-        this.address = stopInt.address;
-        this.position = stopInt.position;
-        this.name = stopInt.name;
+    constructor(address:string, position:Position, name:string){
+        this.address = address
+        this.position = position;
+        this.name = name;
     }
 }

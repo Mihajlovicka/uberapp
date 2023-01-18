@@ -21,6 +21,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -222,6 +223,7 @@ public class UserController {
         return new ResponseEntity(userConverter.toDTO(client), HttpStatus.OK);
     }
 
+//    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @GetMapping(value="api/getAllActiveClients")
     public ResponseEntity getAllActiveClients(){
         return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveClients()), HttpStatus.OK);

@@ -9,16 +9,13 @@
       <mat-form-field appearance="fill">
         <mat-label >Unesite email</mat-label>
         <input ngModel matInput name="username" type="email" placeholder="primer@gmail.com" required>
-<!--        <mat-error *ngIf="email.invalid && email.hasError('required')">Ovo polje je obavezno</mat-error>-->
+        <mat-error *ngIf="username.invalid && username.hasError('required')">Ovo polje je obavezno</mat-error>
         <mat-error *ngIf="username.invalid && username.hasError('email')">Email nije u ispravnom formatu</mat-error>
       </mat-form-field>
       <mat-form-field appearance="fill">
         <mat-label>Unesite sifru</mat-label>
         <input ngModel matInput name="password" [type]="hide ? 'password' : 'text'" required>
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Sakri sifru'"
-                [attr.aria-pressed]="hide">
-          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
+        <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         <mat-error *ngIf="password.invalid">Ovo polje je obavezno</mat-error>
       </mat-form-field>
 

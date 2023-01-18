@@ -69,7 +69,7 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
         )
       }
 
-      
+
 
       acceptBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount>{
         return this.http.post<ClientsAccount>(`${this.bankUrlAccept}`, client, this.httpOptions).pipe(
@@ -82,16 +82,16 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
         return this.http.get<ClientsAccount[]>(`${this.allActiveClients}`).pipe(catchError(this.handleError<ClientsAccount[]>()));
       }
 
- 
-   
+
+
       public getClient(email:string): Observable<ClientsAccount>{
-        
+
         return this.http.get<ClientsAccount>(`${this.getClientUrl+email}`).pipe(
           catchError(this.handleError<ClientsAccount>()));
       }
-      
+
       public getDriver(email:string): Observable<DriversAccount>{
-        
+
         return this.http.get<DriversAccount>(`${this.getDriverUrl+email}`).pipe(
           catchError(this.handleError<DriversAccount>()));
       }

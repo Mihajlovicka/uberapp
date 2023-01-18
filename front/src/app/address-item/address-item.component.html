@@ -10,6 +10,6 @@
         {{option.name}}
       </mat-option>
     </mat-autocomplete>
-    <mat-error *ngIf="(myControl.errors?.['required'] && showErrors) || (showErrors && !isRealAddress)">Ovo polje je obavezno</mat-error>
+    <mat-error *ngIf="(myControl.errors?.['required'] && myControl.touched && ((showErrors) || (!isRealAddress)))">Ovo polje je obavezno</mat-error>
   </mat-form-field>
 </form>

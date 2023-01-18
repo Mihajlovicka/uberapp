@@ -22,7 +22,7 @@ import { DriverHomeComponent } from './driver-home/driver-home.component';
 import { ForbiddenComponent } from './forbidden/forbidden.component';
 
 
-import { MatFormFieldModule} from '@angular/material/form-field';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';

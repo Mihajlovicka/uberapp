@@ -51,6 +51,8 @@ export class AddressItemComponent implements OnInit {
   }
 
   addressChosen(e:any){
+    if(e.option.value === '')
+      return;
     this.address = e.option.value;
     this.isRealAddress = true
     this.addressChange.emit(this.address);
@@ -64,7 +66,7 @@ export class AddressItemComponent implements OnInit {
   remove(){
     this.myControl.setValue('');
     this.isRealAddress = false;
-    this.addressChange.emit({} as MapAddress);
+    this.addressChange.emit(undefined);
   }
 
   makeRequest(){
@@ -78,14 +80,8 @@ export class AddressItemComponent implements OnInit {
         this.options = []
         if(data.items.length !== 0){
           data.items.forEach((el: any) => {
-            var pos = {} as Position;
-            pos.lat = el.position.lat;
-            pos.lng = el.position.lng;
-            var address = {} as MapAddress;
-            address.name = el.title
-            address.position = pos
-            address.address = el.address.label
-            this.options.push(address)
+            this.options.push(new MapAddress(el.title, new Position(el.position.lat, el.position.lng),
+              el.address,undefined))
           })}
         this.filteredOptions = this.myControl.valueChanges.pipe(
           startWith(''),

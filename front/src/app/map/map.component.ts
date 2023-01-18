@@ -7,8 +7,8 @@ import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dia
 import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
 import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
-import {Drive } from "../model/drive.model";
-import { Stop } from '../model/stop.model';
+import {Drive} from "../model/drive.model";
+import {Stop} from '../model/stop.model';
 
 import {FormBuilder, Validators} from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
@@ -39,8 +39,8 @@ export class MapComponent implements AfterViewInit {
 
   private map!: L.Map;
 
-  private start: MapAddress = {} as MapAddress
-  private end: MapAddress = {} as MapAddress
+  private start: MapAddress | undefined
+  private end: MapAddress | undefined
   public stops: MapAddress[] = [];
   private finalStopsOrder: MapAddress[] = []
 
@@ -50,11 +50,10 @@ export class MapComponent implements AfterViewInit {
 
   public nextPage: boolean = false;
   public showAdditional: boolean = false
-  
-  private route: any = undefined
-  private routePopupText:string = 'Odabrana putanja'
 
-  private drive:Drive = {
+  private route: any = undefined
+
+  private drive: Drive = {
     stops: [],
     distance: 0,
     duration: 0,
@@ -72,7 +71,7 @@ export class MapComponent implements AfterViewInit {
               public service: UserRegistrationService,
               public dialog: MatDialog,
               private mapService: MapService,
-              private cdr: ChangeDetectorRef,private _formBuilder: FormBuilder) {
+              private cdr: ChangeDetectorRef, private _formBuilder: FormBuilder) {
   }
 
   ngAfterViewInit(): void {
@@ -83,26 +82,27 @@ export class MapComponent implements AfterViewInit {
   public addressChanged(newAddress: any, addressNum: string = '') {
     this.nextPage = false
     if (addressNum === 'start') {
-      if (this.start.address !== undefined)
+      if (this.start) {
         this.removeMarker(0)
-      this.start = newAddress
-      this.addMarker(0, newAddress.position)
+      }
+      if(newAddress)
+      {this.start = newAddress
+      this.addMarker(0, newAddress.position)}
     } else if (addressNum === 'end') {
-      if (this.start.address === undefined)
-        this.mapService.openErrorDialog("Prvo unesite pocetnu adresu.")
-      else{
-        if (this.end.address !== undefined)
-          this.removeMarker(1)
+      if (this.end) {
+        this.removeMarker(1)
+      }
+      if(newAddress) {
         this.end = newAddress
         this.addMarker(1, newAddress.position)
       }
     } else {
-      if (this.start.name === undefined || this.end.name === undefined)
-        this.mapService.openErrorDialog("Prvo unesite pocetnu i krajnju adresu.")
-      else if(newAddress.position !== undefined){
+      this.addr1.formsubmit()
+      this.addr2.formsubmit()
+      if (this.allValid && newAddress && newAddress.position !== undefined) {
         this.stops.push(newAddress)
         this.cdr.detectChanges()
-        this.addMarker(this.stops.length-1, newAddress.position)
+        this.addMarker(this.stops.length - 1, newAddress.position)
       }
     }
 
@@ -116,11 +116,11 @@ export class MapComponent implements AfterViewInit {
 
   private initMap(): void {
     this.map = L.map('map');
-  }
-
-  private addCurrentLocation(){
     this.map.addLayer(this.title);
     this.map.setView([45.251787, 19.837155], 19);
+  }
+
+  private addCurrentLocation() {
     navigator.geolocation.getCurrentPosition(position => {
       const {latitude, longitude} = position.coords;
       this.map.panTo({lat: latitude, lng: longitude});
@@ -138,50 +138,48 @@ export class MapComponent implements AfterViewInit {
     let iconOptions = {
       icon: L.icon({
         iconUrl: "assets/startMark.png",
-        iconSize: [30, 30]
+        iconSize: [30, 30],
+        iconAnchor: [15, 30],
       })
     }
     var marker = L.marker([coords.lat, coords.lng], iconOptions);
     this.map.addLayer(marker);
     this.map.panTo({lat: coords.lat, lng: coords.lng});
-    if(number === 0)
+    if (number === 0 && this.start)
       this.start.marker = marker
-    else if(number === 1)
+    else if (number === 1 && this.end)
       this.end.marker = marker
     else
-      this.stops[this.stops.length-1].marker = marker
+      this.stops[this.stops.length - 1].marker = marker
   }
 
 
   removeMarker(i: number) {
-    var marker:any;
-    if(i === 0)
+    var marker: any;
+    if (i === 0 && this.start)
       marker = this.start.marker
-    else if(i === 1)
+    else if (i === 1 && this.end)
       marker = this.end.marker
     else marker = this.stops[i].marker
 
     this.map.removeLayer(marker)
   }
 
-  restoreMarkers(){
-    var i = 0
-    if(this.start.position!== undefined)
-      this.addMarker(i, this.start.position)
-    else if(this.end.position!== undefined)
-      this.addMarker(++i, this.end.position)
-    else
-      this.stops.forEach(el => this.addMarker(++i, el.position))
+  restoreMarkers() {
+    if (this.start)
+      this.addMarker(0, this.start.position)
+    if (this.end)
+      this.addMarker(1, this.end.position)
+    this.stops.forEach(el => this.addMarker(3, el.position))
 
   }
 
-  removePath(){
-    if(this.route !== undefined)
-    {
-      this.map.eachLayer((layer)=> {
+  removePath() {
+    if (this.route !== undefined) {
+      this.map.eachLayer((layer) => {
         this.map.removeLayer(layer);
       });
-      this.addCurrentLocation()
+      this.map.addLayer(this.title);
       this.restoreMarkers()
     }
   }
@@ -219,11 +217,13 @@ export class MapComponent implements AfterViewInit {
 
   getAllStops() {
     this.finalStopsOrder = []
-    this.finalStopsOrder.push(this.start)
+    if (this.start)
+      this.finalStopsOrder.push(this.start)
     for (let i = 0; i < this.stops.length; i++) {
-        this.finalStopsOrder.push(this.stops[i])
+      this.finalStopsOrder.push(this.stops[i])
     }
-    this.finalStopsOrder.push(this.end)
+    if (this.end)
+      this.finalStopsOrder.push(this.end)
   }
 
   isValid(e: any) {
@@ -247,44 +247,25 @@ export class MapComponent implements AfterViewInit {
     this.addr2.formsubmit()
     if (this.allValid) {
       this.getAllStops()
-      // if (this.service.isLoggedIn()) {
-      if (true) {
+      if (this.service.isLoggedIn()) {
         if (this.finalStopsOrder.length > 2)
           this.openRouteDialog()
-        else this.showRoutesPathSame()
-      } else {
-        this.showRoutesPathSame()
       }
+      this.showRoutesPathSame()
       this.nextPage = true;
-    }
-    else
+    } else
       this.mapService.openErrorDialog("Adrese nisu unete.")
   }
 
-  getRealStops(){
-    var s:Stop[] = []
-    var p = {} as Position;
-    p.lat = this.start.position.lat
-    p.lng = this.start.position.lng
-    var st = {} as Stop
-    st.position = p
-    st.name = this.start.name
-    st.address = this.start.address
-    s.push(st)
+  getRealStops() {
+    var s: Stop[] = []
+    if (this.start)
+      s.push(new Stop(this.start.address, this.start.position, this.start.name))
     this.finalStopsOrder.forEach(el => {
-      p.lat = el.position.lat
-      p.lng = el.position.lng
-      st.position = p
-      st.name = el.name
-      st.address = el.address
-      s.push(st)
+      s.push(new Stop(el.address, el.position, el.name))
     })
-    p.lat = this.end.position.lat
-    p.lng = this.end.position.lng
-    st.position = p
-    st.name = this.end.name
-    st.address = this.end.address
-    s.push(st)
+    if (this.end)
+      s.push(new Stop(this.end.address, this.end.position, this.end.name))
     return s
   }
 
@@ -292,14 +273,14 @@ export class MapComponent implements AfterViewInit {
     if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
 
-      this.drive.price = this.drive.distance*120
+      this.drive.price = this.drive.distance * 120
       console.log(this.drive)
 
     }
   }
 
-  private reorderAdditionalStops(){
-    this.stops = this.finalStopsOrder.slice(1,this.finalStopsOrder.length-1)
+  private reorderAdditionalStops() {
+    this.stops = this.finalStopsOrder.slice(1, this.finalStopsOrder.length - 1)
   }
 
   private _reorderItem(fromIndex: number, toIndex: number): void {
