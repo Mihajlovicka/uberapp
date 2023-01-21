@@ -16,6 +16,7 @@ import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
+import com.example.demo.service.ImageService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 public class UserController {
@@ -39,6 +43,9 @@ public class UserController {
 
     @Autowired
     RoleService roleService;
+
+    @Autowired
+    ImageService imageService;
 
     @Autowired
     BankConverter bankConverter;
@@ -64,7 +71,7 @@ public class UserController {
 
         clientsAccount.setUser(user);
         clientsAccount.setAddress(address);
-        clientsAccount.setPicture("");
+        clientsAccount.setPicture(null);
         clientsAccount.setPhone(registerFormDTO.getPhone());
 
         if(registerFormDTO.getBankAccountNumber() != ""){
@@ -88,6 +95,8 @@ public class UserController {
 
         try {
             ClientsAccount ca = userService.getClient(email);
+            if(ca.getPicture()==null) ca.setPicture(new Image());
+            else ca.getPicture().setPicByte(ImageService.decompressBytes(ca.getPicture().getPicByte()));
             ClientAccountDTO clientAccountDTO = userConverter.toDTO(ca);
             return new ResponseEntity(clientAccountDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
@@ -102,6 +111,8 @@ public class UserController {
 
         try {
             DriversAccount da = userService.getDriver(email);
+            if(da.getPicture()==null) da.setPicture(new Image());
+            else da.getPicture().setPicByte(ImageService.decompressBytes(da.getPicture().getPicByte()));
             DriverAccountDTO driverAccountDTO = userConverter.toDTO(da);
             return new ResponseEntity(driverAccountDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
@@ -127,7 +138,8 @@ public class UserController {
         clientsAccount.getAddress().setNumber(clientAccountDTO.getAddress().getNumber());
 
         clientsAccount.setPhone(clientAccountDTO.getPhone());
-        clientsAccount.setPicture(clientAccountDTO.getPicture());
+        //clientsAccount.setPicture(clientAccountDTO.getPicture());
+
         clientsAccount.setBankStatus(clientAccountDTO.getBankStatus());
         clientsAccount.setClientsBankAccount(bankConverter.fromDto(clientAccountDTO.getClientsBankAccount()));
 
@@ -158,7 +170,7 @@ public class UserController {
         driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
-        driversAccount.setPicture(driverAccountDTO.getPicture());
+        //driversAccount.setPicture(driverAccountDTO.getPicture());
 
         return new ResponseEntity(userConverter.toDTO(userService.updateDriver(driversAccount)), HttpStatus.OK);
 
@@ -189,7 +201,7 @@ public class UserController {
 
         driverAccount.setUser(user);
         driverAccount.setDriverStatus(DriverStatus.BUSY);
-        driverAccount.setPicture("");
+        driverAccount.setPicture(null);
         driverAccount.setPhone(addDriverCarFormDTO.getPhone());
         driverAccount.setCar(car);
 
@@ -203,6 +215,18 @@ public class UserController {
     public ResponseEntity register(@RequestBody String email) throws EmailExistException {
         userService.registerConfirm(email);
         return new ResponseEntity(email, HttpStatus.OK);
+    }
+
+    @PostMapping(value="api/uploadIMG")
+    public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file, @RequestParam("userEmail") String email) throws IOException {
+
+
+        Image image = imageService.savePicture(file, email);
+        image.setPicByte(ImageService.decompressBytes(image.getPicByte()));
+        if(image != null)
+            return new ResponseEntity(userConverter.toDTO(image), HttpStatus.OK);
+        else
+            return new ResponseEntity("File not found", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(value="api/acceptBankAccountAccess")

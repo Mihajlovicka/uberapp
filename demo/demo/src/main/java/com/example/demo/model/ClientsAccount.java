@@ -19,8 +19,9 @@ public class ClientsAccount {
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @Column
-    private String picture;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "picture_id")
+    private Image picture;
 
     @Column
     private String phone;
@@ -34,7 +35,7 @@ public class ClientsAccount {
 
     public ClientsAccount(){}
 
-    public ClientsAccount(Long id, User user, Address address, String picture, String phone, ClientsBankAccount clientsBankAccount, BankStatus bankStatus){
+    public ClientsAccount(Long id, User user, Address address, Image picture, String phone, ClientsBankAccount clientsBankAccount, BankStatus bankStatus){
         this.id = id;
         this.user = user;
         this.address = address;
@@ -56,9 +57,9 @@ public class ClientsAccount {
 
     public void setAddress(Address address){this.address = address;}
 
-    public String getPicture(){return picture;}
+    public Image getPicture(){return picture;}
 
-    public void setPicture(String picture) {this.picture = picture;}
+    public void setPicture(Image picture) {this.picture = picture;}
 
     public String getPhone(){return phone;}
 

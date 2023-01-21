@@ -2,6 +2,7 @@ package com.example.demo.converter;
 
 import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.dto.DriverAccountDTO;
+import com.example.demo.dto.ImageDTO;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.fakeBank.BankConverter;
 import com.example.demo.model.*;
@@ -29,14 +30,22 @@ public class UserConverter {
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
         if(clientsAccount.getClientsBankAccount() == null){
-            return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), clientsAccount.getPicture(), clientsAccount.getPhone(), null, clientsAccount.getBankStatus());
+            return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), null, clientsAccount.getBankStatus());
 
         }
-        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), clientsAccount.getPicture(), clientsAccount.getPhone(), bankConverter.toDto(clientsAccount.getClientsBankAccount()), clientsAccount.getBankStatus());
+        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), bankConverter.toDto(clientsAccount.getClientsBankAccount()), clientsAccount.getBankStatus());
     }
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){
-        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), driversAccount.getPicture(), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus());
+        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), this.toDTO(driversAccount.getPicture()), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus());
+    }
+
+    public ImageDTO toDTO(Image image){
+        ImageDTO imageDTO = new ImageDTO();
+        imageDTO.setName(image.getName());
+        imageDTO.setPicByte(image.getPicByte());
+        imageDTO.setType(imageDTO.getType());
+        return imageDTO;
     }
 
     public ClientsAccount fromDTO(ClientAccountDTO clientAccountDTO){
@@ -55,7 +64,7 @@ public class UserConverter {
         clientsAccount.getAddress().setNumber(clientAccountDTO.getAddress().getNumber());
 
         clientsAccount.setPhone(clientAccountDTO.getPhone());
-        clientsAccount.setPicture(clientAccountDTO.getPicture());
+        //clientsAccount.setPicture(clientAccountDTO.getPicture());
         clientsAccount.setBankStatus(clientAccountDTO.getBankStatus());
 
         return clientsAccount;
@@ -79,7 +88,7 @@ public class UserConverter {
         driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
-        driversAccount.setPicture(driverAccountDTO.getPicture());
+        //driversAccount.setPicture(driverAccountDTO.getPicture());
         driversAccount.setDriverStatus(driverAccountDTO.getDriverStatus());
 
         return driversAccount;

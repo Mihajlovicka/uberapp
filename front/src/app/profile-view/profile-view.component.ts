@@ -12,10 +12,17 @@ import { Role, Status } from '../model/user.model';
 })
 export class ProfileViewComponent implements OnInit {
 
+
+
+  retrievedImage: any;
+  message: string | undefined;
+  disableUpload: boolean=true;
+  pictureChanging:boolean=false;
+  imageName: any;
   disabled:boolean=true;
   izmena:string="Izmeni podatke"
   email:string="";
-  
+
   clientsAccount: ClientsAccount = {
     user:{
       username:'',
@@ -30,7 +37,11 @@ export class ProfileViewComponent implements OnInit {
       street:'',
       number:''
     },
-    picture:'',
+    picture: {
+      name:'',
+      type:'',
+      picByte:null
+    },
     phone:'',
     clientsBankAccount:{
       balance:0,
@@ -41,9 +52,10 @@ export class ProfileViewComponent implements OnInit {
     },
     bankStatus: BankStatus.EMPTY
   }
+  private selectedFile: File | undefined;
 
 
-  constructor(private appService: AppService, private route: ActivatedRoute) { }
+  constructor(private appService: AppService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.loadClient();
@@ -52,17 +64,18 @@ export class ProfileViewComponent implements OnInit {
 
   loadClient(){
     this.route.queryParams.subscribe(params => {
-      
+
       this.email = params['email']
       console.log(this.email);
      });
 
      this.appService.getClient(this.email).subscribe((resp: ClientsAccount) => {
       this.clientsAccount = resp;
-      //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
-      console.log(this.clientsAccount);
+       console.log(this.clientsAccount);
       console.log(resp);
-    });
+       console.log(this.clientsAccount.picture.picByte);
+
+     });
   }
   change(){
     if(this.izmena==="Izmeni podatke"){
@@ -74,9 +87,9 @@ export class ProfileViewComponent implements OnInit {
       this.izmena="Izmeni podatke";
       this.disabled=true;
     }
-    
+
   }
-     
+
   cancelChange(){
     this.izmena="Izmeni podatke";
     this.disabled=true;
@@ -99,6 +112,53 @@ export class ProfileViewComponent implements OnInit {
     this.clientsAccount.address.street.charAt(0).toUpperCase();
   }
 
+  private checkFileType(file:any) : boolean{
+    if(file.type!="image/jpg" && file.type!="image/png" && file.type!="image/jpeg") return false;
+    else return true;
+  }
+
+  //Gets called when the user selects an image
+  public onFileChanged(event:any) {
+    //Select File
+    if(event.target.files[0].size < 5242880) {
+      if (this.checkFileType(event.target.files[0])) {
+
+        this.selectedFile = event.target.files[0];
+        this.disableUpload = false;
+      } else {
+        this.appService.openErrorDialog("Tip fajla mora biti png, jpg ili jpeg. Izaberite drugi fajl!");
+        this.disableUpload = true;
+      }
+    }
+    else{
+      this.appService.openErrorDialog("Odabrana slika je prevelika. Izaberite neku drugu.");
+      this.disableUpload = true;
+    }
+  }
+
+
+  //Gets called when the user clicks on submit to upload the image
+  onUpload() {
+    console.log(this.selectedFile);
+
+    //FormData API provides methods and properties to allow us easily prepare form data to be sent with POST HTTP requests.
+    const uploadImageData = new FormData();
+    if(this.selectedFile) {
+      uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+      uploadImageData.append('userEmail',this.clientsAccount.user.email);
+    }
+    this.appService.uploadPicture(uploadImageData).subscribe((resp: any) => {
+      this.clientsAccount.picture.picByte = resp.body.picByte;
+      console.log("Slika:");
+      console.log(this.clientsAccount.picture);
+      this.appService.openErrorDialog("Uspesno ste promenili sliku.")
+      console.log(this.clientsAccount);
+      console.log(resp);
+     // console.log(resp.body.picByte);
+    });
+  }
+
+
   saveChanges(){
   if(this.clientsAccount.user.name==='')alert("Unesite ime!")
   else if(!this.validateChars(this.clientsAccount.user.name))alert("Ime nije validno")
@@ -120,11 +180,10 @@ export class ProfileViewComponent implements OnInit {
 
   this.appService.updateClient(this.clientsAccount).subscribe((resp: ClientsAccount) => {
       this.clientsAccount = resp;
-      //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
-      
-      alert("Podaci uspesno izmenjenji.");
+
+    this.appService.openErrorDialog("Podaci uspesno izmenjenji.");
     })
   }
-  
+
   }
 }

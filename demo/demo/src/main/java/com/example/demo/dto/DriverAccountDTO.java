@@ -5,7 +5,7 @@ import com.example.demo.model.DriverStatus;
 public class DriverAccountDTO {
     private UserDTO user;
 
-    private String picture;
+    private ImageDTO picture;
 
     private String phone;
 
@@ -15,7 +15,7 @@ public class DriverAccountDTO {
 
     public DriverAccountDTO(){}
 
-    public DriverAccountDTO(UserDTO user, String picture, String phone, CarDTO car, DriverStatus driverStatus){
+    public DriverAccountDTO(UserDTO user, ImageDTO picture, String phone, CarDTO car, DriverStatus driverStatus){
         this.user = user;
         this.picture = picture;
         this.phone = phone;
@@ -31,11 +31,11 @@ public class DriverAccountDTO {
         this.user = user;
     }
 
-    public String getPicture() {
+    public ImageDTO getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(ImageDTO picture) {
         this.picture = picture;
     }
 

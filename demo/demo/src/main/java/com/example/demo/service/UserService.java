@@ -9,10 +9,7 @@ import com.example.demo.exception.BankAccountNumberDoNotExistException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
-import com.example.demo.repository.ClientsRepository;
-import com.example.demo.repository.DriversChangeRepository;
-import com.example.demo.repository.DriversRepository;
-import com.example.demo.repository.UserRepository;
+import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,6 +45,8 @@ public class UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private ImageRepository imageRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -243,7 +242,7 @@ public class UserService {
         driversAccountChange.setName(newDriver.getUser().getName());
         driversAccountChange.setSurname(newDriver.getUser().getSurname());
         driversAccountChange.setPhone(newDriver.getPhone());
-        driversAccountChange.setPicture(newDriver.getPicture());
+        //driversAccountChange.setPicture(newDriver.getPicture());
         driversAccountChange.setCarBrand(newDriver.getCar().getBrand());
         driversAccountChange.setCarBodyType(newDriver.getCar().getBodyType());
         driversAccountChange.setCarModel(newDriver.getCar().getModel());
@@ -266,7 +265,7 @@ public class UserService {
 
         List<ClientsAccount> all = clientsRepository.findAllByUserStatus(Status.ACTIVE);
 
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
             User logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             if(logged.getRole().getName().equals("ROLE_CLIENT")){
                 for (ClientsAccount client:
@@ -281,5 +280,41 @@ public class UserService {
 
         return all;
 
+    }
+
+    public Image savePictureInUser(Image image, String email) {
+        User logged = userRepository.findUserByEmail(email);
+        Long oldID = 0L;
+        Image img = null;
+        if(logged!= null) {
+            if (logged.getRole().getName().equals("ROLE_CLIENT")) {
+                for (ClientsAccount client : clientsRepository.findAll()) {
+                    if (client.getUser().getEmail().equals(logged.getEmail())) {
+                        if (client.getPicture() != null) {
+                            oldID = client.getPicture().getId();
+                            image.setId(oldID);
+                        }
+                        image = imageRepository.save(image);
+                        client.setPicture(image);
+                        clientsRepository.save(client);
+                        img=image;
+                    }
+                }
+            } else if (logged.getRole().getName().equals("ROLE_DRIVER")) {
+                for (DriversAccount driver : driversRepository.findAll()) {
+                    if (driver.getUser().getEmail().equals(logged.getEmail())) {
+                        if (driver.getPicture() != null) {
+                            oldID = driver.getPicture().getId();
+                            image.setId(oldID);
+                        }
+                        image = imageRepository.save(image);
+                        driver.setPicture(image);
+                        driversRepository.save(driver);
+                        img=image;
+                    }
+                }
+            }
+        }
+        return img;
     }
 }

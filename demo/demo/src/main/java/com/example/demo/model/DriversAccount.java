@@ -13,8 +13,9 @@ public class DriversAccount{
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column
-    private String picture;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "picture_id")
+    private Image picture;
 
     @Column
     private String phone;
@@ -28,7 +29,7 @@ public class DriversAccount{
 
     public DriversAccount(){}
 
-    public DriversAccount(Long id, User user, String picture, String phone, Car car, DriverStatus driverStatus) {
+    public DriversAccount(Long id, User user, Image picture, String phone, Car car, DriverStatus driverStatus) {
         this.id = id;
         this.user = user;
         this.picture = picture;
@@ -51,11 +52,11 @@ public class DriversAccount{
         this.user = user;
     }
 
-    public String getPicture() {
+    public Image getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(Image picture) {
         this.picture = picture;
     }
 

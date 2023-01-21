@@ -8,7 +8,7 @@ public class ClientAccountDTO {
 
    private AddressDTO address;
 
-   private String picture;
+   private ImageDTO picture;
 
    private String phone;
 
@@ -19,7 +19,7 @@ public class ClientAccountDTO {
     public ClientAccountDTO(){}
 
 
-   public ClientAccountDTO(UserDTO user, AddressDTO address, String picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus){
+   public ClientAccountDTO(UserDTO user, AddressDTO address, ImageDTO picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus){
        this.user = user;
        this.address = address;
        this.picture = picture;
@@ -44,11 +44,11 @@ public class ClientAccountDTO {
         this.address = address;
     }
 
-    public String getPicture() {
+    public ImageDTO getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(ImageDTO picture) {
         this.picture = picture;
     }
 

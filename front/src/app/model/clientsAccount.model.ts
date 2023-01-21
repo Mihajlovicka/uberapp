@@ -1,6 +1,7 @@
 import { Address } from "./address.model";
 import { BankAccount } from "./bankAccount.model";
 import { User } from "./user.model";
+import {Image} from "./image.model";
 
 export enum BankStatus {
     ACTIVE = 'ACTIVE',
@@ -11,7 +12,7 @@ export enum BankStatus {
 interface ClientsAccountInterface{
     user: User;
     address: Address;
-    picture: string;
+    picture: Image;
     phone: string;
     clientsBankAccount: BankAccount;
     bankStatus: BankStatus;
@@ -20,7 +21,7 @@ interface ClientsAccountInterface{
 export class ClientsAccount implements ClientsAccountInterface{
     public user: User;
     public address: Address;
-    public picture: string;
+    public picture: Image;
     public phone: string;
     public clientsBankAccount: BankAccount;
     public bankStatus: BankStatus;

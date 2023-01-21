@@ -44,7 +44,11 @@ export class RegisterComponent implements OnInit {
       street:'',
       number:''
     },
-    picture:'',
+    picture:{
+      name:'',
+      type:'',
+      picByte:null
+    },
     phone:'',
     clientsBankAccount:{
       balance:0,
