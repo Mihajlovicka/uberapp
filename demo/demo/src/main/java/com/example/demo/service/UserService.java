@@ -337,4 +337,14 @@ public class UserService {
     }
 
 
+    public void unblock(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.ACTIVE);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
 }

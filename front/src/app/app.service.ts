@@ -16,18 +16,19 @@ import {Image} from "./model/image.model";
 })
 
   export class AppService{
-    private registerUrl = 'http://localhost:8080/api/register';
-    private addDriverUrl = 'http://localhost:8080/api/add-driver';
+  private registerUrl = 'http://localhost:8080/api/register';
+  private addDriverUrl = 'http://localhost:8080/api/add-driver';
   private getClientUrl = 'http://localhost:8080/api/getClient?email=';
   private getLoggedUserUrl = 'http://localhost:8080/api/getLoggedUser';
   private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
-    private updateClientUrl = 'http://localhost:8080/api/updateClient';
-    private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
-    private bankUrlAccept = 'http://localhost:8080/api/acceptBankAccountAccess';
-    private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
-    private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
-    private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
-    private blockUserUrl = 'http://localhost:8080/api/blockUser';
+  private updateClientUrl = 'http://localhost:8080/api/updateClient';
+  private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
+  private bankUrlAccept = 'http://localhost:8080/api/acceptBankAccountAccess';
+  private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
+  private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
+  private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
+  private blockUserUrl = 'http://localhost:8080/api/blockUser';
+  private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
 
   httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -133,12 +134,18 @@ import {Image} from "./model/image.model";
 
      }
 
-     public blockUser(email:string):any{
+  public blockUser(email:string):any{
     console.log("User to block:" + email);
-       return this.http.post(`${this.blockUserUrl}`, email, this.httpOptions).pipe(
-         catchError(this.handleError("Neuspesno blokiranje")));
+    return this.http.post(`${this.blockUserUrl}`, email, this.httpOptions).pipe(
+      catchError(this.handleError("Neuspesno blokiranje")));
 
-     }
+  }
+  public unblockUser(email:string):any{
+    console.log("User to block:" + email);
+    return this.http.post(`${this.unblockUserUrl}`, email, this.httpOptions).pipe(
+      catchError(this.handleError("Neuspesno odblokiranje")));
+
+  }
 
      public getLoggedUser():Observable<User>{
        return this.http.get<User>(`${this.getLoggedUserUrl}`).pipe(

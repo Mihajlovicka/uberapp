@@ -74,6 +74,15 @@ export class DriverProfileViewComponent implements OnInit {
       this.isBlocked=true;
     });
   }
+  unblockUser(){
+    this.appService.unblockUser(this.driversAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno odblokiran.");
+      this.driversAccount.user.status=Status.ACTIVE;
+      this.isBlocked=false;
+    });
+  }
   getLoggedUser(){
     this.appService.getLoggedUser().subscribe((resp: User) => {
       this.logged_user = resp;

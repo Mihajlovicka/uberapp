@@ -79,7 +79,16 @@ export class ProfileViewComponent implements OnInit {
       this.appService.openErrorDialog("Korisnik je uspesno blokiran.");
       this.clientsAccount.user.status=Status.BANNED;
       this.isBlocked=true;
-      });
+    });
+  }
+  unblockUser(){
+    this.appService.unblockUser(this.clientsAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno odblokiran.");
+      this.clientsAccount.user.status=Status.ACTIVE;
+      this.isBlocked=false;
+    });
   }
   getLoggedUser(){
     this.appService.getLoggedUser().subscribe((resp: User) => {

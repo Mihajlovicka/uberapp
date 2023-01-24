@@ -222,6 +222,11 @@ public class UserController {
         userService.block(email);
         return new ResponseEntity(HttpStatus.OK);
     }
+    @PostMapping(value="api/unblockUser")
+    public ResponseEntity unblockUser(@RequestBody String email) {
+        userService.unblock(email);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @PostMapping(value="api/uploadIMG")
     public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file, @RequestParam("userEmail") String email) throws IOException {

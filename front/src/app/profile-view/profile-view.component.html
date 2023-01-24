@@ -24,7 +24,7 @@
                   <div *ngIf="isAdmin">
                     <button class="btn btn-secondary" type="button" (click)="blockUser();" *ngIf="!isBlocked">Blokiraj korisnika</button>
 
-                    <button class="btn btn-secondary" type="button" (click)="blockUser()" *ngIf="isBlocked">Odblokiraj korisnika</button>
+                    <button class="btn btn-secondary" type="button" (click)="unblockUser();" *ngIf="isBlocked">Odblokiraj korisnika</button>
 
                   </div>
                 </div>
