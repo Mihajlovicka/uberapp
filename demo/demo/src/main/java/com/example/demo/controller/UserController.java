@@ -217,6 +217,12 @@ public class UserController {
         return new ResponseEntity(email, HttpStatus.OK);
     }
 
+    @PostMapping(value="api/blockUser")
+    public ResponseEntity blockUser(@RequestBody String email) {
+        userService.block(email);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping(value="api/uploadIMG")
     public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file, @RequestParam("userEmail") String email) throws IOException {
 
@@ -251,6 +257,10 @@ public class UserController {
     @GetMapping(value="api/getAllActiveClients")
     public ResponseEntity getAllActiveClients(){
         return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveClients()), HttpStatus.OK);
+    }
+    @GetMapping(value="api/getLoggedUser")
+    public ResponseEntity getLoggedUser(){
+        return new ResponseEntity(userConverter.toDTO(userService.getLoggedUser()), HttpStatus.OK);
     }
 
 }

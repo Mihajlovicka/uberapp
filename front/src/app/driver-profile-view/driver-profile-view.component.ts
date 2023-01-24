@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
-import { Role, Status } from '../model/user.model';
+import {Role, Status, User} from '../model/user.model';
 
 @Component({
   selector: 'app-driver-profile-view',
@@ -13,7 +13,8 @@ import { Role, Status } from '../model/user.model';
 export class DriverProfileViewComponent implements OnInit {
 
 
-
+  isAdmin:boolean=false;
+  isBlocked:boolean=false;
   retrievedImage: any;
   message: string | undefined;
   disableUpload: boolean=true;
@@ -22,7 +23,14 @@ export class DriverProfileViewComponent implements OnInit {
   disabled:boolean=true;
   izmena:string="Izmeni podatke"
   email:string="";
-
+  logged_user: User = {
+    username:'',
+    name:'',
+    surname:'',
+    email:'',
+    status: Status.ACTIVE,
+    role: Role.ROLE_CLIENT
+  }
   driversAccount : DriversAccount = {
     user:{
       username:'',
@@ -55,6 +63,30 @@ export class DriverProfileViewComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadDriver();
+    this.getLoggedUser();
+  }
+  blockUser(){
+    this.appService.blockUser(this.driversAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno blokiran.");
+      this.driversAccount.user.status=Status.BANNED;
+      this.isBlocked=true;
+    });
+  }
+  getLoggedUser(){
+    this.appService.getLoggedUser().subscribe((resp: User) => {
+      this.logged_user = resp;
+
+      console.log(resp);
+      console.log(this.logged_user.role)
+      let role:any = this.logged_user.role;
+
+      if(role.name=="ROLE_ADMINISTRATOR"){
+        this.isAdmin=true;
+      }
+
+    });
   }
 
   loadDriver(){

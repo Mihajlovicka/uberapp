@@ -317,4 +317,24 @@ public class UserService {
         }
         return img;
     }
+
+    public User getLoggedUser() {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getName();
+        User logged = userRepository.findUserByEmail(username);
+        if(logged != null) return logged;
+        else return null;
+    }
+
+    public void block(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.BANNED);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
+
+
 }
