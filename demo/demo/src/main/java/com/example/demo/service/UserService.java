@@ -282,4 +282,13 @@ public class UserService {
         return all;
 
     }
+
+    public List<DriversAccount> getDrivers(){
+        return driversRepository.findAll();
+    }
+
+    public void changeDriverStatus(DriversAccount da,DriverStatus status){
+        da.setDriverStatus(status);
+        driversRepository.save(da);
+    }
 }

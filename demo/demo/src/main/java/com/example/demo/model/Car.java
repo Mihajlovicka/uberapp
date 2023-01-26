@@ -1,9 +1,17 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.CarSimulationDTO;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
 @Table
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +38,11 @@ public class Car {
     @Column(nullable=false)
     private int numOfSeats;
 
+    @Embedded
+    private Location currentLocation;
 
-   public Car(){}
+    @Column
+    private boolean carOnMap = false;
 
     public Car(Long id, String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType, int numOfSeats){
        this.id = id;
@@ -44,67 +55,10 @@ public class Car {
        this.numOfSeats = numOfSeats;
     }
 
-    public Long getId() {
-        return id;
+    public Car(CarSimulationDTO carDTO){
+        this.id = Long.valueOf(carDTO.getId());
+        this.plateNumber = carDTO.getLicensePlateNumber();
+        this.currentLocation = new Location(carDTO.getLatitude(), carDTO.getLongitude());
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getPlateNumber() {
-        return plateNumber;
-    }
-
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
-    }
-
-    public CarBodyType getBodyType() {
-        return bodyType;
-    }
-
-    public void setBodyType(CarBodyType bodyType) {
-        this.bodyType = bodyType;
-    }
-
-    public Fuel getFuelType() {
-        return fuelType;
-    }
-
-    public void setFuelType(Fuel fuelType) {
-        this.fuelType = fuelType;
-    }
-
-    public int getNumOfSeats() {
-        return numOfSeats;
-    }
-
-    public void setNumOfSeats(int numOfSeats) {
-        this.numOfSeats = numOfSeats;
-    }
 }
