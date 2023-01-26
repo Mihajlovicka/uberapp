@@ -1,9 +1,11 @@
 import {Component, OnInit} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import {ActivatedRoute} from '@angular/router';
 
 import {AppService} from '../app.service';
 import {BankStatus, ClientsAccount} from '../model/clientsAccount.model';
 import {Role, Status, User} from '../model/user.model';
+import {PasswordChangeComponent} from "../password-change/password-change.component";
 
 @Component({
   selector: 'app-profile-view',
@@ -64,7 +66,9 @@ export class ProfileViewComponent implements OnInit {
   private selectedFile: File | undefined;
 
 
-  constructor(private appService: AppService, private route: ActivatedRoute) {}
+  constructor(private appService: AppService,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadClient();
@@ -89,6 +93,17 @@ export class ProfileViewComponent implements OnInit {
       this.clientsAccount.user.status=Status.ACTIVE;
       this.isBlocked=false;
     });
+  }
+  changePassword(){
+    const dialogRef = this.dialog.open(PasswordChangeComponent, {
+      data: {email: this.clientsAccount.user.email},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+    });
+
   }
   getLoggedUser(){
     this.appService.getLoggedUser().subscribe((resp: User) => {

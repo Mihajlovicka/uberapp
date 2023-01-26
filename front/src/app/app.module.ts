@@ -55,6 +55,7 @@ import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clien
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
 import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
+import { PasswordChangeComponent } from './password-change/password-change.component';
 
 
 
@@ -103,6 +104,7 @@ const appRoutes: Routes = [
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
     SelectVehicleTypeComponent,
+    PasswordChangeComponent,
   ],
 
 

@@ -13,12 +13,28 @@
                   <!-- Profile picture help block-->
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <!-- Profile picture upload button-->
-                  <div *ngIf="!isAdmin">
-                    <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="pictureChanging=true;">Izmeni sliku profila</button>
-                    <div *ngIf="pictureChanging">
-                      <input type="file" (change)="onFileChanged($event)" accept=".png, .jpg, .jpeg">
-                      <input [disabled]="disableUpload" type="button" class="btn btn-secondary" (click)="onUpload(); pictureChanging=!pictureChanging;" value="Sacuvaj izmene">
+                  <div *ngIf="!isAdmin" class="text-center">
 
+                    <div>
+                     <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="pictureChanging=true;">Izmeni sliku profila</button>
+                    </div>
+                    <div *ngIf="pictureChanging" class="text-center">
+                      <div>
+                        <input type="file" (change)="onFileChanged($event)" accept=".png, .jpg, .jpeg">
+                      </div>
+                      <br>
+                      <div>
+                        <input [disabled]="disableUpload" type="button" class="btn btn-secondary" (click)="onUpload(); pictureChanging=!pictureChanging;" value="Sacuvaj izmene">
+                      </div>
+                      <br>
+                      <div>
+                        <button class="btn btn-secondary" type="button" *ngIf="pictureChanging" (click)="pictureChanging=false;">Odustani</button>
+
+                      </div>
+                    </div>
+                    <br>
+                    <div>
+                      <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="changePassword();">Izmeni lozinku</button>
                     </div>
                   </div>
                   <div *ngIf="isAdmin">

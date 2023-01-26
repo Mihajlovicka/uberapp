@@ -4,6 +4,8 @@ import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
 import {Role, Status, User} from '../model/user.model';
+import {PasswordChangeComponent} from "../password-change/password-change.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-driver-profile-view',
@@ -12,6 +14,7 @@ import {Role, Status, User} from '../model/user.model';
 })
 export class DriverProfileViewComponent implements OnInit {
 
+  selectedBodyType:string="";
 
   isAdmin:boolean=false;
   isBlocked:boolean=false;
@@ -59,7 +62,9 @@ export class DriverProfileViewComponent implements OnInit {
   }
   private selectedFile: File | undefined;
 
-  constructor(private appService: AppService, private route: ActivatedRoute) {  }
+  constructor(private appService: AppService,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {  }
 
   ngOnInit(): void {
     this.loadDriver();
@@ -82,6 +87,17 @@ export class DriverProfileViewComponent implements OnInit {
       this.driversAccount.user.status=Status.ACTIVE;
       this.isBlocked=false;
     });
+  }
+  changePassword(){
+    const dialogRef = this.dialog.open(PasswordChangeComponent, {
+      data: {email: this.driversAccount.user.email},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+    });
+
   }
   getLoggedUser(){
     this.appService.getLoggedUser().subscribe((resp: User) => {
@@ -106,6 +122,8 @@ export class DriverProfileViewComponent implements OnInit {
 
      this.appService.getDriver(this.email).subscribe((resp: DriversAccount) => {
       this.driversAccount = resp;
+      this.selectedBodyType = this.driversAccount.car.bodyType;
+       this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
       console.log(this.driversAccount);
       console.log(resp);
     });
@@ -182,6 +200,7 @@ export class DriverProfileViewComponent implements OnInit {
     }
     this.appService.uploadPicture(uploadImageData).subscribe((resp: any) => {
       this.driversAccount.picture.picByte = resp.body.picByte;
+      this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
       console.log("Slika:");
       console.log(this.driversAccount.picture);
       this.appService.openErrorDialog("Uspesno ste promenili sliku.")
@@ -213,8 +232,10 @@ export class DriverProfileViewComponent implements OnInit {
   this.capitalizeForm();
 
   this.appService.updateDriver(this.driversAccount).subscribe((resp: DriversAccount) => {
-      this.driversAccount = resp;
-
+    console.log("RESP:");
+    console.log(resp);
+    this.driversAccount = resp;
+    this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
     this.appService.openErrorDialog("Zahtev za izmenu podataka je poslat administratoru sistema.");
     })
   }

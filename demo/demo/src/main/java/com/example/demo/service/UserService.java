@@ -347,4 +347,17 @@ public class UserService {
         }
 
     }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findUserByEmail(email);
+        if(user != null){
+            String s = passwordEncoder.encode(oldPassword);
+            if(passwordEncoder.matches(oldPassword, user.getPassword())){
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
 }

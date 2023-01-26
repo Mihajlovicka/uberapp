@@ -10,6 +10,7 @@ import {DriversAccount} from "./model/driversAccount.model";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 import {Image} from "./model/image.model";
+import {PasswordChange} from "./model/passwordChange.model";
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +30,7 @@ import {Image} from "./model/image.model";
   private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
   private blockUserUrl = 'http://localhost:8080/api/blockUser';
   private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
+  private changePasswordUrl = 'http://localhost:8080/api/changePassword';
 
   httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -118,11 +120,17 @@ import {Image} from "./model/image.model";
         )
      }
 
-     public updateClient(client: ClientsAccount): Observable<ClientsAccount> {
-      return this.http.post<ClientsAccount>(`${this.updateClientUrl}`, client, this.httpOptions).pipe(
-        catchError(this.handleError<ClientsAccount>())
-      )
-     }
+  public updateClient(client: ClientsAccount): Observable<ClientsAccount> {
+    return this.http.post<ClientsAccount>(`${this.updateClientUrl}`, client, this.httpOptions).pipe(
+      catchError(this.handleError<ClientsAccount>())
+    )
+  }
+
+  public changePassword(passwordData: PasswordChange): Observable<any> {
+    return this.http.post<any>(`${this.changePasswordUrl}`, passwordData, this.httpOptions).pipe(
+      catchError(this.handleError<any>())
+    )
+  }
 
      public uploadPicture(uploadImageData:FormData): any{
        //Make a call to the Spring Boot Application to save the image
