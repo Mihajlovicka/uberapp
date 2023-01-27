@@ -72,15 +72,16 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   public nextPage: boolean = false;
   public showAdditional: boolean = false
-
-  private route: any = undefined
-
+  public showSummary: boolean = false
+  public openDialog: boolean = false
+  public optimalRoute: any = undefined
   private drive: Drive = {
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: []
+    clients: [],
+    routeJSON:{}
   };
 
   public draggingIndex: number = -1;
@@ -122,12 +123,12 @@ export class MapComponent implements AfterViewInit, OnInit {
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
       let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
-          icon: L.icon({
-            iconUrl: 'assets/green.png',
-            iconSize: [20, 20],
-            iconAnchor: [10, 10],
-          }),
-        }).bindPopup('Vozilo '+ride.vehicle.licensePlateNumber);
+        icon: L.icon({
+          iconUrl: 'assets/green.png',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        }),
+      }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
       markerLayer.addTo(geoLayerRouteGroup);
       this.vehicles[ride.vehicle.id] = markerLayer;
       this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
@@ -137,18 +138,12 @@ export class MapComponent implements AfterViewInit, OnInit {
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
       let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
-          icon: L.icon({
-            iconUrl: 'assets/red.png',
-            iconSize: [20, 20],
-            iconAnchor: [10, 10],
-          }),
-        }).bindPopup('Vozilo '+ride.vehicle.licensePlateNumber);
-      // markerLayer.on('mouseover', function (e) {
-      //   e.target.openPopup();
-      // });
-      // markerLayer.on('mouseout', function (e) {
-      //   e.target.closePopup();
-      // });
+        icon: L.icon({
+          iconUrl: 'assets/red.png',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        }),
+      }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
       markerLayer.addTo(geoLayerRouteGroup);
       this.vehicles[ride.vehicle.id] = markerLayer;
       this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
@@ -159,12 +154,12 @@ export class MapComponent implements AfterViewInit, OnInit {
       delete this.vehicles[ride.vehicle.id];
       delete this.rides[ride.id];
     });
-    this.stompClient.subscribe('/map-updates/delete-ride', (message: { body: any } ) => {
-        let carId = JSON.parse(message.body).carId;
-        let rideId = JSON.parse(message.body).rideId;
-        this.mainGroup = this.mainGroup.filter((lg: L.LayerGroup) => lg !== this.rides[rideId]);
-        delete this.vehicles[carId];
-        delete this.rides[rideId];
+    this.stompClient.subscribe('/map-updates/delete-ride', (message: { body: any }) => {
+      let carId = JSON.parse(message.body).carId;
+      let rideId = JSON.parse(message.body).rideId;
+      this.mainGroup = this.mainGroup.filter((lg: L.LayerGroup) => lg !== this.rides[rideId]);
+      delete this.vehicles[carId];
+      delete this.rides[rideId];
     });
   }
 
@@ -178,7 +173,8 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   public addressChanged(newAddress: any, addressNum: string = '') {
-    this.nextPage = false
+    this.showSummary = false
+    this.openDialog = false
     if (addressNum === 'start') {
       if (this.start) {
         this.removeMarker(0)
@@ -264,9 +260,7 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   removePath() {
-    if (this.route !== undefined) {
-      this.routeLayer.clearLayers()
-    }
+    this.routeLayer.eachLayer((ly) => this.routeLayer.removeLayer(ly))
   }
 
   dialogOC(): Promise<any> {
@@ -277,8 +271,9 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   async openRouteDialog() {
+    this.openDialog = false
     var result = await this.dialogOC()
-    if (result === 'duration' || result === 'distance') {
+    if (this.finalStopsOrder.length > 2 && (result === 'duration' || result === 'distance')) {
       var n = this.finalStopsOrder.length
       var combinations = this.mapService.permute(n - 2)//1->n-1
       const matrix$ = this.mapService.orderStops(this.getCoordinates(), result);
@@ -317,15 +312,83 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   showRoutesPathSame() {
     this.removePath()
+    this.showSummary = true
+    this.nextPage = true
     this.mapService.showRoute(this.getCoordinates()).subscribe((res) => {
-      this.drive.distance = res.features[0].properties.summary.distance
-      this.drive.duration = res.features[0].properties.summary.duration
+      let color = Math.floor(Math.random() * 16777215).toString(16);
+      this.drive.distance = Number((res.features[0].properties.summary.distance / 1000).toFixed(2))
+      this.drive.duration = Number((res.features[0].properties.summary.duration / 60).toFixed(2))
       this.drive.stops = this.getRealStops()
-      L.geoJson(res).addTo(this.routeLayer)
-      this.map.fitBounds(L.geoJson(res).getBounds())
-      this.route = res
-      console.log(this.route)
+      this.drive.routeJSON = res
+      let routeLayer = L.geoJSON(res.features[0].geometry)
+        .bindPopup("Razdaljina: " + this.drive.distance + "km \nTrajanje: " + this.drive.duration + "min")
+        .on('mouseover', function (e) {
+          e.target.openPopup();
+        },)
+        .on('mouseout', function (e) {
+          e.target.closePopup();
+        });
+      routeLayer.setStyle({color: `#${color}`, weight: 5});
+      routeLayer.addTo(this.routeLayer);
+      this.map.fitBounds(routeLayer.getBounds())
+      this.optimalRoute = {
+        distance: this.drive.distance,
+        duration: this.drive.duration,
+        price: this.drive.distance * 120,
+        route: routeLayer
+      }
     })
+  }
+
+  showMultipleRoutesNotLoggedIn() {
+    this.removePath()
+    let coordinates: [number, number][] = this.getCoordinates()
+    this.mapService.showMultipleRoutes(coordinates).subscribe((res) => {
+
+      for (let route of res.features) {
+        let color = Math.floor(Math.random() * 16777215).toString(16);
+        let distance = Number((route.properties.summary.distance / 1000).toFixed(2))
+        let duration = Number((route.properties.summary.duration / 60).toFixed(2))
+        let routeLayer = L.geoJSON(route.geometry)
+          .bindPopup("Razdaljina: " + distance + "km \nTrajanje: " + duration + "min")
+          .on('mouseover', function (e) {
+            e.target.openPopup();
+          },)
+          .on('mouseout', function (e) {
+            e.target.closePopup();
+          });
+        routeLayer.setStyle({color: `#${color}`, weight: 5});
+        routeLayer.addTo(this.routeLayer);
+        this.map.fitBounds(routeLayer.getBounds())
+        if (this.optimalRoute === undefined) {
+          this.optimalRoute = {
+            distance: distance,
+            duration: duration,
+            price: distance * 120,
+            route: routeLayer
+          }
+        } else {
+          let new_price = distance * 120
+          if (new_price < this.optimalRoute.price) {
+            this.optimalRoute = {
+              distance: distance,
+              duration: duration,
+              price: distance * 120,
+              route: routeLayer
+            }
+          }
+        }
+      }
+    })
+  }
+
+  getOptimalRoute() {
+    this.showSummary = true
+    this.routeLayer.eachLayer((ly) => {
+      if (ly != this.optimalRoute.route)
+        this.routeLayer.removeLayer(ly)
+    })
+    this.map.fitBounds(this.optimalRoute.route.getBounds())
   }
 
   showRoute() {
@@ -334,13 +397,38 @@ export class MapComponent implements AfterViewInit, OnInit {
     if (this.allValid) {
       this.getAllStops()
       if (this.service.isLoggedIn()) {
-        if (this.finalStopsOrder.length > 2)
-          this.openRouteDialog()
+        this.showMultipleRoutesLoggedIn()
+      } else {
+        this.showMultipleRoutesNotLoggedIn()
       }
-      this.showRoutesPathSame()
-      this.nextPage = true;
+      this.nextPage = true
     } else
       this.mapService.openErrorDialog("Adrese nisu unete.")
+  }
+
+  showMultipleRoutesLoggedIn() {
+    this.removePath()
+    this.openDialog = true
+    let coordinates: [number, number][] = this.getCoordinates()
+    for (let i = 0; i < coordinates.length - 1; i++)
+      this.mapService.showMultipleRoutes([coordinates[i], coordinates[i + 1]]).subscribe((res) => {
+        for (let route of res.features) {
+          let color = Math.floor(Math.random() * 16777215).toString(16);
+          let distance = Number((route.properties.summary.distance / 1000).toFixed(2))
+          let duration = Number((route.properties.summary.duration / 60).toFixed(2))
+          let routeLayer = L.geoJSON(route.geometry)
+            .bindPopup("Razdaljina: " + distance + "km \nTrajanje: " + duration + "min")
+            .on('mouseover', function (e) {
+              e.target.openPopup();
+            },)
+            .on('mouseout', function (e) {
+              e.target.closePopup();
+            });
+          routeLayer.setStyle({color: `#${color}`, weight: 5});
+          routeLayer.addTo(this.routeLayer);
+          this.map.fitBounds(routeLayer.getBounds())
+        }
+      })
   }
 
   getRealStops() {

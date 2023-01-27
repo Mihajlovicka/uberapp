@@ -5,7 +5,7 @@ import { Stop } from "./stop.model";
 export enum PaymentStatus{
   PAID = 'PAID',
   NOT_PAID = 'NOT_PAID',
-  
+
 
 }
 
@@ -15,7 +15,8 @@ export interface DriveInterface{
   distance:number,
   duration:number,
   price:number,
-  clients:ClientsAccount[]
+  clients:ClientsAccount[],
+  routeJSON:{}
 }
 
 export class Drive implements DriveInterface{
@@ -25,6 +26,7 @@ export class Drive implements DriveInterface{
   public duration:number
   public price:number
   public clients: ClientsAccount[];
+  public routeJSON: {};
 
   constructor(driveI:DriveInterface) {
     this.stops = driveI.stops
@@ -32,6 +34,7 @@ export class Drive implements DriveInterface{
     this.duration = driveI.duration
     this.price = driveI.price
     this.clients = driveI.clients;
+    this.routeJSON = driveI.routeJSON
   }
 }
 

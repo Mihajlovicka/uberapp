@@ -53,6 +53,22 @@ export class MapService {
       .pipe(catchError(this.appService.handleError<any>("dodavanje rute neuspesno")))
   }
 
+  showMultipleRoutes(stops: [number, number][]) {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+      'Content-Type': 'application/json',
+      'Authorization': this.tokenORS
+    })
+    const body = {
+      coordinates: stops,
+      alternative_routes:{"target_count":3}
+    }
+
+    return this.http.post<any>('https://api.openrouteservice.org/v2/directions/driving-car/geojson',
+      body, {headers})
+      .pipe(catchError(this.appService.handleError<any>("dodavanje rute neuspesno")))
+  }
+
   public orderStops(stops: [number, number][], param: string): Observable<any> {
 
     const body = {
