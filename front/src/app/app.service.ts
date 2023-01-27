@@ -9,6 +9,7 @@ import {DriverCarInfo} from "./model/driverCarInfo.model";
 import {DriversAccount} from "./model/driversAccount.model";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
+import {Image} from "./model/image.model";
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
     private bankUrlAccept = 'http://localhost:8080/api/acceptBankAccountAccess';
     private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
     private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
+    private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -117,6 +119,17 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
         catchError(this.handleError<ClientsAccount>())
       )
      }
+
+     public uploadPicture(uploadImageData:FormData): any{
+       //Make a call to the Spring Boot Application to save the image
+        //Make a call to the Spring Boot Application to save the image
+       return this.http.post(`${this.uploadImageUrl}`, uploadImageData, { observe: 'response' })
+         .pipe(
+           catchError(this.handleError<Image>("Doslo je do greske pri cuvanju slike"))
+         );
+
+     }
+
      public updateDriver(driver: DriversAccount): Observable<DriversAccount> {
       return this.http.post<DriversAccount>(`${this.updateDriverUrl}`, driver, this.httpOptions).pipe(
         catchError(this.handleError<DriversAccount>())
@@ -194,7 +207,8 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 
 
 
-  private openErrorDialog(message: string) {
+
+  public openErrorDialog(message: string) {
     this.dialog.open(ErrorDialogComponent, {
       data: {
         errorMessage: message,

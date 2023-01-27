@@ -51,7 +51,11 @@ export class AddCarComponent implements OnInit {
       status: Status.ACTIVE,
       role: Role.ROLE_DRIVER
     },
-    picture:'',
+    picture:{
+      name:'',
+      type:'',
+      picByte:null
+    },
     phone:'',
     car:{
       brand:'',
@@ -109,7 +113,7 @@ export class AddCarComponent implements OnInit {
     if(this.selectedBodyType === 'HATCHBACK')this.info.car.bodyType=CarBodyType.HATCHBACK;
   }
 
- 
+
 
  //fja za kad idemo nazad i da ona sacuiva u servisu te podatke(znaci samo set data postavi na ovo trenutno odavde)
   back(){

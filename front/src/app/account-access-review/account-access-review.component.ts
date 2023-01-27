@@ -28,7 +28,11 @@ export class AccountAccessReviewComponent implements OnInit {
       number:''
     },
     phone:'',
-    picture:'',
+    picture:{
+      name:'',
+      type:'',
+      picByte:null
+    },
     clientsBankAccount:{
       balance:0,
       ownerName:'',
@@ -38,7 +42,7 @@ export class AccountAccessReviewComponent implements OnInit {
     },
     bankStatus:BankStatus.NOTCONFIRMED
   }
-  
+
 
   constructor(private activatedRoute: ActivatedRoute, private service: AppService) { }
 
@@ -62,7 +66,7 @@ export class AccountAccessReviewComponent implements OnInit {
   }
 
 
-  
+
   accept(){
     this.service.acceptBankAccountAccess(this.clientsAccount).subscribe((resp: ClientsAccount) => {
       this.clientsAccount = resp;
@@ -79,5 +83,5 @@ export class AccountAccessReviewComponent implements OnInit {
       console.log(resp);
     })
   }
-  
+
   }

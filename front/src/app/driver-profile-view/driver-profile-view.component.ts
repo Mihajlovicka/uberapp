@@ -12,11 +12,17 @@ import { Role, Status } from '../model/user.model';
 })
 export class DriverProfileViewComponent implements OnInit {
 
-  
+
+
+  retrievedImage: any;
+  message: string | undefined;
+  disableUpload: boolean=true;
+  pictureChanging:boolean=false;
+  imageName: any;
   disabled:boolean=true;
   izmena:string="Izmeni podatke"
   email:string="";
-  
+
   driversAccount : DriversAccount = {
     user:{
       username:'',
@@ -26,7 +32,11 @@ export class DriverProfileViewComponent implements OnInit {
       status: Status.ACTIVE,
       role: Role.ROLE_CLIENT
     },
-    picture:'',
+    picture:{
+      name:'',
+      type:'',
+      picByte:null
+    },
     phone:'',
     car:{
       brand:'',
@@ -39,8 +49,9 @@ export class DriverProfileViewComponent implements OnInit {
     },
     driverStatus: DriverStatus.AVAILABLE
   }
+  private selectedFile: File | undefined;
 
-  constructor(private appService: AppService, private route: ActivatedRoute) { }
+  constructor(private appService: AppService, private route: ActivatedRoute) {  }
 
   ngOnInit(): void {
     this.loadDriver();
@@ -48,13 +59,12 @@ export class DriverProfileViewComponent implements OnInit {
 
   loadDriver(){
     this.route.queryParams.subscribe(params => {
-      
+
       this.email = params['email']
      });
 
      this.appService.getDriver(this.email).subscribe((resp: DriversAccount) => {
       this.driversAccount = resp;
-      //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
       console.log(this.driversAccount);
       console.log(resp);
     });
@@ -69,9 +79,9 @@ export class DriverProfileViewComponent implements OnInit {
       this.izmena="Izmeni podatke";
       this.disabled=true;
     }
-    
+
   }
-     
+
   cancelChange(){
     this.izmena="Izmeni podatke";
     this.disabled=true;
@@ -93,6 +103,53 @@ export class DriverProfileViewComponent implements OnInit {
     this.driversAccount.car.brand.charAt(0).toUpperCase();
     this.driversAccount.car.model.charAt(0).toUpperCase();
   }
+
+  private checkFileType(file:any) : boolean{
+    if(file.type!="image/jpg" && file.type!="image/png" && file.type!="image/jpeg") return false;
+    else return true;
+  }
+  //Gets called when the user selects an image
+  public onFileChanged(event:any) {
+    //Select File
+    if(event.target.files[0].size < 5242880) {
+      if(this.checkFileType(event.target.files[0])) {
+        this.selectedFile = event.target.files[0];
+        this.disableUpload = false;
+      }
+      else{
+        this.appService.openErrorDialog("Tip fajla mora biti png, jpg ili jpeg. Izaberite drugi fajl!");
+        this.disableUpload = true;
+      }
+    }
+    else{
+      this.appService.openErrorDialog("Odabrana slika je prevelika. Izaberite neku drugu.");
+      this.disableUpload = true;
+    }
+    console.log(this.selectedFile);
+  }
+
+
+  //Gets called when the user clicks on submit to upload the image
+  onUpload() {
+    console.log(this.selectedFile);
+
+    //FormData API provides methods and properties to allow us easily prepare form data to be sent with POST HTTP requests.
+    const uploadImageData = new FormData();
+    if(this.selectedFile) {
+      uploadImageData.append('imageFile', this.selectedFile, this.selectedFile.name);
+      uploadImageData.append('userEmail',this.driversAccount.user.email);
+    }
+    this.appService.uploadPicture(uploadImageData).subscribe((resp: any) => {
+      this.driversAccount.picture.picByte = resp.body.picByte;
+      console.log("Slika:");
+      console.log(this.driversAccount.picture);
+      this.appService.openErrorDialog("Uspesno ste promenili sliku.")
+      console.log(this.driversAccount);
+      console.log(resp);
+
+    });
+  }
+
 
   saveChanges(){
   if(this.driversAccount.user.name==='')alert("Unesite ime!")
@@ -116,9 +173,8 @@ export class DriverProfileViewComponent implements OnInit {
 
   this.appService.updateDriver(this.driversAccount).subscribe((resp: DriversAccount) => {
       this.driversAccount = resp;
-      //alert("Uspesno ste se registrovali. Pogledajte email za verifikaciju naloga.")
-      
-      alert("Zahtev za izmenu podataka je poslat administratoru sistema.");
+
+    this.appService.openErrorDialog("Zahtev za izmenu podataka je poslat administratoru sistema.");
     })
   }
 }

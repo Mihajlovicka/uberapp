@@ -1,5 +1,6 @@
 import { Car } from "./car.model";
 import { User } from "./user.model";
+import {Image} from "./image.model";
 
 export enum DriverStatus{
     AVAILABLE = 'AVAILABLE',
@@ -8,7 +9,7 @@ export enum DriverStatus{
 
 interface DriversAccountInterface{
     user: User;
-    picture: string;
+    picture: Image;
     phone: string;
     car: Car;
     driverStatus: DriverStatus.AVAILABLE;
@@ -17,7 +18,7 @@ interface DriversAccountInterface{
 
 export class DriversAccount implements DriversAccountInterface{
     public user: User;
-    public picture: string;
+    public picture: Image;
     public phone: string;
     public car: Car;
     public driverStatus: DriverStatus.AVAILABLE;
@@ -28,6 +29,6 @@ export class DriversAccount implements DriversAccountInterface{
         this.phone = driversInt.phone;
         this.car = driversInt.car;
         this.driverStatus = driversInt.driverStatus;
-        
+
     }
 }
