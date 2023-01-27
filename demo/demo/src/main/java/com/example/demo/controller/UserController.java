@@ -195,6 +195,7 @@ public class UserController {
         car.setFuelType(addDriverCarFormDTO.getCar().getFuelType());
         car.setBodyType(addDriverCarFormDTO.getCar().getBodyType());
         car.setNumOfSeats(addDriverCarFormDTO.getNumOfSeats());
+        car.setCurrentLocation(new Location());
 
         driverAccount.setUser(user);
         driverAccount.setDriverStatus(DriverStatus.BUSY);

@@ -1,6 +1,6 @@
 import {HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/common/http";
 import {catchError, Observable, throwError} from "rxjs";
-import {UserRegistrationService} from "../user-registration.service";
+import {UserAuthService} from "../service/user-auth.service";
 import {Router} from "@angular/router";
 import {Injectable} from "@angular/core";
 
@@ -8,7 +8,7 @@ import {Injectable} from "@angular/core";
   providedIn: 'root'
 })
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private service: UserRegistrationService,
+  constructor(private service: UserAuthService,
               private router:Router) {
   }
 

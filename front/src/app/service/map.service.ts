@@ -11,7 +11,7 @@ import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog
 import {MatDialog} from "@angular/material/dialog";
 import {DriversAccount} from "../model/driversAccount.model";
 import {AppService} from "../app.service";
-import { Stop } from '../model/stop.model';
+import {Ride} from '../model/Ride';
 
 @Injectable({
   providedIn: 'root'
@@ -26,11 +26,15 @@ export class MapService {
 
   constructor(private http: HttpClient,
               public dialog: MatDialog,
-              private appService:AppService) {
+              private appService: AppService) {
   }
 
   getHPlatform(): H.service.Platform {
     return this.platform
+  }
+
+  getAllActiveRides(): Observable<Ride[]> {
+    return this.http.get<Ride[]>('http://localhost:8080/api/ride');
   }
 
   showRoute(stops: [number, number][]): Observable<any> {
@@ -42,6 +46,22 @@ export class MapService {
     const body = {
       coordinates: stops,
       preference: 'shortest',
+    }
+
+    return this.http.post<any>('https://api.openrouteservice.org/v2/directions/driving-car/geojson',
+      body, {headers})
+      .pipe(catchError(this.appService.handleError<any>("dodavanje rute neuspesno")))
+  }
+
+  showMultipleRoutes(stops: [number, number][]) {
+    const headers = new HttpHeaders({
+      'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+      'Content-Type': 'application/json',
+      'Authorization': this.tokenORS
+    })
+    const body = {
+      coordinates: stops,
+      alternative_routes:{"target_count":3}
     }
 
     return this.http.post<any>('https://api.openrouteservice.org/v2/directions/driving-car/geojson',
@@ -64,7 +84,9 @@ export class MapService {
     return this.http.post<any>('https://api.openrouteservice.org/v2/matrix/driving-car',
       body, {headers})
       .pipe(
-        map(response => {if(param === 'duration') return response.durations; else return response.distances}),
+        map(response => {
+          if (param === 'duration') return response.durations; else return response.distances
+        }),
         catchError(this.appService.handleError<any>("dodavanje rute neuspesno"))
       )
 
@@ -95,15 +117,15 @@ export class MapService {
     return result;
   }
 
-  public getRouteSums(matrix:Array<Array<number>>, combinations:number[][], n:number): number[]{
+  public getRouteSums(matrix: Array<Array<number>>, combinations: number[][], n: number): number[] {
     var results: number[] = []
-    combinations.forEach((comb:number[]) => {
+    combinations.forEach((comb: number[]) => {
       let sum = 0
       let start = 0
-      let end = n-1
+      let end = n - 1
       sum += matrix[start][comb[0]]
-      sum += matrix[comb[comb.length-1]][end]
-      for (let i = 0; i < comb.length-1; i++) {
+      sum += matrix[comb[comb.length - 1]][end]
+      for (let i = 0; i < comb.length - 1; i++) {
         sum += matrix[comb[i]][comb[i + 1]]
       }
       results.push(sum)
@@ -111,34 +133,33 @@ export class MapService {
     return results
   }
 
-  public getBestRouteCombination(results: number[],combinations:number[][], stops:MapAddress[]): MapAddress[]{
+  public getBestRouteCombination(results: number[], combinations: number[][], stops: MapAddress[]): MapAddress[] {
     var minIndex = 0
     var minSum = results[0]
-    for(let i = 1; i < results.length;i++){
-      if(minSum > results[i]){
+    for (let i = 1; i < results.length; i++) {
+      if (minSum > results[i]) {
         minSum = results[i]
         minIndex = i
       }
     }
-    var stopsInOrder:MapAddress[] = []
+    var stopsInOrder: MapAddress[] = []
     var minCombination = combinations[minIndex]
     stopsInOrder.push(stops[0])
     minCombination.forEach((stopIndex) => {
       stopsInOrder.push(stops[stopIndex])
     })
-    stopsInOrder.push(stops[stops.length-1])
+    stopsInOrder.push(stops[stops.length - 1])
     return stopsInOrder
   }
 
 
-  public openErrorDialog(message:string){
+  public openErrorDialog(message: string) {
     this.dialog.open(ErrorDialogComponent, {
       data: {
         errorMessage: message,
       },
     });
   }
-
 }
 
 export const apikey = '4p_yH-oIdvknqcL_qWc-67Qub-dzK1i9CfagdSkB6s0';

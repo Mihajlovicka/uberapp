@@ -8,9 +8,8 @@ import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { RegisterComponent } from './register/register.component';
 
-import { RouterModule, Routes } from '@angular/router';
 import { RegistrationConfirmComponent } from './registration-confirm/registration-confirm.component';
-import {UserRegistrationService} from "./user-registration.service";
+import {UserAuthService} from "./service/user-auth.service";
 
 import { AddDriverComponent } from './add-driver/add-driver.component';
 import { AddCarComponent } from './add-car/add-car.component';
@@ -55,30 +54,12 @@ import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clien
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
 import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
+
 import { PasswordChangeComponent } from './password-change/password-change.component';
 
+import {AppRoutingModule} from "./app-routing.module";
 
 
-
-
-
-const appRoutes: Routes = [
-  { path: 'register', component: RegisterComponent},
-  { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
-  { path:'bankConfirm/:email', component:AccountAccessReviewComponent},
-  {path: 'driver-info', component: AddDriverComponent},
-  {path:'car-info', component:AddCarComponent},
-  {path:'login', component:LoginComponent},
-  {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
-  {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
-  {path:'admin', component:AdminHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_ADMINISTRATOR'}},
-  {path:'forbidden', component:ForbiddenComponent},
-  {path:'clientProfile', component:ProfileViewComponent},
-  {path:'driversProfile', component:DriverProfileViewComponent},
-  {path:'map', component:MapComponent},
-  {path:'add-clients', component:AddClientsIntoDriveComponent},
-  {path: 'make-drive-reservation', component:MakeDriveReservationComponent}
-]
 
 @NgModule({
   declarations: [
@@ -112,11 +93,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(
-      appRoutes, {
-        enableTracing: true
-      }
-    ),
+    AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -139,7 +116,7 @@ const appRoutes: Routes = [
     {provide:HTTP_INTERCEPTORS,
     useClass:AuthInterceptor,
     multi:true},
-    UserRegistrationService,
+    UserAuthService,
     MapService
   ],
   bootstrap: [AppComponent]

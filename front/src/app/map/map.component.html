@@ -3,7 +3,12 @@
   <div class="row">
     <div class="map-container">
       <div class="map-frame">
-        <div id="map"></div>
+        <div id="map"
+             leaflet
+             (leafletMapReady)="onMapReady($event)"
+             [leafletOptions]="options"
+             [leafletLayers]="mainGroup"
+        ></div>
       </div>
     </div>
     <form class="data col">
@@ -61,11 +66,19 @@
                           (addressChange)="addressChanged($event, 'end')"></app-address-item>
       </div>
 
+      <div *ngIf="showSummary">
+        <div class="row justify-content-start"><h5>Pronadjena optimalna putanja</h5></div>
+        <div class="row justify-content-start"><h6>Razdaljina {{optimalRoute.distance}} km</h6></div>
+        <div class="row justify-content-start"><h6>Trajanje {{optimalRoute.duration}} min</h6></div>
+        <div class="row justify-content-start"> <h6>Procenjena cena {{optimalRoute.price}} RSD</h6></div>
+      </div>
 
       <div class="row justify-content-end">
         <div *ngIf="nextPage; then thenBlockNext else elseBlockNext"></div>
         <ng-template #thenBlockNext>
-          <button mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
+          <button *ngIf="service.isLoggedIn() && nextPage && showSummary" mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
+          <button *ngIf="service.isLoggedIn() && openDialog" mat-raised-button type="button" class="col-4" color="primary" (click)="openRouteDialog()">Izaberi putanju</button>
+          <button *ngIf="!service.isLoggedIn() && !showSummary" mat-raised-button type="button" class="col-6" color="primary" (click)="getOptimalRoute()">Nadji optimalnu putanju</button>
         </ng-template>
         <ng-template #elseBlockNext>
           <button mat-raised-button type="button" class="col-4" color="primary" (click)="showRoute()">Prikazi putanju

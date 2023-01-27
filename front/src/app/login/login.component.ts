@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, NgForm, Validators} from '@angular/forms';
-import {UserRegistrationService} from "../user-registration.service";
+import {UserAuthService} from "../service/user-auth.service";
 import {Router} from "@angular/router";
 
 @Component({
@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
     return this.username.hasError('email') ? 'Email nije validan' : '';
   }
   constructor(
-    private service: UserRegistrationService,
+    private service: UserAuthService,
     private router: Router
   ) {
   }

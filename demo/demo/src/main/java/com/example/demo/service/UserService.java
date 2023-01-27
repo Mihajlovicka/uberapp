@@ -282,6 +282,15 @@ public class UserService {
 
     }
 
+
+    public List<DriversAccount> getDrivers(){
+        return driversRepository.findAll();
+    }
+
+    public void changeDriverStatus(DriversAccount da,DriverStatus status) {
+        da.setDriverStatus(status);
+        driversRepository.save(da);
+    }
     public Image savePictureInUser(Image image, String email) {
         User logged = userRepository.findUserByEmail(email);
         Long oldID = 0L;
@@ -297,7 +306,7 @@ public class UserService {
                         image = imageRepository.save(image);
                         client.setPicture(image);
                         clientsRepository.save(client);
-                        img=image;
+                        img = image;
                     }
                 }
             } else if (logged.getRole().getName().equals("ROLE_DRIVER")) {
@@ -310,7 +319,7 @@ public class UserService {
                         image = imageRepository.save(image);
                         driver.setPicture(image);
                         driversRepository.save(driver);
-                        img=image;
+                        img = image;
                     }
                 }
             }
