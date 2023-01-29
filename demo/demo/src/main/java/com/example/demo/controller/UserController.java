@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.UserConverter;
-import com.example.demo.dto.AddDriverCarFormDTO;
-import com.example.demo.dto.ClientAccountDTO;
-import com.example.demo.dto.DriverAccountDTO;
-import com.example.demo.dto.RegisterFormDTO;
+import com.example.demo.dto.*;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.PlateNumberExistException;
@@ -218,6 +215,26 @@ public class UserController {
         return new ResponseEntity(email, HttpStatus.OK);
     }
 
+    @PostMapping(value="api/blockUser")
+    public ResponseEntity blockUser(@RequestBody String email) {
+        userService.block(email);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+    @PostMapping(value="api/changePassword")
+    public ResponseEntity changePassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
+        if(userService.changePassword(passwordChangeDTO.getEmail(),passwordChangeDTO.getOldPassword(),passwordChangeDTO.getNewPassword())){
+            return new ResponseEntity("", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @PostMapping(value="api/unblockUser")
+    public ResponseEntity unblockUser(@RequestBody String email) {
+        userService.unblock(email);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @PostMapping(value="api/uploadIMG")
     public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file, @RequestParam("userEmail") String email) throws IOException {
 
@@ -252,6 +269,10 @@ public class UserController {
     @GetMapping(value="api/getAllActiveClients")
     public ResponseEntity getAllActiveClients(){
         return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveClients()), HttpStatus.OK);
+    }
+    @GetMapping(value="api/getLoggedUser")
+    public ResponseEntity getLoggedUser(){
+        return new ResponseEntity(userConverter.toDTO(userService.getLoggedIn()), HttpStatus.OK);
     }
 
 }

@@ -11,16 +11,19 @@ import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 import {Image} from "./model/image.model";
 import {FavoriteRide} from "./model/favoriteRide.model";
+import {PasswordChange} from "./model/passwordChange.model";
 
 @Injectable({
   providedIn: 'root'
 })
+
 
 export class AppService {
   private host = 'http://localhost:8080'
   private registerUrl = 'http://localhost:8080/api/register';
   private addDriverUrl = 'http://localhost:8080/api/add-driver';
   private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+  private getLoggedUserUrl = 'http://localhost:8080/api/getLoggedUser';
   private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
   private updateClientUrl = 'http://localhost:8080/api/updateClient';
   private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
@@ -28,9 +31,14 @@ export class AppService {
   private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
   private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
   private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
+
   httpOptions = {
     headers: new HttpHeaders({'Content-Type': 'application/json'})
   };
+  private blockUserUrl = 'http://localhost:8080/api/blockUser';
+  private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
+  private changePasswordUrl = 'http://localhost:8080/api/changePassword';
+
 
 
   private emptyDriverCar: DriverCarInfo = {
@@ -118,6 +126,12 @@ export class AppService {
     )
   }
 
+  public changePassword(passwordData: PasswordChange): Observable<any> {
+    return this.http.post<any>(`${this.changePasswordUrl}`, passwordData, this.httpOptions).pipe(
+      catchError(this.handleError<any>())
+    )
+  }
+
   public uploadPicture(uploadImageData: FormData): any {
     //Make a call to the Spring Boot Application to save the image
     //Make a call to the Spring Boot Application to save the image
@@ -133,6 +147,24 @@ export class AppService {
       catchError(this.handleError<DriversAccount>())
     )
   }
+  public blockUser(email:string):any{
+    console.log("User to block:" + email);
+    return this.http.post(`${this.blockUserUrl}`, email, this.httpOptions).pipe(
+      catchError(this.handleError("Neuspesno blokiranje")));
+
+  }
+  public unblockUser(email:string):any{
+    console.log("User to block:" + email);
+    return this.http.post(`${this.unblockUserUrl}`, email, this.httpOptions).pipe(
+      catchError(this.handleError("Neuspesno odblokiranje")));
+
+  }
+
+     public getLoggedUser():Observable<User>{
+       return this.http.get<User>(`${this.getLoggedUserUrl}`).pipe(
+         catchError(this.handleError<User>()));
+     }
+
 
 
   setData(data: DriverCarInfo) {

@@ -13,10 +13,34 @@
                   <!-- Profile picture help block-->
                     <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
                     <!-- Profile picture upload button-->
-                    <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="pictureChanging=true;">Izmeni sliku profila</button>
-                  <div *ngIf="pictureChanging">
-                    <input type="file" (change)="onFileChanged($event)" accept=".png, .jpg, .jpeg">
-                    <input [disabled]="disableUpload" type="button" class="btn btn-secondary" (click)="onUpload(); pictureChanging=!pictureChanging;" value="Sacuvaj izmene">
+                  <div *ngIf="!isAdmin" class="text-center">
+
+                    <div>
+                     <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="pictureChanging=true;">Izmeni sliku profila</button>
+                    </div>
+                    <div *ngIf="pictureChanging" class="text-center">
+                      <div>
+                        <input type="file" (change)="onFileChanged($event)" accept=".png, .jpg, .jpeg">
+                      </div>
+                      <br>
+                      <div>
+                        <input [disabled]="disableUpload" type="button" class="btn btn-secondary" (click)="onUpload(); pictureChanging=!pictureChanging;" value="Sacuvaj izmene">
+                      </div>
+                      <br>
+                      <div>
+                        <button class="btn btn-secondary" type="button" *ngIf="pictureChanging" (click)="pictureChanging=false;">Odustani</button>
+
+                      </div>
+                    </div>
+                    <br>
+                    <div>
+                      <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="changePassword();">Izmeni lozinku</button>
+                    </div>
+                  </div>
+                  <div *ngIf="isAdmin">
+                    <button class="btn btn-secondary" type="button" (click)="blockUser();" *ngIf="!isBlocked">Blokiraj korisnika</button>
+
+                    <button class="btn btn-secondary" type="button" (click)="unblockUser();" *ngIf="isBlocked">Odblokiraj korisnika</button>
 
                   </div>
                 </div>
@@ -78,7 +102,7 @@
 
                         <!-- Save changes button-->
                         <div class="row">
-                            <div id="buttonsDiv">
+                            <div id="buttonsDiv" *ngIf="!isAdmin">
                                 <button class="btn btn-secondary" type="button" id="cancelProfileInfo" *ngIf="!disabled" (click)="cancelChange()">Cancel</button>
                                 <button class="btn btn-secondary" type="button" id="saveProfileInfo" (click)="change()">{{izmena}}</button>
 

@@ -331,4 +331,40 @@ public class UserService {
         throw new NotFoundException("User not found or not logged in.");
     }
 
+
+    public void block(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.BANNED);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
+
+
+    public void unblock(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.ACTIVE);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findUserByEmail(email);
+        if(user != null){
+            String s = passwordEncoder.encode(oldPassword);
+            if(passwordEncoder.matches(oldPassword, user.getPassword())){
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
 }
