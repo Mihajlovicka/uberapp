@@ -81,7 +81,7 @@ export class AddressItemComponent implements OnInit {
         if(data.items.length !== 0){
           data.items.forEach((el: any) => {
             this.options.push(new MapAddress(el.title, new Position(el.position.lat, el.position.lng),
-              el.address,undefined))
+              el.address.label,undefined))
           })}
         this.filteredOptions = this.myControl.valueChanges.pipe(
           startWith(''),

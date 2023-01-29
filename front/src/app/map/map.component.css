@@ -1,10 +1,13 @@
-
+.container{
+  margin-top: 2%;
+  max-width: 80%!important;
+}
 .map-container {
   top: 0;
   left: 0;
   margin: 15px;
-  height: 500px;
-  width: 50%;
+  height: 80vh;
+  width: 60%;
 }
 .map-frame{
   border: 2px solid darkslateblue;
@@ -16,6 +19,7 @@
 
 .data{
   margin: 15px;
+  max-width: 70%;
 }
 
 .address{

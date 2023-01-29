@@ -1,18 +1,18 @@
 import {Position} from "./mapAddress.model";
 export interface StopInterface{
     address:string,
-    position:Position,
+    location:Position,
     name:string
   }
 
 export class Stop{
     public address: string;
-    public position: Position;
+    public location: Position;
     public name: string;
 
-    constructor(address:string, position:Position, name:string){
+    constructor(address:string, location:Position, name:string){
         this.address = address
-        this.position = position;
+        this.location = location;
         this.name = name;
     }
 }

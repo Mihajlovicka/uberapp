@@ -2,10 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
-import com.example.demo.exception.EmailExistException;
-import com.example.demo.exception.EmailNotFoundException;
-import com.example.demo.exception.PlateNumberExistException;
-import com.example.demo.exception.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.*;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
@@ -326,4 +323,12 @@ public class UserService {
         }
         return img;
     }
+
+    public User getLoggedIn(){
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
+            return  (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        }
+        throw new NotFoundException("User not found or not logged in.");
+    }
+
 }

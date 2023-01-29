@@ -28,6 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from "@angular/material/card";
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AuthInterceptor } from "./_auth/auth.interceptor";
 import { AuthGuard } from "./_auth/auth.guard";
@@ -55,6 +57,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
 import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
 import {AppRoutingModule} from "./app-routing.module";
+import { FavoriteRoutesComponent } from './favorite-routes/favorite-routes.component';
+import { FavoriteRoutesDialogComponent } from './dialog-template/favorite-routes-dialog/favorite-routes-dialog.component';
 
 
 @NgModule({
@@ -81,6 +85,8 @@ import {AppRoutingModule} from "./app-routing.module";
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
     SelectVehicleTypeComponent,
+    FavoriteRoutesComponent,
+    FavoriteRoutesDialogComponent,
   ],
 
 
@@ -103,7 +109,9 @@ import {AppRoutingModule} from "./app-routing.module";
     MatDialogModule,
     MatRadioModule,
     MatTooltipModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatMenuModule,
+    MatExpansionModule
   ],
   providers: [
     AppService,

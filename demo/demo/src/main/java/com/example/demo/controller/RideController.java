@@ -1,81 +1,45 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.RideSimulationDTO;
-import com.example.demo.model.Car;
-import com.example.demo.model.DriverStatus;
-import com.example.demo.model.RideSimulation;
-import com.example.demo.service.CarService;
-import com.example.demo.service.RideSimulationService;
+import com.example.demo.dto.FavoriteRideDTO;
+import com.example.demo.model.FavoriteRide;
+import com.example.demo.service.RideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("api/ride")
 public class RideController {
-
     @Autowired
-    private RideSimulationService rideService;
-    @Autowired
-    private CarService carService;
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private RideService rideService;
 
-
-    @PostMapping(
-            consumes = "application/json",
-            produces = "application/json"
-    )
-    public ResponseEntity<RideSimulationDTO> createRide(@RequestBody RideSimulationDTO rideDTO) {
-        RideSimulation ride = this.rideService.createRide(new RideSimulation(rideDTO), new Car(rideDTO.getVehicle()));
-        DriverStatus status = carService.getCarStatus(ride.getCar());
-        RideSimulationDTO returnRideDTO = new RideSimulationDTO(ride, status);
-        this.simpMessagingTemplate.convertAndSend("/map-updates/new-ride", returnRideDTO);
-        return new ResponseEntity<>(returnRideDTO, HttpStatus.OK);
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @GetMapping(path = "/ride/get_favorites", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<FavoriteRideDTO>> getFavoriteRides(){
+        List<FavoriteRide> rides = rideService.getAllFavorites();
+        List<FavoriteRideDTO> ridesDTO = new ArrayList<>();
+        rides.forEach(r -> ridesDTO.add(new FavoriteRideDTO(r)));
+        return new ResponseEntity<>(ridesDTO, HttpStatus.OK);
     }
 
-    @PutMapping(
-            path = "/{id}",
-            produces = "application/json"
-    )
-    public ResponseEntity<RideSimulationDTO> changeRide(@PathVariable("id") int id) {
-        RideSimulation ride = this.rideService.changeRide(id);
-        DriverStatus status = carService.getCarStatus(ride.getCar());
-        RideSimulationDTO returnRideDTO = new RideSimulationDTO(ride, status);
-        this.simpMessagingTemplate.convertAndSend("/map-updates/ended-ride", returnRideDTO);
-        return new ResponseEntity<>(returnRideDTO, HttpStatus.OK);
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @PostMapping(path = "/ride/new_favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FavoriteRideDTO> addFavoriteRide(@RequestBody FavoriteRideDTO rideDTO){
+        FavoriteRide ride = new FavoriteRide(rideDTO);
+        FavoriteRide newRide = rideService.addFavoriteRide(ride);
+        FavoriteRideDTO newRideDTO = new FavoriteRideDTO(newRide);
+        return new ResponseEntity<>(newRideDTO, HttpStatus.OK);
     }
 
-    @GetMapping(
-            path = "/{id}",
-            produces = "application/json"
-    )
-    public ResponseEntity<RideSimulationDTO> getRealRide(@PathVariable("id") int id) {
-        RideSimulation ride = this.rideService.getRealRide(id);
-        DriverStatus status = carService.getCarStatus(ride.getCar());
-        RideSimulationDTO rideDTO = new RideSimulationDTO(ride, status);
-        this.simpMessagingTemplate.convertAndSend("/map-updates/new-existing-ride", rideDTO);
-        return new ResponseEntity<>(rideDTO, HttpStatus.OK);
-        //obavestiti zbog fronta
-    }
-
-    @DeleteMapping(
-            path = "/{id}",
-            produces = "text/plain"
-    )
-    public ResponseEntity<Map> deleteRide(@PathVariable("id") int  id) {
-        int car_id = this.rideService.deleteRide(id);
-        Map map = new HashMap<String, Integer>();
-        map.put("carId", car_id);
-        map.put("rideId", id);
-        this.simpMessagingTemplate.convertAndSend("/map-updates/delete-ride", map);
-        return new ResponseEntity<>(map, HttpStatus.OK);
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @DeleteMapping(path = "/ride/delete_favorite/{id}")
+    public ResponseEntity<String> deleteFavorite(@PathVariable("id") int id){
+        rideService.delete(id);
+        return new ResponseEntity<>("Uspesno obrisano", HttpStatus.OK);
     }
 }

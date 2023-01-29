@@ -13,7 +13,22 @@
     </div>
     <form class="data col">
       <div class="row">
-        <h4>Unos adresa</h4>
+        <h4 class="col">Unos adresa</h4>
+        <div>
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="addToFavorites()">
+              <mat-icon [ngStyle]="{'color':'red'}" >favorite</mat-icon>
+              <span>Dodaj rutu u omiljene</span>
+            </button>
+            <button mat-menu-item (click)="showFavorites()">
+              <mat-icon [ngStyle]="{'color':'black'}">add_road</mat-icon>
+              <span>Uzmi postojecu rutu</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
       <div class="row">
         <app-address-item #address1 class="address" [addressText]="'Pocetna adresa'" [isRequired]="true"
@@ -21,7 +36,7 @@
                           (addressChange)="addressChanged($event, 'start')"></app-address-item>
       </div>
 
-      <div *ngIf="service.isLoggedIn()">
+      <div  *ngIf="service.isLoggedIn()">
         <div class="row">
           <div class="example-button-row">
             <div *ngIf="!showAdditional; then thenBlock else elseBlock"></div>
@@ -60,7 +75,7 @@
         </div>
       </div>
 
-      <div class="row">
+      <div  class="row">
         <app-address-item #address2 class="address" [addressText]="'Krajnja adresa'" [isRequired]="true"
                           (isValid)="isValid($event)"
                           (addressChange)="addressChanged($event, 'end')"></app-address-item>
@@ -68,15 +83,15 @@
 
       <div *ngIf="showSummary">
         <div class="row justify-content-start"><h5>Pronadjena optimalna putanja</h5></div>
-        <div class="row justify-content-start"><h6>Razdaljina {{optimalRoute.distance}} km</h6></div>
-        <div class="row justify-content-start"><h6>Trajanje {{optimalRoute.duration}} min</h6></div>
-        <div class="row justify-content-start"> <h6>Procenjena cena {{optimalRoute.price}} RSD</h6></div>
+        <div class="row justify-content-start"><h6>Razdaljina {{drive.distance}} km</h6></div>
+        <div class="row justify-content-start"><h6>Trajanje {{drive.duration}} min</h6></div>
+        <div class="row justify-content-start"> <h6>Procenjena cena {{drive.price}} RSD</h6></div>
       </div>
 
       <div class="row justify-content-end">
         <div *ngIf="nextPage; then thenBlockNext else elseBlockNext"></div>
         <ng-template #thenBlockNext>
-          <button *ngIf="service.isLoggedIn() && nextPage && showSummary" mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
+         <button *ngIf="service.isLoggedIn() && nextPage && showSummary" mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
           <button *ngIf="service.isLoggedIn() && openDialog" mat-raised-button type="button" class="col-4" color="primary" (click)="openRouteDialog()">Izaberi putanju</button>
           <button *ngIf="!service.isLoggedIn() && !showSummary" mat-raised-button type="button" class="col-6" color="primary" (click)="getOptimalRoute()">Nadji optimalnu putanju</button>
         </ng-template>
