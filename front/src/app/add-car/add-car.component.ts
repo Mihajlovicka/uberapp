@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppService } from '../app.service';
-import { CarBodyType, Fuel } from '../model/car.model';
+import { BabySeat, CarBodyType, Fuel } from '../model/car.model';
 import { DriverCarInfo } from '../model/driverCarInfo.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
 import { Role, Status } from '../model/user.model';
@@ -36,8 +36,8 @@ export class AddCarComponent implements OnInit {
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
-      numOfSeats:5
-
+      numOfSeats:5,
+      babySeat:BabySeat.NONE
     }
 
   }
@@ -64,7 +64,8 @@ export class AddCarComponent implements OnInit {
       plateNumber:'',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
-      numOfSeats:5
+      numOfSeats:5,
+      babySeat:BabySeat.NONE
     },
     driverStatus: DriverStatus.AVAILABLE
   }

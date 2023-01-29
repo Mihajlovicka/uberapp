@@ -13,7 +13,8 @@ import java.util.List;
 @Entity
 @Table
 public class User implements UserDetails {
-    @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column

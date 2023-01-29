@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit, Input, EventEmitter} from '@angular/core';
 import * as L from 'leaflet';
 import {UserRegistrationService} from "../user-registration.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -12,6 +12,7 @@ import {Stop} from '../model/stop.model';
 
 import {FormBuilder, Validators} from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+
 
 
 L.Icon.Default.imagePath = 'assets/';
@@ -53,13 +54,24 @@ export class MapComponent implements AfterViewInit {
 
   private route: any = undefined
 
-  private drive: Drive = {
+  @Input() drive:Drive = {
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: []
+    clients: [],
+    seats: 5,
+    baby: 0,
+    babySeats:0,
+    pets:0,
+    owner: null
   };
+
+  @Output() setDrive = new EventEmitter<Drive>();
+
+  @Output() nextStep = new EventEmitter();
+
+
 
   public draggingIndex: number = -1;
 
@@ -75,6 +87,7 @@ export class MapComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    //console.log(this.drive)
     this.initMap()
     this.addCurrentLocation()
   }
@@ -248,7 +261,7 @@ export class MapComponent implements AfterViewInit {
     if (this.allValid) {
       this.getAllStops()
       if (this.service.isLoggedIn()) {
-        if (this.finalStopsOrder.length > 2)
+        if (this.finalStopsOrder.length >= 2)
           this.openRouteDialog()
       }
       this.showRoutesPathSame()
@@ -273,8 +286,17 @@ export class MapComponent implements AfterViewInit {
     if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
 
-      this.drive.price = this.drive.distance * 120
-      console.log(this.drive)
+      this.drive.price = this.drive.distance * 120 / 1000;
+
+      //console.log(this.drive);
+
+      
+
+      this.setDrive.emit(this.drive);
+
+      //emitovati za sl stranicu
+      this.nextStep.emit();
+
 
     }
   }

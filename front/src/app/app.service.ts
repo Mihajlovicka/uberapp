@@ -4,7 +4,7 @@ import {BehaviorSubject, catchError, Observable, of, Subject} from "rxjs";
 import {RegisterForm} from "./model/registerForm.model";
 import {Role, User} from "./model/user.model";
 import {ClientsAccount} from "./model/clientsAccount.model";
-import {CarBodyType, Fuel} from "./model/car.model";
+import {BabySeat, CarBodyType, Fuel} from "./model/car.model";
 import {DriverCarInfo} from "./model/driverCarInfo.model";
 import {DriversAccount} from "./model/driversAccount.model";
 import {MatDialog} from "@angular/material/dialog";
@@ -26,6 +26,7 @@ import {Image} from "./model/image.model";
     private bankUrlDecline = 'http://localhost:8080/api/declineBankAccountAccess';
     private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
     private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
+    private getLoggedUrl = 'http://localhost:8080/api/getLoggedUser';
     httpOptions = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })
       };
@@ -48,8 +49,8 @@ import {Image} from "./model/image.model";
       plateNumber: '',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
-      numOfSeats:5
-
+      numOfSeats:5,
+      babySeat: BabySeat.NONE
     }
   }
 
@@ -84,6 +85,11 @@ import {Image} from "./model/image.model";
         return this.http.get<ClientsAccount[]>(`${this.allActiveClients}`).pipe(catchError(this.handleError<ClientsAccount[]>()));
       }
 
+      //administrator je tipa user?
+      public getLoggedUser(): Observable<any>{
+        return this.http.get<any>(`${this.getLoggedUrl}`).pipe(catchError(this.handleError<any>()));
+      }
+
 
 
       public getClient(email:string): Observable<ClientsAccount>{
@@ -106,6 +112,8 @@ import {Image} from "./model/image.model";
 
 
      }
+
+  
 
 
      public addDriverCarAccount(addForm: DriverCarInfo): Observable<DriversAccount> {
@@ -193,6 +201,7 @@ import {Image} from "./model/image.model";
 
       public handleError<T>(operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
+       
           // TODO: send the error to remote logging infrastructure
           console.error(error); // log to console instead
 

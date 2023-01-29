@@ -253,4 +253,17 @@ public class UserController {
         return new ResponseEntity(userConverter.toDTOs(userService.getAllActiveClients()), HttpStatus.OK);
     }
 
+    @GetMapping(value="api/getLoggedUser")
+    public ResponseEntity getLoggedUser() throws EmailNotFoundException {
+        User loggedUser = userService.getLoggedUser();
+        if(loggedUser == null) return new ResponseEntity(null, HttpStatus.OK);
+        else{
+            if(loggedUser.getRole().getName().equals("ROLE_CLIENT")) return new ResponseEntity(userConverter.toDTO(userService.findClientsAccount(loggedUser.getEmail())), HttpStatus.OK);
+            if(loggedUser.getRole().getName().equals("ROLE_DRIVER")) return new ResponseEntity(userConverter.toDTO(userService.findDriversAccount(loggedUser.getEmail())), HttpStatus.OK);
+        }
+
+        //jedino sto preostaje je admin a to je samo user bar za sad.............
+        return new ResponseEntity(userConverter.toDTO(loggedUser), HttpStatus.OK);
+    }
+
 }

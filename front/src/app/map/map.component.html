@@ -65,7 +65,7 @@
       <div class="row justify-content-end">
         <div *ngIf="nextPage; then thenBlockNext else elseBlockNext"></div>
         <ng-template #thenBlockNext>
-          <button mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Dalje</button>
+          <button mat-raised-button type="button" class="col-4" color="primary" (click)="openNextPage()">Tip vozila</button>
         </ng-template>
         <ng-template #elseBlockNext>
           <button mat-raised-button type="button" class="col-4" color="primary" (click)="showRoute()">Prikazi putanju

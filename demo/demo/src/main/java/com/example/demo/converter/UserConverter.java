@@ -42,9 +42,11 @@ public class UserConverter {
 
     public ImageDTO toDTO(Image image){
         ImageDTO imageDTO = new ImageDTO();
-        imageDTO.setName(image.getName());
-        imageDTO.setPicByte(image.getPicByte());
-        imageDTO.setType(imageDTO.getType());
+        if(image != null){
+            imageDTO.setName(image.getName());
+            imageDTO.setPicByte(image.getPicByte());
+            imageDTO.setType(imageDTO.getType());
+        }
         return imageDTO;
     }
 

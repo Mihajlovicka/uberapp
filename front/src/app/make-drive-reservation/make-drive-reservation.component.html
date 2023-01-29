@@ -1,19 +1,19 @@
 <mat-stepper #stepper>
-  <mat-step [stepControl]="firstFormGroup" errorMessage="Morate odabrati pocetnu i krajnju stanicu.">
-
-
-    <app-map></app-map>
-
-  </mat-step>
   <mat-step>
-    <app-add-clients-into-drive></app-add-clients-into-drive>
+   <app-map [drive]="currentDrive" (setDrive)="setDriveValues($event)"  (nextStep)="goToNext()"></app-map>
+     
   </mat-step>
+   
   <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
-    <p>You are now done.</p>
-    <div>
-      <button mat-button matStepperPrevious>Back</button>
-      <button mat-button (click)="stepper.reset()">Reset</button>
-    </div>
+      
+    <app-find-type-of-vehicle [drive]="currentDrive" (setDrive)="setDriveValues($event)" (nextParentStep)="goToNext()"></app-find-type-of-vehicle>
+      
   </mat-step>
+
+
+  <mat-step>
+    <app-add-clients-into-drive [drive]="currentDrive" (setDrive)="setDriveValues($event)"></app-add-clients-into-drive>
+  </mat-step>
+
 </mat-stepper>
+  

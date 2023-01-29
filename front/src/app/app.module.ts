@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import {MatStepperModule} from '@angular/material/stepper';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
@@ -55,7 +56,7 @@ import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clien
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
 import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
-
+import { FindTypeOfVehicleComponent } from './find-type-of-vehicle/find-type-of-vehicle.component';
 
 
 
@@ -103,6 +104,7 @@ const appRoutes: Routes = [
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
     SelectVehicleTypeComponent,
+    FindTypeOfVehicleComponent,
   ],
 
 
@@ -129,7 +131,8 @@ const appRoutes: Routes = [
     MatDialogModule,
     MatRadioModule,
     MatTooltipModule,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatExpansionModule
   ],
   providers: [
     AppService,

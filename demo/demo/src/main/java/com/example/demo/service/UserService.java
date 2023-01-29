@@ -265,7 +265,7 @@ public class UserService {
 
         List<ClientsAccount> all = clientsRepository.findAllByUserStatus(Status.ACTIVE);
 
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// RADI NE DIRAJTE POBOGU!!!
             User logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             if(logged.getRole().getName().equals("ROLE_CLIENT")){
                 for (ClientsAccount client:
@@ -317,4 +317,15 @@ public class UserService {
         }
         return img;
     }
+
+
+    public User getLoggedUser(){
+        User logged = null;
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// RADI NE DIRAJTE POBOGU!!!
+            logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        }
+        return logged;
+    }
+
+
 }

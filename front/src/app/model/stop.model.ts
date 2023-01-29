@@ -1,4 +1,5 @@
 import {Position} from "./mapAddress.model";
+
 export interface StopInterface{
     address:string,
     position:Position,

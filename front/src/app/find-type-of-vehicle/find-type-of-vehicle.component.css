@@ -1,0 +1,23 @@
+.example-card {
+  min-height: 200px;
+  max-height: 600px;
+  margin-right: 1%;
+  margin-bottom: 1%;
+}
+img{
+    height: 120px;
+}
+.col-md-2 .example-card:hover{
+    border: 1px solid #673ab7;
+    
+}
+.example-action-buttons {
+  padding-bottom: 20px;
+}
+.example-headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+.example-headers-align .mat-mdc-form-field + .mat-mdc-form-field {
+  margin-left: 8px;
+}

@@ -1,4 +1,3 @@
-
 <form class="example-form" style="margin: 5% auto">
     <mat-form-field class="example-full-width" appearance="fill">
       <mat-label>Klijent</mat-label>
@@ -8,43 +7,42 @@
              [formControl]="userCtrl">
       <mat-autocomplete #auto="matAutocomplete" (optionSelected)="clientChosen($event)">
         <mat-option *ngFor="let user of filteredUsers | async" [value]="user.user.email">
-        
           <span>{{user.user.email}}</span> |
           <small>{{user.user.name}} {{user.user.surname}}</small>
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-  
     <br>
-
-    
   </form>
-
   <div>
     <ul>
       <li *ngFor="let client of selectedClients" style="display: inline-block; " class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
         <mat-card class="example-card" style="margin-right: 5%; margin-bottom: 5%; ">
-          <mat-card-header>
-            
+          <mat-card-header style="display: flex; justify-content: space-between">
             <mat-card-title-group>
               <mat-card-title>{{client.user.name}} {{client.user.surname}}</mat-card-title>
               <mat-card-subtitle>{{client.user.email}}</mat-card-subtitle>
-             
+              <mat-card-subtitle><strong>Ucesnik</strong></mat-card-subtitle>
             </mat-card-title-group>
-
-
             <button matSuffix mat-icon-button aria-label="Clear" (click)="removeClient(client)">
               <mat-icon>close</mat-icon>
             </button>
-
           </mat-card-header>
           <mat-card-content>
-            
           </mat-card-content>
-
-        
-        </mat-card><br><br>
+        </mat-card>
       </li>
-     
+      <li class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="display: inline-block; ">
+        <mat-card *ngIf="this.drive.owner !== null" class="example-card" style="margin-right: 5%; margin-bottom: 5%; ">
+          <mat-card-header style="display: flex; justify-content: space-between">
+            <mat-card-title-group>
+              <mat-card-title>{{this.drive.owner.user.name}} {{this.drive.owner.user.surname}}</mat-card-title>
+              <mat-card-subtitle>{{this.drive.owner.user.email}}</mat-card-subtitle>
+  
+              <mat-card-subtitle><strong>Vi ste vlasnik voznje</strong></mat-card-subtitle>
+            </mat-card-title-group>
+          </mat-card-header>
+        </mat-card>
+       </li>
     </ul>
   </div>

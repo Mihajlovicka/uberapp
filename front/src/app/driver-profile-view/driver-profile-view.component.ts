@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
-import { CarBodyType, Fuel } from '../model/car.model';
+import { BabySeat, CarBodyType, Fuel } from '../model/car.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
 import { Role, Status } from '../model/user.model';
 
@@ -45,7 +45,8 @@ export class DriverProfileViewComponent implements OnInit {
       plateNumber:'',
       bodyType: CarBodyType.COUPE,
       fuelType: Fuel.AUTOGAS,
-      numOfSeats:5
+      numOfSeats:5,
+      babySeat:BabySeat.NONE
     },
     driverStatus: DriverStatus.AVAILABLE
   }
