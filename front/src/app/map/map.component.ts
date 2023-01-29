@@ -1,6 +1,6 @@
 import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit, Input, EventEmitter} from '@angular/core';
 import * as L from 'leaflet';
-import {UserRegistrationService} from "../user-registration.service";
+import {UserAuthService} from "../service/user-auth.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {MatDialog} from '@angular/material/dialog';
 import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dialog.component";
@@ -9,9 +9,21 @@ import {MapService} from "../service/map.service";
 import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
 import {Drive} from "../model/drive.model";
 import {Stop} from '../model/stop.model';
+import {Vehicle} from '../model/Vehicle';
+import {Ride} from '../model/Ride';
 
 import {FormBuilder, Validators} from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
+
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import {DriverStatus} from "../model/driversAccount.model";
+import {AppService} from "../app.service";
+import {Router} from "@angular/router";
+import {
+  FavoriteRoutesDialogComponent
+} from "../dialog-template/favorite-routes-dialog/favorite-routes-dialog.component";
+import {FavoriteRide} from "../model/favoriteRide.model";
 
 
 
@@ -28,7 +40,7 @@ L.Icon.Default.imagePath = 'assets/';
     },
   ],
 })
-export class MapComponent implements AfterViewInit {
+export class MapComponent implements AfterViewInit, OnInit {
 
 
   firstFormGroup = this._formBuilder.group({
@@ -39,6 +51,22 @@ export class MapComponent implements AfterViewInit {
   });
 
   private map!: L.Map;
+
+  options = {
+    layers: [
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        // attribution: '...',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+      }),
+    ],
+    zoom: 14,
+    center: L.latLng(45.253434, 19.831323),
+  };
+  vehicles: any = {};
+  rides: any = {};
+  mainGroup: L.LayerGroup[] = [];
+  private stompClient: any;
 
   private start: MapAddress | undefined
   private end: MapAddress | undefined
@@ -52,7 +80,12 @@ export class MapComponent implements AfterViewInit {
   public nextPage: boolean = false;
   public showAdditional: boolean = false
 
+
   private route: any = undefined
+  public showSummary: boolean = false
+  public openDialog: boolean = false
+  public routeChosen: boolean = false
+  private optimalRouteLayer: any = undefined
 
   @Input() drive:Drive = {
     stops: [],
@@ -64,7 +97,8 @@ export class MapComponent implements AfterViewInit {
     baby: 0,
     babySeats:0,
     pets:0,
-    owner: null
+    owner: null,
+    routeJSON:{}
   };
 
   @Output() setDrive = new EventEmitter<Drive>();
@@ -75,47 +109,129 @@ export class MapComponent implements AfterViewInit {
 
   public draggingIndex: number = -1;
 
-  private title = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-  })
+  private addressesLayer: L.LayerGroup = new L.LayerGroup();
+  private routeLayer: L.LayerGroup = new L.LayerGroup();
+
 
   constructor(private el: ElementRef,
-              public service: UserRegistrationService,
+              public service: UserAuthService,
               public dialog: MatDialog,
               private mapService: MapService,
-              private cdr: ChangeDetectorRef, private _formBuilder: FormBuilder) {
+              private cdr: ChangeDetectorRef, private _formBuilder: FormBuilder,
+              private appService:AppService,
+              private router: Router) {
+  }
+
+  ngOnInit(): void {
+    // this.initializeWebSocketConnection();
+  }
+
+  initializeWebSocketConnection() {
+    let ws = new SockJS('http://localhost:8080/socket');
+    this.stompClient = Stomp.over(ws);
+    this.stompClient.debug = null;
+    let that = this;
+    this.stompClient.connect({}, function () {
+      that.openGlobalSocket();
+    });
+  }
+
+  openGlobalSocket() {
+    this.stompClient.subscribe('/map-updates/update-car-position', (message: { body: string }) => {
+      let vehicle: Vehicle = JSON.parse(message.body);
+      let existingVehicle = this.vehicles[vehicle.id];
+      existingVehicle.setLatLng([vehicle.longitude, vehicle.latitude]);
+      existingVehicle.update();
+    });
+    this.stompClient.subscribe('/map-updates/new-ride', (message: { body: string }) => {
+      let ride: Ride = JSON.parse(message.body);
+      let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
+      this.rides[ride.id] = geoLayerRouteGroup;
+      let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
+        icon: L.icon({
+          iconUrl: 'assets/green.png',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        }),
+      }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
+      markerLayer.addTo(geoLayerRouteGroup);
+      this.vehicles[ride.vehicle.id] = markerLayer;
+      this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
+    });
+    this.stompClient.subscribe('/map-updates/new-existing-ride', (message: { body: string }) => {
+      let ride: Ride = JSON.parse(message.body);
+      let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
+      this.rides[ride.id] = geoLayerRouteGroup;
+      let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
+        icon: L.icon({
+          iconUrl: 'assets/red.png',
+          iconSize: [20, 20],
+          iconAnchor: [10, 10],
+        }),
+      }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
+      markerLayer.addTo(geoLayerRouteGroup);
+      this.vehicles[ride.vehicle.id] = markerLayer;
+      this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
+    });
+    this.stompClient.subscribe('/map-updates/ended-ride', (message: { body: string }) => {
+      let ride: Ride = JSON.parse(message.body);
+      this.mainGroup = this.mainGroup.filter((lg: L.LayerGroup) => lg !== this.rides[ride.id]);
+      delete this.vehicles[ride.vehicle.id];
+      delete this.rides[ride.id];
+    });
+    this.stompClient.subscribe('/map-updates/delete-ride', (message: { body: any }) => {
+      let carId = JSON.parse(message.body).carId;
+      let rideId = JSON.parse(message.body).rideId;
+      this.mainGroup = this.mainGroup.filter((lg: L.LayerGroup) => lg !== this.rides[rideId]);
+      delete this.vehicles[carId];
+      delete this.rides[rideId];
+    });
   }
 
   ngAfterViewInit(): void {
+
     //console.log(this.drive)
-    this.initMap()
-    this.addCurrentLocation()
+  
+    //this.addCurrentLocation()
+
+    // this.addCurrentLocation()
+  }
+
+  onMapReady(map: L.Map) {
+    this.map = map
+    this.mainGroup = [this.addressesLayer, this.routeLayer];
   }
 
   public addressChanged(newAddress: any, addressNum: string = '') {
-    this.nextPage = false
+    if(this.start === undefined && this.end=== undefined)
+      if(this.routeChosen) this.searchAgain()
+    else this.removePath()
+    this.showSummary = false
+    this.openDialog = false
+    this.optimalRouteLayer = undefined
     if (addressNum === 'start') {
       if (this.start) {
         this.removeMarker(0)
       }
-      if(newAddress)
-      {this.start = newAddress
-      this.addMarker(0, newAddress.position)}
+      if (newAddress) {
+        this.start = newAddress
+        this.addMarker(0, newAddress.location)
+      }
     } else if (addressNum === 'end') {
       if (this.end) {
         this.removeMarker(1)
       }
-      if(newAddress) {
+      if (newAddress) {
         this.end = newAddress
-        this.addMarker(1, newAddress.position)
+        this.addMarker(1, newAddress.location)
       }
     } else {
       this.addr1.formsubmit()
       this.addr2.formsubmit()
-      if (this.allValid && newAddress && newAddress.position !== undefined) {
+      if (this.allValid && newAddress && newAddress.location !== undefined) {
         this.stops.push(newAddress)
         this.cdr.detectChanges()
-        this.addMarker(this.stops.length - 1, newAddress.position)
+        this.addMarker(this.stops.length - 1, newAddress.location)
       }
     }
 
@@ -127,16 +243,10 @@ export class MapComponent implements AfterViewInit {
     this.cdr.detectChanges()
   }
 
-  private initMap(): void {
-    this.map = L.map('map');
-    this.map.addLayer(this.title);
-    this.map.setView([45.251787, 19.837155], 19);
-  }
-
   private addCurrentLocation() {
     navigator.geolocation.getCurrentPosition(position => {
       const {latitude, longitude} = position.coords;
-      this.map.panTo({lat: latitude, lng: longitude});
+      this.addMarkerToMap({lat: latitude, lng: longitude})
     }, () => {
       console.log("error")
     }, {
@@ -148,22 +258,30 @@ export class MapComponent implements AfterViewInit {
 
 
   addMarker(number: number, coords: any) {
-    let iconOptions = {
-      icon: L.icon({
-        iconUrl: "assets/startMark.png",
-        iconSize: [30, 30],
-        iconAnchor: [15, 30],
-      })
-    }
-    var marker = L.marker([coords.lat, coords.lng], iconOptions);
-    this.map.addLayer(marker);
-    this.map.panTo({lat: coords.lat, lng: coords.lng});
+    this.showSummary = false
+    this.nextPage = false
+    this.openDialog = false
+    var marker = this.addMarkerToMap(coords);
     if (number === 0 && this.start)
       this.start.marker = marker
     else if (number === 1 && this.end)
       this.end.marker = marker
     else
       this.stops[this.stops.length - 1].marker = marker
+  }
+
+  private addMarkerToMap(coords: any): L.Marker {
+    let iconOptions = {
+      icon: L.icon({
+        iconUrl: "assets/startMark.png",
+        iconSize: [30, 30],
+        iconAnchor: [15, 15],
+      })
+    }
+    var marker = L.marker([coords.latitude, coords.longitude], iconOptions);
+    marker.addTo(this.addressesLayer);
+    this.map.panTo({lat: coords.latitude, lng: coords.longitude});
+    return marker
   }
 
 
@@ -175,38 +293,26 @@ export class MapComponent implements AfterViewInit {
       marker = this.end.marker
     else marker = this.stops[i].marker
 
-    this.map.removeLayer(marker)
-  }
-
-  restoreMarkers() {
-    if (this.start)
-      this.addMarker(0, this.start.position)
-    if (this.end)
-      this.addMarker(1, this.end.position)
-    this.stops.forEach(el => this.addMarker(3, el.position))
-
+    this.addressesLayer.removeLayer(marker);
   }
 
   removePath() {
-    if (this.route !== undefined) {
-      this.map.eachLayer((layer) => {
-        this.map.removeLayer(layer);
-      });
-      this.map.addLayer(this.title);
-      this.restoreMarkers()
-    }
+    this.routeLayer.eachLayer((ly) => this.routeLayer.removeLayer(ly))
   }
 
   dialogOC(): Promise<any> {
-    const dialogRef = this.dialog.open(RoutesDialogComponent);
+    const dialogRef = this.dialog.open(RoutesDialogComponent, {
+      data: { showSameStopsOption: this.finalStopsOrder.length != 2 },
+    });
     return dialogRef.afterClosed().toPromise().then((value: string) => {
       return value
     })
   }
 
   async openRouteDialog() {
+    this.openDialog = false
     var result = await this.dialogOC()
-    if (result === 'duration' || result === 'distance') {
+    if (this.finalStopsOrder.length > 2 && (result === 'duration' || result === 'distance')) {
       var n = this.finalStopsOrder.length
       var combinations = this.mapService.permute(n - 2)//1->n-1
       const matrix$ = this.mapService.orderStops(this.getCoordinates(), result);
@@ -223,7 +329,7 @@ export class MapComponent implements AfterViewInit {
   getCoordinates(): [number, number][] {
     var coord: [number, number][] = []
     this.finalStopsOrder.forEach(el => {
-      coord.push([el.position.lng, el.position.lat])
+      coord.push([el.location.longitude, el.location.latitude])
     })
     return coord
   }
@@ -245,14 +351,77 @@ export class MapComponent implements AfterViewInit {
 
   showRoutesPathSame() {
     this.removePath()
+    this.showSummary = true
+    this.nextPage = true
     this.mapService.showRoute(this.getCoordinates()).subscribe((res) => {
-      this.drive.distance = res.features[0].properties.summary.distance
-      this.drive.duration = res.features[0].properties.summary.duration
-      this.drive.stops = this.getRealStops()
-      this.route = L.geoJson(res).addTo(this.map)
-      this.map.fitBounds(L.geoJson(res).getBounds())
-      this.route = res
+      let color = Math.floor(Math.random() * 16777215).toString(16);
+      this.drive.distance = Number((res.features[0].properties.summary.distance / 1000).toFixed(2))
+      this.drive.duration = Number((res.features[0].properties.summary.duration / 60).toFixed(2))
+      this.drive.price =Number((this.drive.distance * 120).toFixed(2))
+      this.drive.stops = this.finalStopsOrder
+      this.drive.routeJSON = res
+      let routeLayer = L.geoJSON(res.features[0].geometry)
+        .bindPopup("Razdaljina: " + this.drive.distance + "km \nTrajanje: " + this.drive.duration + "min")
+        .on('mouseover', function (e) {
+          e.target.openPopup();
+        },)
+        .on('mouseout', function (e) {
+          e.target.closePopup();
+        });
+      routeLayer.setStyle({color: `#${color}`, weight: 5});
+      routeLayer.addTo(this.routeLayer);
+      this.map.fitBounds(routeLayer.getBounds())
+      this.optimalRouteLayer = routeLayer
+      this.routeChosen = true
     })
+  }
+
+  showMultipleRoutesNotLoggedIn() {
+    this.removePath()
+    let coordinates: [number, number][] = this.getCoordinates()
+    this.mapService.showMultipleRoutes(coordinates).subscribe((res) => {
+
+      for (let route of res.features) {
+        let color = Math.floor(Math.random() * 16777215).toString(16);
+        let distance = Number((route.properties.summary.distance / 1000).toFixed(2))
+        let duration = Number((route.properties.summary.duration / 60).toFixed(2))
+        let routeLayer = L.geoJSON(route.geometry)
+          .bindPopup("Razdaljina: " + distance + "km \nTrajanje: " + duration + "min")
+          .on('mouseover', function (e) {
+            e.target.openPopup();
+          },)
+          .on('mouseout', function (e) {
+            e.target.closePopup();
+          });
+        routeLayer.setStyle({color: `#${color}`, weight: 5});
+        routeLayer.addTo(this.routeLayer);
+        this.map.fitBounds(routeLayer.getBounds())
+        if (this.optimalRouteLayer === undefined) {
+          this.drive.distance = distance
+          this.drive.duration = duration
+          this.drive.price = Number((distance * 120).toFixed(2))
+          this.optimalRouteLayer = routeLayer
+        } else {
+          let new_price = distance * 120
+          if (new_price < this.drive.price) {
+            this.drive.distance = distance
+            this.drive.duration = duration
+            this.drive.price = Number((distance * 120).toFixed(2))
+            this.optimalRouteLayer = routeLayer
+          }
+        }
+      }
+    })
+  }
+
+  getOptimalRoute() {
+    this.showSummary = true
+    if(this.optimalRouteLayer != undefined){
+    this.routeLayer.eachLayer((ly) => {
+      if (ly != this.optimalRouteLayer)
+        this.routeLayer.removeLayer(ly)
+    })
+    this.map.fitBounds(this.optimalRouteLayer.getBounds())}
   }
 
   showRoute() {
@@ -261,24 +430,45 @@ export class MapComponent implements AfterViewInit {
     if (this.allValid) {
       this.getAllStops()
       if (this.service.isLoggedIn()) {
-        if (this.finalStopsOrder.length >= 2)
-          this.openRouteDialog()
+        this.showMultipleRoutesLoggedIn()
+      } else {
+        this.showMultipleRoutesNotLoggedIn()
       }
-      this.showRoutesPathSame()
-      this.nextPage = true;
+      this.nextPage = true
     } else
       this.mapService.openErrorDialog("Adrese nisu unete.")
   }
 
+  showMultipleRoutesLoggedIn() {
+    this.removePath()
+    this.openDialog = true
+    let coordinates: [number, number][] = this.getCoordinates()
+    for (let i = 0; i < coordinates.length - 1; i++)
+      this.mapService.showMultipleRoutes([coordinates[i], coordinates[i + 1]]).subscribe((res) => {
+        for (let route of res.features) {
+          let color = Math.floor(Math.random() * 16777215).toString(16);
+          let distance = Number((route.properties.summary.distance / 1000).toFixed(2))
+          let duration = Number((route.properties.summary.duration / 60).toFixed(2))
+          let routeLayer = L.geoJSON(route.geometry)
+            .bindPopup("Razdaljina: " + distance + "km \nTrajanje: " + duration + "min")
+            .on('mouseover', function (e) {
+              e.target.openPopup();
+            },)
+            .on('mouseout', function (e) {
+              e.target.closePopup();
+            });
+          routeLayer.setStyle({color: `#${color}`, weight: 5});
+          routeLayer.addTo(this.routeLayer);
+          this.map.fitBounds(routeLayer.getBounds())
+        }
+      })
+  }
+
   getRealStops() {
     var s: Stop[] = []
-    if (this.start)
-      s.push(new Stop(this.start.address, this.start.position, this.start.name))
     this.finalStopsOrder.forEach(el => {
-      s.push(new Stop(el.address, el.position, el.name))
+      s.push(new Stop(el.address, el.location, el.name))
     })
-    if (this.end)
-      s.push(new Stop(this.end.address, this.end.position, this.end.name))
     return s
   }
 
@@ -325,5 +515,71 @@ export class MapComponent implements AfterViewInit {
     this.draggingIndex = -1;
   }
 
+  addToFavorites(){
+    if(this.optimalRouteLayer != undefined){
+      let addresses:any = []
+      this.finalStopsOrder.forEach((el) => {addresses.push({
+        name:el.name,
+        address:el.address,
+        location:el.location
+      })})
+      this.appService.addFavoriteRide({
+        routeJSON:JSON.stringify(this.drive.routeJSON),
+        realAddress:addresses,
+      }).subscribe(() => {
+        this.appService.openErrorDialog("Ruta uspesno dodata.");
+      })
+    }
+  }
+
+  showFavorites(){
+    const dialogRef = this.dialog.open(FavoriteRoutesDialogComponent);
+    dialogRef.afterClosed().subscribe((route: FavoriteRide) => {
+      if(route==undefined) return
+      if(this.routeChosen) this.searchAgain()
+      this.showSummary = true
+      this.nextPage = true
+      this.routeChosen = true
+      let color = Math.floor(Math.random() * 16777215).toString(16);
+      let json = JSON.parse(route.routeJSON)
+      this.drive.distance = Number((json.features[0].properties.summary.distance / 1000).toFixed(2))
+      this.drive.duration = Number((json.features[0].properties.summary.duration / 60).toFixed(2))
+      this.drive.price = Number((this.drive.distance * 120).toFixed(2))
+      this.drive.stops = route.realAddress
+      this.drive.routeJSON = json.features[0].geometry
+      let routeLayer = L.geoJSON(json.features[0].geometry)
+      routeLayer.setStyle({color: `#${color}`, weight: 5});
+      routeLayer.addTo(this.routeLayer);
+      this.map.fitBounds(routeLayer.getBounds())
+      this.optimalRouteLayer = routeLayer
+      this.drive.stops.forEach((el) => {this.addMarkerToMap(el.location)})
+    })
+  }
+
+  searchAgain() {
+    this.removePath()
+    this.addressesLayer.eachLayer((ly) => this.addressesLayer.removeLayer(ly))
+    this.routeChosen = false
+    this.optimalRouteLayer = undefined
+    this.drive = {
+      stops: [],
+      distance: 0,
+      duration: 0,
+      price: 0,
+      clients: [],
+      seats:0,
+      baby:0,
+      babySeats:0,
+      pets:0,
+      owner:null,
+      routeJSON:{}
+    }
+    this.start = undefined
+    this.end = undefined
+    this.finalStopsOrder = []
+    this.showSummary = false
+    this.nextPage = false
+    this.openDialog = false
+  }
 }
 

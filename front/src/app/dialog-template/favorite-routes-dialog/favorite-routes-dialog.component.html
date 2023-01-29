@@ -1,0 +1,42 @@
+<div class="container">
+  <div class="row">
+    <h4>Vase omiljene rute</h4>
+  </div>
+  <div *ngIf="favoriteRoutes && favoriteRoutes.length > 0; then thenBlockNext else elseBlockNext"></div>
+  <ng-template #thenBlockNext>
+  <div class="row">
+    <mat-accordion class="example-headers-align">
+      <mat-expansion-panel *ngFor="let row of favoriteRoutes; let index = index"
+                           [expanded]="step === index" (opened)="setStep(index)" hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Ruta
+          </mat-panel-title>
+          <mat-panel-description>
+            {{row.realAddress[0].name}} -> {{row.realAddress[row.realAddress.length-1].name}}
+            <mat-icon>map</mat-icon>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <li *ngFor="let address of row.realAddress; let j = index">
+          {{ address.name}}
+        </li>
+
+        <mat-action-row>
+          <button mat-button color="warn" [mat-dialog-close]="favoriteRoutes[index]">Izaberi rutu</button>
+          <button mat-button color="primary" (click)="deleteRoute(index)">Obrisi</button>
+<!--          <button mat-button color="primary" [mat-dialog-close]="favoriteRoutes[index]">Obrisi</button>-->
+        </mat-action-row>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  </ng-template>
+  <ng-template #elseBlockNext>
+      <mat-dialog-content>
+        <p>Nemate ni jednu omiljenu rutu!</p>
+      </mat-dialog-content>
+      <mat-dialog-actions class="justify-content-end">
+        <button mat-button (click)="onNoClick()">Zatvori</button>
+      </mat-dialog-actions>
+  </ng-template>
+</div>

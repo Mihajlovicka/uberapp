@@ -3,15 +3,13 @@ import { NgModule } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import {MatStepperModule} from '@angular/material/stepper';
-import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { RegisterComponent } from './register/register.component';
 
-import { RouterModule, Routes } from '@angular/router';
 import { RegistrationConfirmComponent } from './registration-confirm/registration-confirm.component';
-import {UserRegistrationService} from "./user-registration.service";
+import {UserAuthService} from "./service/user-auth.service";
 
 import { AddDriverComponent } from './add-driver/add-driver.component';
 import { AddCarComponent } from './add-car/add-car.component';
@@ -30,6 +28,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from "@angular/material/card";
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 import { AuthInterceptor } from "./_auth/auth.interceptor";
 import { AuthGuard } from "./_auth/auth.guard";
@@ -58,27 +58,13 @@ import { MakeDriveReservationComponent } from './make-drive-reservation/make-dri
 import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
 import { FindTypeOfVehicleComponent } from './find-type-of-vehicle/find-type-of-vehicle.component';
 
+import { PasswordChangeComponent } from './password-change/password-change.component';
+
+import {AppRoutingModule} from "./app-routing.module";
+import { FavoriteRoutesComponent } from './favorite-routes/favorite-routes.component';
+import { FavoriteRoutesDialogComponent } from './dialog-template/favorite-routes-dialog/favorite-routes-dialog.component';
 
 
-
-
-const appRoutes: Routes = [
-  { path: 'register', component: RegisterComponent},
-  { path:'registerConfirm/:email', component:RegistrationConfirmComponent},
-  { path:'bankConfirm/:email', component:AccountAccessReviewComponent},
-  {path: 'driver-info', component: AddDriverComponent},
-  {path:'car-info', component:AddCarComponent},
-  {path:'login', component:LoginComponent},
-  {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
-  {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
-  {path:'admin', component:AdminHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_ADMINISTRATOR'}},
-  {path:'forbidden', component:ForbiddenComponent},
-  {path:'clientProfile', component:ProfileViewComponent},
-  {path:'driversProfile', component:DriverProfileViewComponent},
-  {path:'map', component:MapComponent},
-  {path:'add-clients', component:AddClientsIntoDriveComponent},
-  {path: 'make-drive-reservation', component:MakeDriveReservationComponent}
-]
 
 @NgModule({
   declarations: [
@@ -105,6 +91,9 @@ const appRoutes: Routes = [
     MakeDriveReservationComponent,
     SelectVehicleTypeComponent,
     FindTypeOfVehicleComponent,
+    FavoriteRoutesComponent,
+    FavoriteRoutesDialogComponent,
+    PasswordChangeComponent,
   ],
 
 
@@ -112,11 +101,7 @@ const appRoutes: Routes = [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    RouterModule.forRoot(
-      appRoutes, {
-        enableTracing: true
-      }
-    ),
+    AppRoutingModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -132,6 +117,7 @@ const appRoutes: Routes = [
     MatRadioModule,
     MatTooltipModule,
     MatSlideToggleModule,
+    MatMenuModule,
     MatExpansionModule
   ],
   providers: [
@@ -140,7 +126,7 @@ const appRoutes: Routes = [
     {provide:HTTP_INTERCEPTORS,
     useClass:AuthInterceptor,
     multi:true},
-    UserRegistrationService,
+    UserAuthService,
     MapService
   ],
   bootstrap: [AppComponent]

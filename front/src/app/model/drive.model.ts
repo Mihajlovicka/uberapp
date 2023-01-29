@@ -6,6 +6,7 @@ export enum PaymentStatus{
   PAID = 'PAID',
   NOT_PAID = 'NOT_PAID',
 
+
 }
 
 export interface DriveInterface{
@@ -20,6 +21,7 @@ export interface DriveInterface{
   babySeats: number;
   pets: number;
   owner: ClientsAccount|null;
+  routeJSON:{}
 }
 
 export class Drive implements DriveInterface{
@@ -34,6 +36,7 @@ export class Drive implements DriveInterface{
   public babySeats: number;
   public pets: number;
   public owner: ClientsAccount|null;
+  public routeJSON: {};
 
   constructor(driveI:DriveInterface) {
     this.stops = driveI.stops
@@ -46,6 +49,7 @@ export class Drive implements DriveInterface{
     this.babySeats = driveI.babySeats;
     this.pets = driveI.pets;
     this.owner = driveI.owner;
+    this.routeJSON = driveI.routeJSON
   }
 }
 

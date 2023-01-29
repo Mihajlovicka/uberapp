@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {catchError, Observable} from "rxjs";
-import {AppService} from "./app.service";
-import {ClientsAccount} from "./model/clientsAccount.model";
+import {AppService} from "../app.service";
+import {ClientsAccount} from "../model/clientsAccount.model";
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserRegistrationService {
+export class UserAuthService {
 
   PATH_OF_API = 'http://localhost:8080/';
 

@@ -2,10 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
-import com.example.demo.exception.EmailExistException;
-import com.example.demo.exception.EmailNotFoundException;
-import com.example.demo.exception.PlateNumberExistException;
-import com.example.demo.exception.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.*;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
@@ -282,6 +279,15 @@ public class UserService {
 
     }
 
+
+    public List<DriversAccount> getDrivers(){
+        return driversRepository.findAll();
+    }
+
+    public void changeDriverStatus(DriversAccount da,DriverStatus status) {
+        da.setDriverStatus(status);
+        driversRepository.save(da);
+    }
     public Image savePictureInUser(Image image, String email) {
         User logged = userRepository.findUserByEmail(email);
         Long oldID = 0L;
@@ -297,7 +303,7 @@ public class UserService {
                         image = imageRepository.save(image);
                         client.setPicture(image);
                         clientsRepository.save(client);
-                        img=image;
+                        img = image;
                     }
                 }
             } else if (logged.getRole().getName().equals("ROLE_DRIVER")) {
@@ -310,13 +316,14 @@ public class UserService {
                         image = imageRepository.save(image);
                         driver.setPicture(image);
                         driversRepository.save(driver);
-                        img=image;
+                        img = image;
                     }
                 }
             }
         }
         return img;
     }
+
 
 
     public User getLoggedUser(){
@@ -327,5 +334,50 @@ public class UserService {
         return logged;
     }
 
+
+
+    public User getLoggedIn(){
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
+            return  (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        }
+        throw new NotFoundException("User not found or not logged in.");
+    }
+
+
+    public void block(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.BANNED);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
+
+
+    public void unblock(String email) {
+        for(User user : userRepository.findAll()){
+            if(user.getEmail().equals(email)){
+                user.setStatus(Status.ACTIVE);
+                userRepository.save(user);
+                break;
+            }
+        }
+
+    }
+
+    public boolean changePassword(String email, String oldPassword, String newPassword) {
+        User user = userRepository.findUserByEmail(email);
+        if(user != null){
+            String s = passwordEncoder.encode(oldPassword);
+            if(passwordEncoder.matches(oldPassword, user.getPassword())){
+                user.setPassword(passwordEncoder.encode(newPassword));
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
 
 }

@@ -22,9 +22,10 @@ export class FindTypeOfVehicleComponent implements OnInit {
     clients: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
-    owner: null
+    babySeats: 0,
+    pets: 0,
+    owner: null,
+    routeJSON: {}
   }
 
   kids: string='clear';

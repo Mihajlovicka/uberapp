@@ -33,7 +33,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
     baby: 0,
     babySeats:0,
     pets:0,
-    owner: null
+    owner: null,
+    routeJSON:{}
   }
  
 
@@ -73,7 +74,7 @@ export class AddClientsIntoDriveComponent implements OnInit {
       alert("Vec ga imas majmune :D")
     }
   }
-  
+
   clientChosen(e:any){
     if(this.selectedClients.length>this.drive.seats-this.drive.baby-this.drive.pets-3){
       alert("Ne moze dalje druuze");
@@ -93,7 +94,7 @@ export class AddClientsIntoDriveComponent implements OnInit {
 
   //get logged client - drives owner
   getDriveOwner(){
-    this.service.getLoggedUser().subscribe(
+    this.service.getLogged().subscribe(
       (resp: ClientsAccount) => {
         if(resp != null || resp != undefined){
           this.drive.owner = resp;

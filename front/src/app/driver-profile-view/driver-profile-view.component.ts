@@ -3,7 +3,9 @@ import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
 import { BabySeat, CarBodyType, Fuel } from '../model/car.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
-import { Role, Status } from '../model/user.model';
+import {Role, Status, User} from '../model/user.model';
+import {PasswordChangeComponent} from "../password-change/password-change.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-driver-profile-view',
@@ -12,8 +14,10 @@ import { Role, Status } from '../model/user.model';
 })
 export class DriverProfileViewComponent implements OnInit {
 
+  selectedBodyType:string="";
 
-
+  isAdmin:boolean=false;
+  isBlocked:boolean=false;
   retrievedImage: any;
   message: string | undefined;
   disableUpload: boolean=true;
@@ -22,7 +26,14 @@ export class DriverProfileViewComponent implements OnInit {
   disabled:boolean=true;
   izmena:string="Izmeni podatke"
   email:string="";
-
+  logged_user: User = {
+    username:'',
+    name:'',
+    surname:'',
+    email:'',
+    status: Status.ACTIVE,
+    role: Role.ROLE_CLIENT
+  }
   driversAccount : DriversAccount = {
     user:{
       username:'',
@@ -52,10 +63,56 @@ export class DriverProfileViewComponent implements OnInit {
   }
   private selectedFile: File | undefined;
 
-  constructor(private appService: AppService, private route: ActivatedRoute) {  }
+  constructor(private appService: AppService,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {  }
 
   ngOnInit(): void {
     this.loadDriver();
+    this.getLoggedUser();
+  }
+  blockUser(){
+    this.appService.blockUser(this.driversAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno blokiran.");
+      this.driversAccount.user.status=Status.BANNED;
+      this.isBlocked=true;
+    });
+  }
+  unblockUser(){
+    this.appService.unblockUser(this.driversAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno odblokiran.");
+      this.driversAccount.user.status=Status.ACTIVE;
+      this.isBlocked=false;
+    });
+  }
+  changePassword(){
+    const dialogRef = this.dialog.open(PasswordChangeComponent, {
+      data: {email: this.driversAccount.user.email},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+    });
+
+  }
+  getLoggedUser(){
+    this.appService.getLoggedUser().subscribe((resp: User) => {
+      this.logged_user = resp;
+
+      console.log(resp);
+      console.log(this.logged_user.role)
+      let role:any = this.logged_user.role;
+
+      if(role.name=="ROLE_ADMINISTRATOR"){
+        this.isAdmin=true;
+      }
+
+    });
   }
 
   loadDriver(){
@@ -66,6 +123,8 @@ export class DriverProfileViewComponent implements OnInit {
 
      this.appService.getDriver(this.email).subscribe((resp: DriversAccount) => {
       this.driversAccount = resp;
+      this.selectedBodyType = this.driversAccount.car.bodyType;
+       this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
       console.log(this.driversAccount);
       console.log(resp);
     });
@@ -142,6 +201,7 @@ export class DriverProfileViewComponent implements OnInit {
     }
     this.appService.uploadPicture(uploadImageData).subscribe((resp: any) => {
       this.driversAccount.picture.picByte = resp.body.picByte;
+      this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
       console.log("Slika:");
       console.log(this.driversAccount.picture);
       this.appService.openErrorDialog("Uspesno ste promenili sliku.")
@@ -173,8 +233,10 @@ export class DriverProfileViewComponent implements OnInit {
   this.capitalizeForm();
 
   this.appService.updateDriver(this.driversAccount).subscribe((resp: DriversAccount) => {
-      this.driversAccount = resp;
-
+    console.log("RESP:");
+    console.log(resp);
+    this.driversAccount = resp;
+    this.retrievedImage = 'data:image/jpeg;base64,' + this.driversAccount.picture.picByte;
     this.appService.openErrorDialog("Zahtev za izmenu podataka je poslat administratoru sistema.");
     })
   }

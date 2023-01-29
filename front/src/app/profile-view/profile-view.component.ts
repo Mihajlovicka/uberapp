@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import {Component, OnInit} from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import {ActivatedRoute} from '@angular/router';
 
-import { AppService } from '../app.service';
-import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
-import { Role, Status } from '../model/user.model';
+import {AppService} from '../app.service';
+import {BankStatus, ClientsAccount} from '../model/clientsAccount.model';
+import {Role, Status, User} from '../model/user.model';
+import {PasswordChangeComponent} from "../password-change/password-change.component";
 
 @Component({
   selector: 'app-profile-view',
@@ -13,7 +15,8 @@ import { Role, Status } from '../model/user.model';
 export class ProfileViewComponent implements OnInit {
 
 
-
+  isAdmin:boolean=false;
+  isBlocked:boolean=false;
   retrievedImage: any;
   message: string | undefined;
   disableUpload: boolean=true;
@@ -23,6 +26,14 @@ export class ProfileViewComponent implements OnInit {
   izmena:string="Izmeni podatke"
   email:string="";
 
+  logged_user: User = {
+  username:'',
+  name:'',
+  surname:'',
+  email:'',
+  status: Status.ACTIVE,
+  role: Role.ROLE_CLIENT
+}
   clientsAccount: ClientsAccount = {
     user:{
       username:'',
@@ -55,11 +66,61 @@ export class ProfileViewComponent implements OnInit {
   private selectedFile: File | undefined;
 
 
-  constructor(private appService: AppService, private route: ActivatedRoute) {}
+  constructor(private appService: AppService,
+              private route: ActivatedRoute,
+              public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadClient();
+    this.getLoggedUser();
     //document.getElementById("inputFirstName")?.setAttribute('value',this.clientsAccount.user.email);
+  }
+
+  blockUser(){
+    this.appService.blockUser(this.clientsAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno blokiran.");
+      this.clientsAccount.user.status=Status.BANNED;
+      this.isBlocked=true;
+    });
+  }
+  unblockUser(){
+    this.appService.unblockUser(this.clientsAccount.user.email).subscribe((resp: any) => {
+
+      console.log(resp);
+      this.appService.openErrorDialog("Korisnik je uspesno odblokiran.");
+      this.clientsAccount.user.status=Status.ACTIVE;
+      this.isBlocked=false;
+    });
+  }
+  changePassword(){
+    const dialogRef = this.dialog.open(PasswordChangeComponent, {
+      data: {email: this.clientsAccount.user.email},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+
+    });
+
+  }
+  getLoggedUser(){
+    this.appService.getLoggedUser().subscribe((resp: User) => {
+      this.logged_user = resp;
+
+      console.log(resp);
+      console.log(this.logged_user.role)
+      let role:any = this.logged_user.role;
+
+      if(role.name=="ROLE_ADMINISTRATOR"){
+        this.isAdmin=true;
+      }
+
+
+
+
+    });
   }
 
   loadClient(){
@@ -74,7 +135,9 @@ export class ProfileViewComponent implements OnInit {
        console.log(this.clientsAccount);
       console.log(resp);
        console.log(this.clientsAccount.picture.picByte);
-
+       if(this.clientsAccount.user.status=="BANNED"){
+         this.isBlocked = true;
+       }
      });
   }
   change(){
