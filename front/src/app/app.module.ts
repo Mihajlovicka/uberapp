@@ -58,6 +58,9 @@ import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle
 import { PasswordChangeComponent } from './password-change/password-change.component';
 
 import {AppRoutingModule} from "./app-routing.module";
+import { MessagesClientComponent } from './messages-client/messages-client.component';
+import { MessagesAdminComponent } from './messages-admin/messages-admin.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
 
 
 
@@ -86,30 +89,33 @@ import {AppRoutingModule} from "./app-routing.module";
     MakeDriveReservationComponent,
     SelectVehicleTypeComponent,
     PasswordChangeComponent,
+    MessagesClientComponent,
+    MessagesAdminComponent,
   ],
 
 
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatStepperModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    FormsModule,
-    MatCardModule,
-    LeafletModule,
-    MatAutocompleteModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatSlideToggleModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        FormsModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatStepperModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        FormsModule,
+        MatCardModule,
+        LeafletModule,
+        MatAutocompleteModule,
+        MatDialogModule,
+        MatRadioModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatSidenavModule
+    ],
   providers: [
     AppService,
     AuthGuard,

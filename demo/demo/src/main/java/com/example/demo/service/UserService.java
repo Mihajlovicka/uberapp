@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.converter.UserConverter;
+import com.example.demo.dto.UsersChatDisplayDTO;
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailExistException;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -50,6 +53,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserConverter userConverter;
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
 
@@ -284,7 +290,11 @@ public class UserService {
 
 
     public List<DriversAccount> getDrivers(){
-        return driversRepository.findAll();
+        List<DriversAccount> drivers =  driversRepository.findAll();
+        return drivers;
+    }
+    public List<ClientsAccount> getClients(){
+        return clientsRepository.findAll();
     }
 
     public void changeDriverStatus(DriversAccount da,DriverStatus status) {
@@ -369,4 +379,14 @@ public class UserService {
         }
         return false;
     }
+
+    public User getAdmin() {
+        for(User user : userRepository.findAll()){
+            if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
+                return user;
+            }
+        }
+        return null;
+    }
+
 }

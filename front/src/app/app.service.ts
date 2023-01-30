@@ -11,6 +11,8 @@ import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 import {Image} from "./model/image.model";
 import {PasswordChange} from "./model/passwordChange.model";
+import {Message} from "./model/message.model";
+import {UsersChatDisplay} from "./model/usersChatDisplay.model";
 
 @Injectable({
   providedIn: 'root'
@@ -90,8 +92,18 @@ import {PasswordChange} from "./model/passwordChange.model";
         return this.http.get<ClientsAccount[]>(`${this.allActiveClients}`).pipe(catchError(this.handleError<ClientsAccount[]>()));
       }
 
-
-
+      public sendMessage(message:Message):Observable<any>{
+    return this.http.post("http://localhost:8080/api/newMessage",message,this.httpOptions).pipe(catchError(this.handleError<any>()));
+      }
+  public getMessagesForUser(email:string): Observable<Message[]>{
+    return this.http.get<Message[]>(`http://localhost:8080/api/getMessages?email=`+email).pipe(catchError(this.handleError<Message[]>()));
+  }
+  public getUsersChatDisplay(): Observable<UsersChatDisplay[]>{
+    return this.http.get<UsersChatDisplay[]>(`http://localhost:8080/api/getUsersChats`).pipe(catchError(this.handleError<UsersChatDisplay[]>()));
+  }
+  public getUser(email:string): Observable<User>{
+    return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
+  }
       public getClient(email:string): Observable<ClientsAccount>{
 
         return this.http.get<ClientsAccount>(`${this.getClientUrl+email}`).pipe(
