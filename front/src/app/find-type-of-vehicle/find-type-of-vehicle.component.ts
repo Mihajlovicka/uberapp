@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angu
 import { MatAccordion } from '@angular/material/expansion';
 
 
-import { Drive } from '../model/drive.model';
+import { DriveReservationForm} from '../model/driveReservationForm.model';
 
 
 @Component({
@@ -14,18 +14,22 @@ export class FindTypeOfVehicleComponent implements OnInit {
 
   constructor() {}
 
-  @Input() drive:Drive={
+  @Input() drive:DriveReservationForm={
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: [],
+    passengers: [],
     seats: 5,
     baby: 0,
     babySeats: 0,
     pets: 0,
     owner: null,
-    routeJSON: {}
+    routeJSON: {},
+    //driver:null,
+    //driveStatus: DriveStatus.PASSENGERS_WAITING,
+    splitBill:false,
+    date:''
   }
 
   kids: string='clear';
@@ -34,7 +38,7 @@ export class FindTypeOfVehicleComponent implements OnInit {
   pets: string= 'clear';
   petsDescription: string = 'Kucni ljubimci ne ucestvuju u voznji.';
 
-  @Output() setDrive = new EventEmitter<Drive>();
+  @Output() setDrive = new EventEmitter<DriveReservationForm>();
 
   @Output() nextParentStep = new EventEmitter();
 

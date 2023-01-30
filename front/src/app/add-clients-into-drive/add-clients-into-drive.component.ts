@@ -4,7 +4,8 @@ import { Observable  } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { ClientsAccount } from '../model/clientsAccount.model';
-import { Drive } from '../model/drive.model';
+import { DriveReservationForm } from '../model/driveReservationForm.model';
+import { DrivePassengerStatus, Passenger, PaymentPassengerStatus } from '../model/passenger.model';
 
 
 
@@ -18,27 +19,32 @@ import { Drive } from '../model/drive.model';
 
 export class AddClientsIntoDriveComponent implements OnInit {
   users: ClientsAccount[] = [];
+  
   userCtrl = new FormControl('');
   filteredUsers: Observable<ClientsAccount[]>;
   selectedClients: ClientsAccount[]|any=[];
 
 
-  @Input() drive:Drive={
+  @Input() drive:DriveReservationForm={
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: [],
+    passengers: [],
     seats: 5,
     baby: 0,
     babySeats:0,
     pets:0,
     owner: null,
-    routeJSON:{}
+    routeJSON:{},
+    //driver:null,
+    //driveStatus: DriveStatus.PASSENGERS_WAITING,
+    splitBill:false,
+    date:''
   }
  
 
-  @Output() setDrive = new EventEmitter<Drive>();
+  @Output() setDrive = new EventEmitter<DriveReservationForm>();
 
   constructor(private service: AppService) {
     this.filteredUsers = this.userCtrl.valueChanges.pipe(
@@ -75,13 +81,36 @@ export class AddClientsIntoDriveComponent implements OnInit {
     }
   }
 
+  setPassengers(): Passenger[] {
+    var passengers: Passenger[]=[];
+    this.selectedClients.forEach((client: ClientsAccount) => {
+      let created:Passenger = {
+        passengerEmail:client.user.email,
+        passengerName: client.user.name,
+        passengerSurname: client.user.surname,
+        contribution: DrivePassengerStatus.WAITING,
+        payment: PaymentPassengerStatus.NOT_PAYING
+      }
+      passengers.push(created);
+      
+      
+
+
+
+    });
+
+    return passengers;
+  }
+
   clientChosen(e:any){
     if(this.selectedClients.length>this.drive.seats-this.drive.baby-this.drive.pets-3){
       alert("Ne moze dalje druuze");
+    
     }
     else{
       this.addSelected(this.userCtrl.value);
-      this.drive.clients = this.selectedClients;
+      //fja koja mapira ove male govnare
+      this.drive.passengers=this.setPassengers();
       this.setDrive.emit(this.drive);
          
     }

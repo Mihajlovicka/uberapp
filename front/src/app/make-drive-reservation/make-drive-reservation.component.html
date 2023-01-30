@@ -15,5 +15,8 @@
     <app-add-clients-into-drive [drive]="currentDrive" (setDrive)="setDriveValues($event)"></app-add-clients-into-drive>
   </mat-step>
 
+  <mat-step>
+    <app-payment [drive]="currentDrive"></app-payment>
+  </mat-step>
+
 </mat-stepper>
-  

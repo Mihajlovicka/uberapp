@@ -27,7 +27,7 @@ interface CarInterface{
     bodyType: CarBodyType;
     fuelType: Fuel;
     numOfSeats:number;
-    babySeat: BabySeat;
+   
 }
 
 export class Car implements CarInterface{
@@ -38,7 +38,7 @@ export class Car implements CarInterface{
     public bodyType: CarBodyType;
     public fuelType: Fuel;
     public numOfSeats: number;
-    public babySeat: BabySeat;
+   
 
     constructor(carInt: CarInterface){
         this.brand = carInt.brand;
@@ -48,6 +48,6 @@ export class Car implements CarInterface{
         this.bodyType = carInt.bodyType;
         this.fuelType = carInt.fuelType;
         this.numOfSeats = carInt.numOfSeats;
-        this.babySeat = carInt.babySeat;
+       
     }
 }

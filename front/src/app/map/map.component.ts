@@ -7,7 +7,7 @@ import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dia
 import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
 import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
-import {Drive} from "../model/drive.model";
+import {DriveReservationForm} from "../model/driveReservationForm.model";
 import {Stop} from '../model/stop.model';
 import {Vehicle} from '../model/Vehicle';
 import {Ride} from '../model/Ride';
@@ -87,21 +87,25 @@ export class MapComponent implements AfterViewInit, OnInit {
   public routeChosen: boolean = false
   private optimalRouteLayer: any = undefined
 
-  @Input() drive:Drive = {
+  @Input() drive:DriveReservationForm = {
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: [],
+    passengers: [],
     seats: 5,
     baby: 0,
     babySeats:0,
     pets:0,
     owner: null,
-    routeJSON:{}
+    routeJSON:{},
+    //driver:null,
+    //driveStatus: DriveStatus.PASSENGERS_WAITING,
+    splitBill:false,
+    date: ""
   };
 
-  @Output() setDrive = new EventEmitter<Drive>();
+  @Output() setDrive = new EventEmitter<DriveReservationForm>();
 
   @Output() nextStep = new EventEmitter();
 
@@ -479,7 +483,15 @@ export class MapComponent implements AfterViewInit, OnInit {
       this.drive.price = this.drive.distance * 120 / 1000;
 
       //console.log(this.drive);
+      let addresses:any = []
+      this.finalStopsOrder.forEach((el) => {addresses.push({
+        name:el.name,
+        address:el.address,
+        location:el.location
+      })})
 
+      this.drive.stops=addresses;
+      this.drive.routeJSON = JSON.stringify(this.drive.routeJSON);
       
 
       this.setDrive.emit(this.drive);
@@ -566,13 +578,17 @@ export class MapComponent implements AfterViewInit, OnInit {
       distance: 0,
       duration: 0,
       price: 0,
-      clients: [],
+      passengers: [],
       seats:0,
       baby:0,
       babySeats:0,
       pets:0,
       owner:null,
-      routeJSON:{}
+      routeJSON:{},
+      //driver:null,
+      //driveStatus: DriveStatus.PASSENGERS_WAITING,
+      splitBill:false,
+      date:''
     }
     this.start = undefined
     this.end = undefined

@@ -1,55 +1,65 @@
 import { ClientsAccount } from "./clientsAccount.model";
+import { DriversAccount } from "./driversAccount.model";
+import { Passenger } from "./passenger.model";
 import { Stop } from "./stop.model";
 
-
-export enum PaymentStatus{
-  PAID = 'PAID',
-  NOT_PAID = 'NOT_PAID',
-
-
-}
+export enum DriveStatus{
+    PASSENGERS_WAITING = 'PASSENGERS_WAITING',
+    PAYMENT_WAITING = 'PAYMENT_WAITING',
+    DRIVER_WAITING = 'DRIVER_WAITING',
+    DRIVE_STARTED = 'DRIVE_STARTED',
+    DRIVE_ENDED = 'DRIVE_ENDED',
+    DRIVE_REJECTED = 'DRIVE_REJECTED',
+    DRIVE_FAILED = 'DRIVE_FAILED'
+  }
 
 export interface DriveInterface{
-
-  stops:Stop[],
-  distance:number,
-  duration:number,
-  price:number,
-  clients:ClientsAccount[],
-  seats: number;
-  baby: number;
-  babySeats: number;
-  pets: number;
-  owner: ClientsAccount|null;
-  routeJSON:{}
+    stops: Stop[];
+    distance: number;
+    duration: number;
+    price: number;
+    passengers: Passenger[];
+    baby: number;
+    babySeats: number;
+    pets: number;
+    seats: number;
+    driveStatus: DriveStatus;
+    owner: ClientsAccount;
+    routeJSON: {};
+    driver: DriversAccount;
+    date: string;
 }
 
 export class Drive implements DriveInterface{
-
-  public stops:Stop[]
-  public distance:number
-  public duration:number
-  public price:number
-  public clients: ClientsAccount[];
-  public seats: number;
-  public baby: number;
-  public babySeats: number;
-  public pets: number;
-  public owner: ClientsAccount|null;
-  public routeJSON: {};
-
-  constructor(driveI:DriveInterface) {
-    this.stops = driveI.stops
-    this.distance = driveI.distance
-    this.duration = driveI.duration
-    this.price = driveI.price
-    this.clients = driveI.clients;
-    this.seats = driveI.seats;
-    this.baby = driveI.baby;
-    this.babySeats = driveI.babySeats;
-    this.pets = driveI.pets;
-    this.owner = driveI.owner;
-    this.routeJSON = driveI.routeJSON
-  }
+    public stops: Stop[];
+    public distance: number;
+    public duration: number;
+    public price: number;
+    public passengers: Passenger[];
+    public baby: number;
+    public babySeats: number;
+    public pets: number;
+    public driveStatus: DriveStatus;
+    public owner: ClientsAccount;
+    public routeJSON: {};
+    public seats: number;
+    public driver: DriversAccount;
+    public date: string;
+    constructor(driveInt: DriveInterface){
+        this.stops = driveInt.stops;
+        this.distance = driveInt.distance;
+        this.duration = driveInt.duration;
+        this.price = driveInt.price;
+        this.passengers = driveInt.passengers;
+        this.baby = driveInt.baby;
+        this.babySeats = driveInt.babySeats;
+        this.pets = driveInt.pets;
+        this.driveStatus = driveInt.driveStatus;
+        this.owner = driveInt.owner;
+        this.routeJSON = driveInt.routeJSON;
+        this.driver = driveInt.driver;
+        this.seats = driveInt.seats;
+        this.date = driveInt.date;
+    }
+    
 }
-

@@ -29,7 +29,6 @@ export class AddDriverComponent implements OnInit {
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
       numOfSeats:5,
-      babySeat:BabySeat.NONE
     }
 
   }

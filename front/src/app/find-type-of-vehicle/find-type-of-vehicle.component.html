@@ -255,7 +255,7 @@
           <div class="row">
             <div class="col-md-5" style="margin: 2% auto;">
               <label><small>Broj dece</small></label>
-              <input matInput type="number" style="margin-bottom: 4%" min="0" max="{{this.drive.seats-2-this.drive.pets-this.drive.clients.length}}" name="babyNum" [(ngModel)]="this.drive.baby" (change)="setBaby($event)">
+              <input matInput type="number" style="margin-bottom: 4%" min="0" max="{{this.drive.seats-2-this.drive.pets-this.drive.passengers.length}}" name="babyNum" [(ngModel)]="this.drive.baby" (change)="setBaby($event)">
             </div>
             <div class="col-md-5" style="margin: 2% auto;">
               <label><small>Broj sedista</small></label>
@@ -286,7 +286,7 @@
         <div name="pets" *ngIf="this.pets==='check'"  style="border:1px solid rgba(0,0,0,.12); margin-top: 2%; margin-bottom: 1%;border-radius: 6px;" class="col-md-2">
           <div style="margin: 2% auto;" class="col">
             <label style="margin-top:3px">Broj kucnih ljubimaca</label>
-            <input matInput type="number" style="margin-bottom: 4%" min="0" max="{{this.drive.seats-2-this.drive.baby-this.drive.clients.length}}" name="petsNum" [(ngModel)]="this.drive.pets"
+            <input matInput type="number" style="margin-bottom: 4%" min="0" max="{{this.drive.seats-2-this.drive.baby-this.drive.passengers.length}}" name="petsNum" [(ngModel)]="this.drive.pets"
             (change)="this.checkPetsNum()">
           </div>
           

@@ -1,23 +1,17 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.FavoriteRideDTO;
 import com.example.demo.dto.RideSimulationDTO;
 import com.example.demo.model.Car;
 import com.example.demo.model.DriverStatus;
-import com.example.demo.model.FavoriteRide;
 import com.example.demo.model.RideSimulation;
 import com.example.demo.service.CarService;
-import com.example.demo.service.RideService;
 import com.example.demo.service.RideSimulationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 

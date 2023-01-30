@@ -37,7 +37,6 @@ export class AddCarComponent implements OnInit {
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
       numOfSeats:5,
-      babySeat:BabySeat.NONE
     }
 
   }
@@ -65,7 +64,6 @@ export class AddCarComponent implements OnInit {
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
       numOfSeats:5,
-      babySeat:BabySeat.NONE
     },
     driverStatus: DriverStatus.AVAILABLE
   }

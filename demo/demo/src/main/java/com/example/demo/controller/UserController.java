@@ -13,6 +13,7 @@ import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.ImageService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
@@ -127,7 +128,7 @@ public class UserController {
         clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
         clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
         clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
-        clientsAccount.getUser().setRole(clientAccountDTO.getUser().getRole());
+        clientsAccount.getUser().setRole(roleService.findByName(clientAccountDTO.getUser().getRole()));
         clientsAccount.getUser().setStatus(clientAccountDTO.getUser().getStatus());
 
         clientsAccount.getAddress().setCity(clientAccountDTO.getAddress().getCity());
@@ -154,7 +155,7 @@ public class UserController {
         driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
         driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
         driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
-        driversAccount.getUser().setRole(driverAccountDTO.getUser().getRole());
+        driversAccount.getUser().setRole(roleService.findByName(driverAccountDTO.getUser().getRole()));
         driversAccount.getUser().setStatus(driverAccountDTO.getUser().getStatus());
 
         driversAccount.getCar().setBodyType(driverAccountDTO.getCar().getBodyType());

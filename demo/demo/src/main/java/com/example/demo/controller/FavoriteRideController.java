@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.FavoriteRideDTO;
 import com.example.demo.model.FavoriteRide;
-import com.example.demo.service.RideService;
+import com.example.demo.service.FavoriteRideService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class RideController {
+public class FavoriteRideController {
     @Autowired
-    private RideService rideService;
+    private FavoriteRideService rideService;
 
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @GetMapping(path = "/ride/get_favorites", produces = MediaType.APPLICATION_JSON_VALUE)

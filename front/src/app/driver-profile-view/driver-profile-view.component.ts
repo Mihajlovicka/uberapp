@@ -57,7 +57,6 @@ export class DriverProfileViewComponent implements OnInit {
       bodyType: CarBodyType.COUPE,
       fuelType: Fuel.AUTOGAS,
       numOfSeats:5,
-      babySeat:BabySeat.NONE
     },
     driverStatus: DriverStatus.AVAILABLE
   }

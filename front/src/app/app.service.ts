@@ -12,6 +12,8 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 import {Image} from "./model/image.model";
 import {FavoriteRide} from "./model/favoriteRide.model";
 import {PasswordChange} from "./model/passwordChange.model";
+import { DriveReservationForm } from "./model/driveReservationForm.model";
+import { Drive } from "./model/drive.model";
 
 @Injectable({
   providedIn: 'root'
@@ -35,6 +37,7 @@ import {PasswordChange} from "./model/passwordChange.model";
     private blockUserUrl = 'http://localhost:8080/api/blockUser';
     private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
     private changePasswordUrl = 'http://localhost:8080/api/changePassword';
+    private crateDriveReservationUrl="http://localhost:8080/api/createDriveReservation"
 
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -58,7 +61,6 @@ import {PasswordChange} from "./model/passwordChange.model";
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
       numOfSeats:5,
-      babySeat: BabySeat.NONE
     }
   }
 
@@ -76,6 +78,14 @@ import {PasswordChange} from "./model/passwordChange.model";
   declineBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount> {
     return this.http.post<ClientsAccount>(`${this.bankUrlDecline}`, client, this.httpOptions).pipe(
       catchError(this.handleError<ClientsAccount>())
+    )
+  }
+
+  //pravljenje reservacije za voznju tip-DriveReservationForm i vracanje voznje --tip Drive
+
+  createDriveReservation(driveReservationForm: DriveReservationForm):Observable<Drive>{
+    return this.http.post<Drive>(`${this.crateDriveReservationUrl}`, driveReservationForm, this.httpOptions).pipe(
+      catchError(this.handleError<Drive>())
     )
   }
 
