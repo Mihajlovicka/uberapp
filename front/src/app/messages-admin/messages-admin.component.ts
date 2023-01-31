@@ -141,10 +141,11 @@ export class MessagesAdminComponent implements OnInit,AfterViewChecked {
   }
 
   getRole(role:Role):string{
-     let r : any = role;
-    if(r.name === "ROLE_CLIENT") return "Klijent";
-    if(r.name === "ROLE_DRIVER") return "Vozac";
-    if(r.name === "ROLE_ADMINISTRATOR") return "Admin";
+
+
+    if(role === "ROLE_CLIENT") return "Klijent";
+    if(role === "ROLE_DRIVER") return "Vozac";
+    if(role === "ROLE_ADMINISTRATOR") return "Admin";
     else return "";
   }
   changeChat(email:string){

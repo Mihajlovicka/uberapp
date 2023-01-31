@@ -1,4 +1,4 @@
-import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit} from '@angular/core';
+import {Component, OnInit, ElementRef, Output, ViewChild, ChangeDetectorRef, AfterViewInit, Input, EventEmitter} from '@angular/core';
 import * as L from 'leaflet';
 import {UserAuthService} from "../service/user-auth.service";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
@@ -7,7 +7,7 @@ import {RoutesDialogComponent} from "../dialog-template/routes-dialog/routes-dia
 import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
 import {firstValueFrom, lastValueFrom, Observable} from "rxjs";
-import {Drive} from "../model/drive.model";
+import {DriveReservationForm} from "../model/driveReservationForm.model";
 import {Stop} from '../model/stop.model';
 import {Vehicle} from '../model/Vehicle';
 import {Ride} from '../model/Ride';
@@ -18,6 +18,13 @@ import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
 import {DriverStatus} from "../model/driversAccount.model";
+import {AppService} from "../app.service";
+import {Router} from "@angular/router";
+import {
+  FavoriteRoutesDialogComponent
+} from "../dialog-template/favorite-routes-dialog/favorite-routes-dialog.component";
+import {FavoriteRide} from "../model/favoriteRide.model";
+
 
 
 L.Icon.Default.imagePath = 'assets/';
@@ -72,17 +79,37 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   public nextPage: boolean = false;
   public showAdditional: boolean = false
+
+
+  private route: any = undefined
   public showSummary: boolean = false
   public openDialog: boolean = false
-  public optimalRoute: any = undefined
-  private drive: Drive = {
+  public routeChosen: boolean = false
+  private optimalRouteLayer: any = undefined
+
+  @Input() drive:DriveReservationForm = {
     stops: [],
     distance: 0,
     duration: 0,
     price: 0,
-    clients: [],
-    routeJSON:{}
+    passengers: [],
+    seats: 5,
+    baby: 0,
+    babySeats:0,
+    pets:0,
+    owner: null,
+    routeJSON:{},
+    //driver:null,
+    //driveStatus: DriveStatus.PASSENGERS_WAITING,
+    splitBill:false,
+    date: ""
   };
+
+  @Output() setDrive = new EventEmitter<DriveReservationForm>();
+
+  @Output() nextStep = new EventEmitter();
+
+
 
   public draggingIndex: number = -1;
 
@@ -94,7 +121,9 @@ export class MapComponent implements AfterViewInit, OnInit {
               public service: UserAuthService,
               public dialog: MatDialog,
               private mapService: MapService,
-              private cdr: ChangeDetectorRef, private _formBuilder: FormBuilder) {
+              private cdr: ChangeDetectorRef, private _formBuilder: FormBuilder,
+              private appService:AppService,
+              private router: Router) {
   }
 
   ngOnInit(): void {
@@ -164,6 +193,11 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   ngAfterViewInit(): void {
+
+    //console.log(this.drive)
+  
+    //this.addCurrentLocation()
+
     // this.addCurrentLocation()
   }
 
@@ -173,15 +207,19 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   public addressChanged(newAddress: any, addressNum: string = '') {
+    if(this.start === undefined && this.end=== undefined)
+      if(this.routeChosen) this.searchAgain()
+    else this.removePath()
     this.showSummary = false
     this.openDialog = false
+    this.optimalRouteLayer = undefined
     if (addressNum === 'start') {
       if (this.start) {
         this.removeMarker(0)
       }
       if (newAddress) {
         this.start = newAddress
-        this.addMarker(0, newAddress.position)
+        this.addMarker(0, newAddress.location)
       }
     } else if (addressNum === 'end') {
       if (this.end) {
@@ -189,15 +227,15 @@ export class MapComponent implements AfterViewInit, OnInit {
       }
       if (newAddress) {
         this.end = newAddress
-        this.addMarker(1, newAddress.position)
+        this.addMarker(1, newAddress.location)
       }
     } else {
       this.addr1.formsubmit()
       this.addr2.formsubmit()
-      if (this.allValid && newAddress && newAddress.position !== undefined) {
+      if (this.allValid && newAddress && newAddress.location !== undefined) {
         this.stops.push(newAddress)
         this.cdr.detectChanges()
-        this.addMarker(this.stops.length - 1, newAddress.position)
+        this.addMarker(this.stops.length - 1, newAddress.location)
       }
     }
 
@@ -224,6 +262,9 @@ export class MapComponent implements AfterViewInit, OnInit {
 
 
   addMarker(number: number, coords: any) {
+    this.showSummary = false
+    this.nextPage = false
+    this.openDialog = false
     var marker = this.addMarkerToMap(coords);
     if (number === 0 && this.start)
       this.start.marker = marker
@@ -241,9 +282,9 @@ export class MapComponent implements AfterViewInit, OnInit {
         iconAnchor: [15, 15],
       })
     }
-    var marker = L.marker([coords.lat, coords.lng], iconOptions);
+    var marker = L.marker([coords.latitude, coords.longitude], iconOptions);
     marker.addTo(this.addressesLayer);
-    this.map.panTo({lat: coords.lat, lng: coords.lng});
+    this.map.panTo({lat: coords.latitude, lng: coords.longitude});
     return marker
   }
 
@@ -264,7 +305,9 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   dialogOC(): Promise<any> {
-    const dialogRef = this.dialog.open(RoutesDialogComponent);
+    const dialogRef = this.dialog.open(RoutesDialogComponent, {
+      data: { showSameStopsOption: this.finalStopsOrder.length != 2 },
+    });
     return dialogRef.afterClosed().toPromise().then((value: string) => {
       return value
     })
@@ -290,7 +333,7 @@ export class MapComponent implements AfterViewInit, OnInit {
   getCoordinates(): [number, number][] {
     var coord: [number, number][] = []
     this.finalStopsOrder.forEach(el => {
-      coord.push([el.position.lng, el.position.lat])
+      coord.push([el.location.longitude, el.location.latitude])
     })
     return coord
   }
@@ -318,7 +361,8 @@ export class MapComponent implements AfterViewInit, OnInit {
       let color = Math.floor(Math.random() * 16777215).toString(16);
       this.drive.distance = Number((res.features[0].properties.summary.distance / 1000).toFixed(2))
       this.drive.duration = Number((res.features[0].properties.summary.duration / 60).toFixed(2))
-      this.drive.stops = this.getRealStops()
+      this.drive.price =Number((this.drive.distance * 120).toFixed(2))
+      this.drive.stops = this.finalStopsOrder
       this.drive.routeJSON = res
       let routeLayer = L.geoJSON(res.features[0].geometry)
         .bindPopup("Razdaljina: " + this.drive.distance + "km \nTrajanje: " + this.drive.duration + "min")
@@ -331,12 +375,8 @@ export class MapComponent implements AfterViewInit, OnInit {
       routeLayer.setStyle({color: `#${color}`, weight: 5});
       routeLayer.addTo(this.routeLayer);
       this.map.fitBounds(routeLayer.getBounds())
-      this.optimalRoute = {
-        distance: this.drive.distance,
-        duration: this.drive.duration,
-        price: this.drive.distance * 120,
-        route: routeLayer
-      }
+      this.optimalRouteLayer = routeLayer
+      this.routeChosen = true
     })
   }
 
@@ -360,22 +400,18 @@ export class MapComponent implements AfterViewInit, OnInit {
         routeLayer.setStyle({color: `#${color}`, weight: 5});
         routeLayer.addTo(this.routeLayer);
         this.map.fitBounds(routeLayer.getBounds())
-        if (this.optimalRoute === undefined) {
-          this.optimalRoute = {
-            distance: distance,
-            duration: duration,
-            price: distance * 120,
-            route: routeLayer
-          }
+        if (this.optimalRouteLayer === undefined) {
+          this.drive.distance = distance
+          this.drive.duration = duration
+          this.drive.price = Number((distance * 120).toFixed(2))
+          this.optimalRouteLayer = routeLayer
         } else {
           let new_price = distance * 120
-          if (new_price < this.optimalRoute.price) {
-            this.optimalRoute = {
-              distance: distance,
-              duration: duration,
-              price: distance * 120,
-              route: routeLayer
-            }
+          if (new_price < this.drive.price) {
+            this.drive.distance = distance
+            this.drive.duration = duration
+            this.drive.price = Number((distance * 120).toFixed(2))
+            this.optimalRouteLayer = routeLayer
           }
         }
       }
@@ -384,11 +420,12 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   getOptimalRoute() {
     this.showSummary = true
+    if(this.optimalRouteLayer != undefined){
     this.routeLayer.eachLayer((ly) => {
-      if (ly != this.optimalRoute.route)
+      if (ly != this.optimalRouteLayer)
         this.routeLayer.removeLayer(ly)
     })
-    this.map.fitBounds(this.optimalRoute.route.getBounds())
+    this.map.fitBounds(this.optimalRouteLayer.getBounds())}
   }
 
   showRoute() {
@@ -433,13 +470,9 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   getRealStops() {
     var s: Stop[] = []
-    if (this.start)
-      s.push(new Stop(this.start.address, this.start.position, this.start.name))
     this.finalStopsOrder.forEach(el => {
-      s.push(new Stop(el.address, el.position, el.name))
+      s.push(new Stop(el.address, el.location, el.name))
     })
-    if (this.end)
-      s.push(new Stop(this.end.address, this.end.position, this.end.name))
     return s
   }
 
@@ -447,8 +480,25 @@ export class MapComponent implements AfterViewInit, OnInit {
     if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
 
-      this.drive.price = this.drive.distance * 120
-      console.log(this.drive)
+      this.drive.price = this.drive.distance * 120 / 1000;
+
+      //console.log(this.drive);
+      let addresses:any = []
+      this.finalStopsOrder.forEach((el) => {addresses.push({
+        name:el.name,
+        address:el.address,
+        location:el.location
+      })})
+
+      this.drive.stops=addresses;
+      this.drive.routeJSON = JSON.stringify(this.drive.routeJSON);
+      
+
+      this.setDrive.emit(this.drive);
+
+      //emitovati za sl stranicu
+      this.nextStep.emit();
+
 
     }
   }
@@ -477,5 +527,75 @@ export class MapComponent implements AfterViewInit, OnInit {
     this.draggingIndex = -1;
   }
 
+  addToFavorites(){
+    if(this.optimalRouteLayer != undefined){
+      let addresses:any = []
+      this.finalStopsOrder.forEach((el) => {addresses.push({
+        name:el.name,
+        address:el.address,
+        location:el.location
+      })})
+      this.appService.addFavoriteRide({
+        routeJSON:JSON.stringify(this.drive.routeJSON),
+        realAddress:addresses,
+      }).subscribe(() => {
+        this.appService.openErrorDialog("Ruta uspesno dodata.");
+      })
+    }
+  }
+
+  showFavorites(){
+    const dialogRef = this.dialog.open(FavoriteRoutesDialogComponent);
+    dialogRef.afterClosed().subscribe((route: FavoriteRide) => {
+      if(route==undefined) return
+      if(this.routeChosen) this.searchAgain()
+      this.showSummary = true
+      this.nextPage = true
+      this.routeChosen = true
+      let color = Math.floor(Math.random() * 16777215).toString(16);
+      let json = JSON.parse(route.routeJSON)
+      this.drive.distance = Number((json.features[0].properties.summary.distance / 1000).toFixed(2))
+      this.drive.duration = Number((json.features[0].properties.summary.duration / 60).toFixed(2))
+      this.drive.price = Number((this.drive.distance * 120).toFixed(2))
+      this.drive.stops = route.realAddress
+      this.drive.routeJSON = json.features[0].geometry
+      let routeLayer = L.geoJSON(json.features[0].geometry)
+      routeLayer.setStyle({color: `#${color}`, weight: 5});
+      routeLayer.addTo(this.routeLayer);
+      this.map.fitBounds(routeLayer.getBounds())
+      this.optimalRouteLayer = routeLayer
+      this.drive.stops.forEach((el) => {this.addMarkerToMap(el.location)})
+    })
+  }
+
+  searchAgain() {
+    this.removePath()
+    this.addressesLayer.eachLayer((ly) => this.addressesLayer.removeLayer(ly))
+    this.routeChosen = false
+    this.optimalRouteLayer = undefined
+    this.drive = {
+      stops: [],
+      distance: 0,
+      duration: 0,
+      price: 0,
+      passengers: [],
+      seats:0,
+      baby:0,
+      babySeats:0,
+      pets:0,
+      owner:null,
+      routeJSON:{},
+      //driver:null,
+      //driveStatus: DriveStatus.PASSENGERS_WAITING,
+      splitBill:false,
+      date:''
+    }
+    this.start = undefined
+    this.end = undefined
+    this.finalStopsOrder = []
+    this.showSummary = false
+    this.nextPage = false
+    this.openDialog = false
+  }
 }
 

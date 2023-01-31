@@ -1,0 +1,70 @@
+<mat-card class="example-card col-md-7" style="margin: 0 auto">
+    <mat-card-header>
+      <mat-card-title>Placanje</mat-card-title>
+      <mat-card-subtitle>Informacije o voznji</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content *ngIf="this.drive.stops.length>1">
+        <div style="margin: 0 auto;">
+        <ul style="list-style: none;">
+            <mat-card class="example-card">
+                <mat-card-content>
+            <li *ngFor="let stop of this.drive.stops; let i = index" style="font-size: 18px;">
+                        <div *ngIf="i===0" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <span class="material-icons" style="color:#673ab7;">flag</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                        </div>
+                        <div  *ngIf="i===this.drive.stops.length-1" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <span class="material-icons" style="color:#673ab7;">flag</span>
+                                  
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                        </div>
+                        <div *ngIf="i!== 0 && i!== this.drive.stops.length-1" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <p style="color:white">aa</p>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                            </div>
+            </li>
+        </mat-card-content>
+    </mat-card>
+        </ul>
+        <br>
+        <ul style="list-style: none;">
+            <li>
+                <app-selected-vehicle-type [drive]="this.drive"></app-selected-vehicle-type>
+            </li>
+            
+        </ul>
+        
+    </div>
+
+    <label style="font-size:30px"> E BOLI ME KURAC VISE ZA DIZAJIN</label>
+
+    </mat-card-content>
+
+
+    <label style="font-size:30px"> E BOLI ME KURAC VISE ZA DIZAJIN</label>
+
+    <mat-card-actions style="float: right;">
+      <button mat-raised-button type="button" color="primary" (click)="create()">Potvrdi placanje</button>
+    </mat-card-actions>
+    <mat-card-footer></mat-card-footer>
+</mat-card>

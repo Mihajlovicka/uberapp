@@ -12,12 +12,12 @@ public class UserDTO {
 
     private Status status;
 
-    private Role role;
+    private String role;
 
 
     public UserDTO(){}
 
-    public UserDTO(String username, String name, String surname, String email, Status status, Role role){
+    public UserDTO(String username, String name, String surname, String email, Status status, String role){
         this.username = username;
         this.name = name;
         this.surname = surname;
@@ -63,8 +63,8 @@ public class UserDTO {
 
     public void setStatus(Status status){this.status = status;}
 
-    public Role getRole(){return role;}
+    public String getRole(){return role;}
 
-    public void setRole(Role role){this.role = role;}
+    public void setRole(String role){this.role = role;}
 }
 

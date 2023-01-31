@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable  } from 'rxjs';
-import {map, startWith} from 'rxjs/operators';
+import { map, startWith } from 'rxjs/operators';
 import { AppService } from '../app.service';
 import { ClientsAccount } from '../model/clientsAccount.model';
+import { DriveReservationForm } from '../model/driveReservationForm.model';
+import { DrivePassengerStatus, Passenger, PaymentPassengerStatus } from '../model/passenger.model';
 
 
 
@@ -17,12 +19,32 @@ import { ClientsAccount } from '../model/clientsAccount.model';
 
 export class AddClientsIntoDriveComponent implements OnInit {
   users: ClientsAccount[] = [];
+  
   userCtrl = new FormControl('');
   filteredUsers: Observable<ClientsAccount[]>;
   selectedClients: ClientsAccount[]|any=[];
+
+
+  @Input() drive:DriveReservationForm={
+    stops: [],
+    distance: 0,
+    duration: 0,
+    price: 0,
+    passengers: [],
+    seats: 5,
+    baby: 0,
+    babySeats:0,
+    pets:0,
+    owner: null,
+    routeJSON:{},
+    //driver:null,
+    //driveStatus: DriveStatus.PASSENGERS_WAITING,
+    splitBill:false,
+    date:''
+  }
  
 
- 
+  @Output() setDrive = new EventEmitter<DriveReservationForm>();
 
   constructor(private service: AppService) {
     this.filteredUsers = this.userCtrl.valueChanges.pipe(
@@ -33,6 +55,10 @@ export class AddClientsIntoDriveComponent implements OnInit {
 
   private _filterUsers(value: string): ClientsAccount[] {
     const filterValue = value.toLowerCase();
+
+    if(value.includes(" ")){
+     return this.users.filter(user => (user.user.name.toLowerCase().includes(filterValue.split(" ")[0]) && user.user.surname.toLowerCase().includes(filterValue.split(" ")[1])) || (user.user.name.toLowerCase().includes(filterValue.split(" ")[1]) && user.user.surname.toLowerCase().includes(filterValue.split(" ")[0])))
+    }
 
     return this.users.filter(user => user.user.email.toLowerCase().includes(filterValue) || user.user.name.toLowerCase().includes(filterValue) || user.user.surname.toLowerCase().includes(filterValue));
   }
@@ -47,35 +73,64 @@ export class AddClientsIntoDriveComponent implements OnInit {
   }
 
   addSelected(client: string){
-
     if(!this.isSelected(client)){
-     
-
       this.selectedClients.push(this.users.find(user => user.user.email === client));
       }
-    
     else{
       alert("Vec ga imas majmune :D")
     }
-    
+  }
 
+  setPassengers(): Passenger[] {
+    var passengers: Passenger[]=[];
+    this.selectedClients.forEach((client: ClientsAccount) => {
+      let created:Passenger = {
+        passengerEmail:client.user.email,
+        passengerName: client.user.name,
+        passengerSurname: client.user.surname,
+        contribution: DrivePassengerStatus.WAITING,
+        payment: PaymentPassengerStatus.NOT_PAYING
+      }
+      passengers.push(created);
+      
+      
+
+
+
+    });
+
+    return passengers;
   }
 
   clientChosen(e:any){
-    if(this.selectedClients.length>7){
+    if(this.selectedClients.length>this.drive.seats-this.drive.baby-this.drive.pets-3){
       alert("Ne moze dalje druuze");
+    
     }
     else{
-     
       this.addSelected(this.userCtrl.value);
+      //fja koja mapira ove male govnare
+      this.drive.passengers=this.setPassengers();
+      this.setDrive.emit(this.drive);
          
     }
-      
-
-      }
+  }
 
   ngOnInit(): void {
     this.loadAllClients();
+    
+  }
+
+  //get logged client - drives owner
+  getDriveOwner(){
+    this.service.getLogged().subscribe(
+      (resp: ClientsAccount) => {
+        if(resp != null || resp != undefined){
+          this.drive.owner = resp;
+          console.log(this.drive)
+        }
+      }
+    )
   }
 
   loadAllClients(){
@@ -84,6 +139,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
       this.users = resp;
     
     })
+
+    this.getDriveOwner();
   }
 
   removeClient(client: ClientsAccount){

@@ -12,17 +12,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api/ride")
-public class RideController {
+public class RideSimController {
 
     @Autowired
-    private RideSimulationService rideService;
+    private RideSimulationService rideSimService;
     @Autowired
     private CarService carService;
     @Autowired
@@ -34,7 +32,7 @@ public class RideController {
             produces = "application/json"
     )
     public ResponseEntity<RideSimulationDTO> createRide(@RequestBody RideSimulationDTO rideDTO) {
-        RideSimulation ride = this.rideService.createRide(new RideSimulation(rideDTO), new Car(rideDTO.getVehicle()));
+        RideSimulation ride = this.rideSimService.createRide(new RideSimulation(rideDTO), new Car(rideDTO.getVehicle()));
         DriverStatus status = carService.getCarStatus(ride.getCar());
         RideSimulationDTO returnRideDTO = new RideSimulationDTO(ride, status);
         this.simpMessagingTemplate.convertAndSend("/map-updates/new-ride", returnRideDTO);
@@ -46,7 +44,7 @@ public class RideController {
             produces = "application/json"
     )
     public ResponseEntity<RideSimulationDTO> changeRide(@PathVariable("id") int id) {
-        RideSimulation ride = this.rideService.changeRide(id);
+        RideSimulation ride = this.rideSimService.changeRide(id);
         DriverStatus status = carService.getCarStatus(ride.getCar());
         RideSimulationDTO returnRideDTO = new RideSimulationDTO(ride, status);
         this.simpMessagingTemplate.convertAndSend("/map-updates/ended-ride", returnRideDTO);
@@ -58,7 +56,7 @@ public class RideController {
             produces = "application/json"
     )
     public ResponseEntity<RideSimulationDTO> getRealRide(@PathVariable("id") int id) {
-        RideSimulation ride = this.rideService.getRealRide(id);
+        RideSimulation ride = this.rideSimService.getRealRide(id);
         DriverStatus status = carService.getCarStatus(ride.getCar());
         RideSimulationDTO rideDTO = new RideSimulationDTO(ride, status);
         this.simpMessagingTemplate.convertAndSend("/map-updates/new-existing-ride", rideDTO);
@@ -71,11 +69,13 @@ public class RideController {
             produces = "text/plain"
     )
     public ResponseEntity<Map> deleteRide(@PathVariable("id") int  id) {
-        int car_id = this.rideService.deleteRide(id);
+        int car_id = this.rideSimService.deleteRide(id);
         Map map = new HashMap<String, Integer>();
         map.put("carId", car_id);
         map.put("rideId", id);
         this.simpMessagingTemplate.convertAndSend("/map-updates/delete-ride", map);
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
+
+
 }

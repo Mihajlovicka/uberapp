@@ -4,6 +4,7 @@ import com.example.demo.dto.*;
 import com.example.demo.fakeBank.BankConverter;
 import com.example.demo.model.*;
 import com.example.demo.service.ImageService;
+import com.example.demo.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,14 +24,13 @@ public class UserConverter {
     @Autowired
     BankConverter bankConverter;
 
+    @Autowired
+    RoleService roleService;
+
     public UserDTO toDTO(User user){
-        UserDTO userDTO = new UserDTO(user.getUsername(),
-                user.getName(),
-                user.getSurname(),
-                user.getEmail(),
-                user.getStatus(),
-                user.getRole());
-        return userDTO;
+
+        return new UserDTO(user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getStatus(), user.getRole().getName());
+
     }
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
@@ -71,9 +71,11 @@ public class UserConverter {
     public ImageDTO toDTO(Image image){
         if(image==null) return new ImageDTO();
         ImageDTO imageDTO = new ImageDTO();
+
         imageDTO.setName(image.getName());
         if(image.getPicByte()!=null)imageDTO.setPicByte(ImageService.decompressBytes(image.getPicByte()));
         imageDTO.setType(imageDTO.getType());
+
         return imageDTO;
     }
 
@@ -84,7 +86,7 @@ public class UserConverter {
         clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
         clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
         clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
-        clientsAccount.getUser().setRole(clientAccountDTO.getUser().getRole());
+        clientsAccount.getUser().setRole(roleService.findByName(clientAccountDTO.getUser().getRole()));
         clientsAccount.getUser().setStatus(clientAccountDTO.getUser().getStatus());
 
 
@@ -106,7 +108,7 @@ public class UserConverter {
         driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
         driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
         driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
-        driversAccount.getUser().setRole(driverAccountDTO.getUser().getRole());
+        driversAccount.getUser().setRole(roleService.findByName(driverAccountDTO.getUser().getRole()));
         driversAccount.getUser().setStatus(driverAccountDTO.getUser().getStatus());
 
         driversAccount.getCar().setBodyType(driverAccountDTO.getCar().getBodyType());

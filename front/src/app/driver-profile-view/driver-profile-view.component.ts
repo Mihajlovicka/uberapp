@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
-import { CarBodyType, Fuel } from '../model/car.model';
+import { BabySeat, CarBodyType, Fuel } from '../model/car.model';
 import { DriversAccount, DriverStatus } from '../model/driversAccount.model';
 import {Role, Status, User} from '../model/user.model';
 import {PasswordChangeComponent} from "../password-change/password-change.component";
@@ -56,7 +56,7 @@ export class DriverProfileViewComponent implements OnInit {
       plateNumber:'',
       bodyType: CarBodyType.COUPE,
       fuelType: Fuel.AUTOGAS,
-      numOfSeats:5
+      numOfSeats:5,
     },
     driverStatus: DriverStatus.AVAILABLE
   }
@@ -105,9 +105,8 @@ export class DriverProfileViewComponent implements OnInit {
 
       console.log(resp);
       console.log(this.logged_user.role)
-      let role:any = this.logged_user.role;
 
-      if(role.name=="ROLE_ADMINISTRATOR"){
+      if(this.logged_user.role==="ROLE_ADMINISTRATOR"){
         this.isAdmin=true;
       }
 

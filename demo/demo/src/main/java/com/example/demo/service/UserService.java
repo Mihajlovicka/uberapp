@@ -4,10 +4,7 @@ import com.example.demo.converter.UserConverter;
 import com.example.demo.dto.UsersChatDisplayDTO;
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
-import com.example.demo.exception.EmailExistException;
-import com.example.demo.exception.EmailNotFoundException;
-import com.example.demo.exception.PlateNumberExistException;
-import com.example.demo.exception.BankAccountNumberDoNotExistException;
+import com.example.demo.exception.*;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
@@ -271,7 +268,7 @@ public class UserService {
 
         List<ClientsAccount> all = clientsRepository.findAllByUserStatus(Status.ACTIVE);
 
-        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// RADI NE DIRAJTE POBOGU!!!
             User logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             if(logged.getRole().getName().equals("ROLE_CLIENT")){
                 for (ClientsAccount client:
@@ -337,12 +334,25 @@ public class UserService {
         return img;
     }
 
-    public User getLoggedUser() {
-        String username = (String) SecurityContextHolder.getContext().getAuthentication().getName();
-        User logged = userRepository.findUserByEmail(username);
-        if(logged != null) return logged;
-        else return null;
+
+
+    public User getLoggedUser(){
+        User logged = null;
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// RADI NE DIRAJTE POBOGU!!!
+            logged = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        }
+        return logged;
     }
+
+
+
+    public User getLoggedIn(){
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal().getClass().equals(User.class)){// JELENA OVO NE RADIIIIIIIII!!!
+            return  (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        }
+        throw new NotFoundException("User not found or not logged in.");
+    }
+
 
     public void block(String email) {
         for(User user : userRepository.findAll()){
@@ -392,4 +402,5 @@ public class UserService {
     public List<User> getAdmins() {
         return userRepository.findAll();
     }
+
 }

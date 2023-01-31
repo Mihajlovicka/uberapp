@@ -13,6 +13,7 @@ import com.example.demo.model.Address;
 import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.User;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.service.ImageService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
@@ -139,7 +140,7 @@ public class UserController {
         clientsAccount.getUser().setName(clientAccountDTO.getUser().getName());
         clientsAccount.getUser().setSurname(clientAccountDTO.getUser().getSurname());
         clientsAccount.getUser().setEmail(clientAccountDTO.getUser().getEmail());
-        clientsAccount.getUser().setRole(clientAccountDTO.getUser().getRole());
+        clientsAccount.getUser().setRole(roleService.findByName(clientAccountDTO.getUser().getRole()));
         clientsAccount.getUser().setStatus(clientAccountDTO.getUser().getStatus());
 
         clientsAccount.getAddress().setCity(clientAccountDTO.getAddress().getCity());
@@ -166,7 +167,7 @@ public class UserController {
         driversAccount.getUser().setName(driverAccountDTO.getUser().getName());
         driversAccount.getUser().setSurname(driverAccountDTO.getUser().getSurname());
         driversAccount.getUser().setEmail(driverAccountDTO.getUser().getEmail());
-        driversAccount.getUser().setRole(driverAccountDTO.getUser().getRole());
+        driversAccount.getUser().setRole(roleService.findByName(driverAccountDTO.getUser().getRole()));
         driversAccount.getUser().setStatus(driverAccountDTO.getUser().getStatus());
 
         driversAccount.getCar().setBodyType(driverAccountDTO.getCar().getBodyType());
@@ -284,7 +285,20 @@ public class UserController {
     }
     @GetMapping(value="api/getLoggedUser")
     public ResponseEntity getLoggedUser(){
-        return new ResponseEntity(userConverter.toDTO(userService.getLoggedUser()), HttpStatus.OK);
+        return new ResponseEntity(userConverter.toDTO(userService.getLoggedIn()), HttpStatus.OK);
+    }
+
+    @GetMapping(value="api/getLogged")
+    public ResponseEntity getLogged() throws EmailNotFoundException {
+        User loggedUser = userService.getLoggedUser();
+        if(loggedUser == null) return new ResponseEntity(null, HttpStatus.OK);
+        else{
+            if(loggedUser.getRole().getName().equals("ROLE_CLIENT")) return new ResponseEntity(userConverter.toDTO(userService.findClientsAccount(loggedUser.getEmail())), HttpStatus.OK);
+            if(loggedUser.getRole().getName().equals("ROLE_DRIVER")) return new ResponseEntity(userConverter.toDTO(userService.findDriversAccount(loggedUser.getEmail())), HttpStatus.OK);
+        }
+
+        //jedino sto preostaje je admin a to je samo user bar za sad.............
+        return new ResponseEntity(userConverter.toDTO(loggedUser), HttpStatus.OK);
     }
 
     @GetMapping(value = "/api/getUser")

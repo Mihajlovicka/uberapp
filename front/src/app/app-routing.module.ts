@@ -16,9 +16,11 @@ import {DriverProfileViewComponent} from "./driver-profile-view/driver-profile-v
 import {MapComponent} from "./map/map.component";
 import {AddClientsIntoDriveComponent} from "./add-clients-into-drive/add-clients-into-drive.component";
 import {MakeDriveReservationComponent} from "./make-drive-reservation/make-drive-reservation.component";
+
 import {MessagesAdminComponent} from "./messages-admin/messages-admin.component";
 import {MessagesClientComponent} from "./messages-client/messages-client.component";
 
+import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -28,6 +30,7 @@ const routes: Routes = [
   {path:'car-info', component:AddCarComponent},
   {path:'login', component:LoginComponent},
   {path:'client', component:ClientHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
+  {path:'favorites', component:FavoriteRoutesComponent, canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path:'driver', component:DriverHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path:'admin', component:AdminHomeComponent, canActivate:[AuthGuard], data:{role:'ROLE_ADMINISTRATOR'}},
   {path:'forbidden', component:ForbiddenComponent},

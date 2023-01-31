@@ -28,7 +28,8 @@ export class AuthInterceptor implements HttpInterceptor {
         (err:any) => {
           console.log(err.status);
           console.log(err);
-          if(err.error.message === "Email in use."){
+          if(err.error.message != undefined)
+            if(err.error.message === "Email in use."){
 
             return throwError("Email in use.");
 
