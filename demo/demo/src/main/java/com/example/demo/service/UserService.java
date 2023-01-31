@@ -381,7 +381,7 @@ public class UserService {
     }
 
     public User getAdmin() {
-        for(User user : userRepository.findAll()){
+        for(User user : getAdmins()){
             if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
                 return user;
             }
@@ -389,4 +389,7 @@ public class UserService {
         return null;
     }
 
+    public List<User> getAdmins() {
+        return userRepository.findAll();
+    }
 }

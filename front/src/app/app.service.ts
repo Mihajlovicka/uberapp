@@ -13,6 +13,7 @@ import {Image} from "./model/image.model";
 import {PasswordChange} from "./model/passwordChange.model";
 import {Message} from "./model/message.model";
 import {UsersChatDisplay} from "./model/usersChatDisplay.model";
+import {Notification} from "./model/notification.model";
 
 @Injectable({
   providedIn: 'root'
@@ -92,11 +93,17 @@ import {UsersChatDisplay} from "./model/usersChatDisplay.model";
         return this.http.get<ClientsAccount[]>(`${this.allActiveClients}`).pipe(catchError(this.handleError<ClientsAccount[]>()));
       }
 
-      public sendMessage(message:Message):Observable<any>{
+  public sendMessage(message:Message):Observable<any>{
     return this.http.post("http://localhost:8080/api/newMessage",message,this.httpOptions).pipe(catchError(this.handleError<any>()));
-      }
+  }
+  public openNotification(id:bigint):Observable<any>{
+    return this.http.post("http://localhost:8080/api/openNotification",id,this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
   public getMessagesForUser(email:string): Observable<Message[]>{
     return this.http.get<Message[]>(`http://localhost:8080/api/getMessages?email=`+email).pipe(catchError(this.handleError<Message[]>()));
+  }
+  public getNotificationsForUser(email:string): Observable<Notification[]>{
+    return this.http.get<Notification[]>(`http://localhost:8080/api/getNotifications?email=`+email).pipe(catchError(this.handleError<Notification[]>()));
   }
   public getUsersChatDisplay(): Observable<UsersChatDisplay[]>{
     return this.http.get<UsersChatDisplay[]>(`http://localhost:8080/api/getUsersChats`).pipe(catchError(this.handleError<UsersChatDisplay[]>()));

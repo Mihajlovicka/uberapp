@@ -61,6 +61,8 @@ import {AppRoutingModule} from "./app-routing.module";
 import { MessagesClientComponent } from './messages-client/messages-client.component';
 import { MessagesAdminComponent } from './messages-admin/messages-admin.component';
 import {MatSidenavModule} from "@angular/material/sidenav";
+import { NotificationsComponent } from './notifications/notifications.component';
+import {MatBadgeModule} from "@angular/material/badge";
 
 
 
@@ -91,6 +93,7 @@ import {MatSidenavModule} from "@angular/material/sidenav";
     PasswordChangeComponent,
     MessagesClientComponent,
     MessagesAdminComponent,
+    NotificationsComponent,
   ],
 
 
@@ -114,7 +117,8 @@ import {MatSidenavModule} from "@angular/material/sidenav";
         MatRadioModule,
         MatTooltipModule,
         MatSlideToggleModule,
-        MatSidenavModule
+        MatSidenavModule,
+        MatBadgeModule
     ],
   providers: [
     AppService,

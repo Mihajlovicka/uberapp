@@ -1,0 +1,11 @@
+.hover:hover{
+  background-color: rgba(122,122,122,0.1);
+  border-radius: 10px;
+
+}
+.hover{
+  margin-top: 3px;
+  margin-left:5px;
+  margin-right: 15px;
+  padding: 5px;
+}

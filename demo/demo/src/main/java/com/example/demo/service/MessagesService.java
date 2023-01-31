@@ -4,6 +4,7 @@ import com.example.demo.dto.MessageDTO;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.Chat;
 import com.example.demo.model.Message;
+import com.example.demo.model.Notification;
 import com.example.demo.model.User;
 import com.example.demo.repository.ChatsRepository;
 import com.example.demo.repository.MessagesRepository;
@@ -26,6 +27,9 @@ public class MessagesService {
     private UserService userService;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private ChatsRepository chatsRepository;
 
     public void notifySupport(){
@@ -40,9 +44,26 @@ public class MessagesService {
         User reciever = null;
         if(message.getSender().getRole().getName().equals("ROLE_CLIENT")){
             reciever = userService.getAdmin();
+            notificationService.addNotificationMultiple(
+                    new Notification(
+                            "Nova poruka",
+                            "Imate novu poruku od admina",
+                            reciever,
+                            "/messages-client"
+                    ),userService.getAdmins()
+            );
         }
         else {
             reciever = userService.getByEmail(message.getReciever().getEmail());
+
+            notificationService.addNotification(
+                    new Notification(
+                            "Nova poruka",
+                            "Imate novu poruku od admina",
+                            reciever,
+                            "/messages-client"
+                    )
+            );
         }
         m.setReciever(reciever);
 
@@ -51,6 +72,7 @@ public class MessagesService {
         m.setChat(chat);
 
         messagesRepository.save(m);
+
     }
 
     private Chat getChat(User client){

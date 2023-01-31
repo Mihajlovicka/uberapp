@@ -24,7 +24,13 @@ public class UserConverter {
     BankConverter bankConverter;
 
     public UserDTO toDTO(User user){
-        return new UserDTO(user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getStatus(), user.getRole());
+        UserDTO userDTO = new UserDTO(user.getUsername(),
+                user.getName(),
+                user.getSurname(),
+                user.getEmail(),
+                user.getStatus(),
+                user.getRole());
+        return userDTO;
     }
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
