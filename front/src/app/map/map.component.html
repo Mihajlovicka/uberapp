@@ -56,7 +56,7 @@
         </div>
         <div *ngIf="showAdditional">
           <div class="row justify-content-center">
-            <app-address-item class="address" [addressText]="'Upisi adresu'" [isRequired]="false"
+            <app-address-item #address3 class="address" [addressText]="'Upisi adresu'" [isRequired]="false"
                               (addressChange)="addressChanged($event)"></app-address-item>
           </div>
           <div>

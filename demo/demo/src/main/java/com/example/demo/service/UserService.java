@@ -380,4 +380,12 @@ public class UserService {
         return false;
     }
 
+    public List<DriversAccount> getDriversByStatus(DriverStatus status){
+        return this.driversRepository.getByDriverStatus(status);
+    }
+
+    public DriversAccount getDriver(Long id) {
+        DriversAccount driver = driversRepository.findById(id).orElseThrow(() -> new NotFoundException("Vozac ne postoji."));
+        return driver;
+    }
 }

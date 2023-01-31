@@ -34,7 +34,7 @@ public class DriveConverter {
         dto.setPets(drive.getPets());
         dto.setSplitBill(drive.isSplitBill());
 
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 
         dto.setDate(dateFormat.format(drive.getDate()));
 

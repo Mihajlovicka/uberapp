@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.FavoriteRideDTO;
 import com.example.demo.model.FavoriteRide;
+import com.example.demo.model.RealAddress;
 import com.example.demo.service.FavoriteRideService;
+import com.example.demo.model.Location;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -10,8 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class FavoriteRideController {
@@ -41,5 +46,12 @@ public class FavoriteRideController {
     public ResponseEntity<String> deleteFavorite(@PathVariable("id") int id){
         rideService.delete(id);
         return new ResponseEntity<>("Uspesno obrisano", HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @GetMapping(path = "/frequentAddresses", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<RealAddress>> getFrequentAddresses(){
+        List<RealAddress> adr = rideService.getFrequentAddresses();
+        return new ResponseEntity<>(adr, HttpStatus.OK);
     }
 }

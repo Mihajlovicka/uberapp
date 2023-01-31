@@ -14,6 +14,7 @@ import {FavoriteRide} from "./model/favoriteRide.model";
 import {PasswordChange} from "./model/passwordChange.model";
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
+import {MapAddress} from "./model/mapAddress.model";
 
 @Injectable({
   providedIn: 'root'
@@ -180,7 +181,7 @@ import { Drive } from "./model/drive.model";
          catchError(this.handleError<User>()));
      }
 
-  
+
 
 
 
@@ -265,6 +266,12 @@ import { Drive } from "./model/drive.model";
 
   deleteFavorite(favoriteRideID: number) {
     return this.http.delete<number>(this.host + "/ride/delete_favorite/" + favoriteRideID, this.httpOptions).pipe(
+      catchError(this.handleError<any>("Doslo je do greske."))
+    )
+  }
+
+  getFrequentAddresses(): Observable<MapAddress[]>{
+    return this.http.get<MapAddress[]>(this.host + "/frequentAddresses" , this.httpOptions).pipe(
       catchError(this.handleError<any>("Doslo je do greske."))
     )
   }

@@ -75,11 +75,11 @@ export class MapComponent implements AfterViewInit, OnInit {
 
   @ViewChild('address1') addr1: any;
   @ViewChild('address2') addr2: any;
+  @ViewChild('address3') addr3: any;
   private allValid: boolean = true;
 
   public nextPage: boolean = false;
   public showAdditional: boolean = false
-
 
   private route: any = undefined
   public showSummary: boolean = false
@@ -195,7 +195,7 @@ export class MapComponent implements AfterViewInit, OnInit {
   ngAfterViewInit(): void {
 
     //console.log(this.drive)
-  
+
     //this.addCurrentLocation()
 
     // this.addCurrentLocation()
@@ -492,7 +492,7 @@ export class MapComponent implements AfterViewInit, OnInit {
 
       this.drive.stops=addresses;
       this.drive.routeJSON = JSON.stringify(this.drive.routeJSON);
-      
+
 
       this.setDrive.emit(this.drive);
 
@@ -548,7 +548,11 @@ export class MapComponent implements AfterViewInit, OnInit {
     const dialogRef = this.dialog.open(FavoriteRoutesDialogComponent);
     dialogRef.afterClosed().subscribe((route: FavoriteRide) => {
       if(route==undefined) return
-      if(this.routeChosen) this.searchAgain()
+      this.searchAgain()
+      this.addr1.clear()
+      this.addr2.clear()
+      if(this.showAdditional)
+        this.addr3.clear()
       this.showSummary = true
       this.nextPage = true
       this.routeChosen = true
@@ -596,6 +600,7 @@ export class MapComponent implements AfterViewInit, OnInit {
     this.showSummary = false
     this.nextPage = false
     this.openDialog = false
+    this.stops = []
   }
 }
 

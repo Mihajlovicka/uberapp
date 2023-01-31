@@ -1,5 +1,8 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/sr';
+registerLocaleData(localeFr);
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -121,7 +124,8 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
     useClass:AuthInterceptor,
     multi:true},
     UserAuthService,
-    MapService
+    MapService,
+    { provide: LOCALE_ID, useValue: 'sr-RS'}
   ],
   bootstrap: [AppComponent]
 

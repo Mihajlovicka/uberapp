@@ -63,7 +63,7 @@ public class Drive {
     private boolean splitBill;
 
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     @Column
     private Date date;
 

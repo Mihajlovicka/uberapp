@@ -1,15 +1,18 @@
 package com.example.demo.service;
 
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.Car;
-import com.example.demo.model.DriverStatus;
-import com.example.demo.model.RideSimulation;
-import com.example.demo.model.RideStatus;
+import com.example.demo.model.*;
+import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.repository.CarRepository;
 import com.example.demo.repository.RideSimulationRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -41,12 +44,12 @@ public class RideSimulationService {
         return this.rideRepository.save(ride);
     }
 
-    public List<RideSimulation> getRides() {
-        return this.rideRepository.findAllByRideStatus(RideStatus.STARTED);
+    public List<RideSimulation> getRides(RideStatus status) {
+        return this.rideRepository.findAllByRideStatus(status);
     }
 
     public RideSimulation getRealRide(int id) {
-        for(RideSimulation r: getRides()){
+        for(RideSimulation r: getRides(RideStatus.STARTED)){
             if(r.getCar().getId() == id) return r;
         }
         throw new NotFoundException("Ride does not exist");
@@ -57,5 +60,16 @@ public class RideSimulationService {
         int car_id = Math.toIntExact(ride.getCar().getId());
         rideRepository.deleteById(id);
         return car_id;
+    }
+
+    public Location getCarEndStop(Long id) throws JsonProcessingException {
+        Car c = carRepository.findById(id).orElseThrow(() -> new NotFoundException("Car not found."));
+        RideSimulation ride = rideRepository.findByCar(c);
+        if(ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        ResponseRouteHelp route = new ObjectMapper().readValue(ride.getRouteJSON(), ResponseRouteHelp.class);
+        ArrayList<ArrayList<Double>> coords = route.getMetadata().getQuery().getCoordinates();
+        return new Location(coords.get(1).get(1),coords.get(1).get(0));
     }
 }

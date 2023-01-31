@@ -6,6 +6,7 @@ import {MapAddress, Position} from '../model/mapAddress.model'
 import {MapService} from "../service/map.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog.component";
+import {AppService} from "../app.service";
 
 @Component({
   selector: 'app-address-item',
@@ -24,6 +25,7 @@ export class AddressItemComponent implements OnInit {
   @Input() isRequired:boolean = false;
   @Input() showErrors:boolean = false;
   isRealAddress:boolean = false;
+  clearField:boolean = true
 
   address: MapAddress | undefined;
   @Output() addressChange = new EventEmitter<MapAddress>();
@@ -31,13 +33,24 @@ export class AddressItemComponent implements OnInit {
 
 
   constructor(private mapService:MapService,
-              public dialog: MatDialog, ) { }
+              public dialog: MatDialog,
+              private appService:AppService ) { }
 
   ngOnInit(): void {
     if(this.isRequired){
       this.myControl.setValidators([Validators.required]);
       this.myControl.updateValueAndValidity();
     }
+    this.appService.getFrequentAddresses().subscribe((res:MapAddress[]) => {
+      this.options = res;
+      this.filteredOptions = this.myControl.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+          const name = typeof value === 'string' ? value : value?.name;
+          return name ? this._filter(name as string) : this.options.slice();
+        }),
+      );
+    })
   }
 
   displayFn(user: MapAddress): string {
@@ -56,6 +69,7 @@ export class AddressItemComponent implements OnInit {
     this.address = e.option.value;
     this.isRealAddress = true
     this.addressChange.emit(this.address);
+    this.clearField = false
   }
 
   changeAddress() {
@@ -110,5 +124,13 @@ export class AddressItemComponent implements OnInit {
     }
   }
 
+  clear(){
+    this.isRealAddress = false
+    this.address = undefined
+    this.filteredOptions = undefined
+    this.options = []
+    this.myControl.setValue('')
+    this.clearField = false
+  }
 }
 
