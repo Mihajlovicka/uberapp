@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -103,6 +104,17 @@ public class UserController {
             return new ResponseEntity("", HttpStatus.BAD_REQUEST);
         }
     }
+    @GetMapping(value = "/api/getUsersChats")
+    public ResponseEntity getUsersChat() {
+
+        try {
+            List<UsersChatDisplayDTO> users = userConverter.getUsersChats(userService.getClients(),userService.getDrivers());
+
+            return new ResponseEntity(users, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @GetMapping(value = "/api/getDriver")
     public ResponseEntity getDriver(@RequestParam String email) {
@@ -110,7 +122,7 @@ public class UserController {
         try {
             DriversAccount da = userService.getDriver(email);
             if(da.getPicture()==null) da.setPicture(new Image());
-            else da.getPicture().setPicByte(ImageService.decompressBytes(da.getPicture().getPicByte()));
+            //else da.getPicture().setPicByte(ImageService.decompressBytes(da.getPicture().getPicByte()));
             DriverAccountDTO driverAccountDTO = userConverter.toDTO(da);
             return new ResponseEntity(driverAccountDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
@@ -289,4 +301,18 @@ public class UserController {
         return new ResponseEntity(userConverter.toDTO(loggedUser), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/api/getUser")
+    public ResponseEntity getUser(@RequestParam String email) {
+        System.out.println(email);
+
+        try {
+            User u = userService.getByEmail(email);
+            UserDTO userDTO = userConverter.toDTO(u);
+            return new ResponseEntity(userDTO, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        } catch (EmailNotFoundException e) {
+            return new ResponseEntity("", HttpStatus.BAD_REQUEST);
+        }
+    }
 }

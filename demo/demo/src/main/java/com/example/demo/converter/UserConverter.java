@@ -1,16 +1,15 @@
 package com.example.demo.converter;
 
-import com.example.demo.dto.ClientAccountDTO;
-import com.example.demo.dto.DriverAccountDTO;
-import com.example.demo.dto.ImageDTO;
-import com.example.demo.dto.UserDTO;
+import com.example.demo.dto.*;
 import com.example.demo.fakeBank.BankConverter;
 import com.example.demo.model.*;
+import com.example.demo.service.ImageService;
 import com.example.demo.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -29,7 +28,9 @@ public class UserConverter {
     RoleService roleService;
 
     public UserDTO toDTO(User user){
+
         return new UserDTO(user.getUsername(), user.getName(), user.getSurname(), user.getEmail(), user.getStatus(), user.getRole().getName());
+
     }
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
@@ -44,13 +45,37 @@ public class UserConverter {
         return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), this.toDTO(driversAccount.getPicture()), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus());
     }
 
-    public ImageDTO toDTO(Image image){
-        ImageDTO imageDTO = new ImageDTO();
-        if(image != null){
-            imageDTO.setName(image.getName());
-            imageDTO.setPicByte(image.getPicByte());
-            imageDTO.setType(imageDTO.getType());
+    public List<UsersChatDisplayDTO> getUsersChats(List<ClientsAccount> clientsAccounts, List<DriversAccount> driversAccounts) {
+        List<UsersChatDisplayDTO> users = new ArrayList<UsersChatDisplayDTO>();
+        for(ClientsAccount clientsAccount : clientsAccounts){
+            UsersChatDisplayDTO usersChatDisplayDTO = new UsersChatDisplayDTO();
+            usersChatDisplayDTO.setUser(this.toDTO(clientsAccount.getUser()));
+            usersChatDisplayDTO.setImage(this.toDTO(clientsAccount.getPicture()));
+            usersChatDisplayDTO.setClient(true);
+            usersChatDisplayDTO.setHasMessages(false);
+            users.add(usersChatDisplayDTO);
         }
+        for(DriversAccount driversAccount : driversAccounts){
+            UsersChatDisplayDTO usersChatDisplayDTO = new UsersChatDisplayDTO();
+            usersChatDisplayDTO.setUser(this.toDTO(driversAccount.getUser()));
+            usersChatDisplayDTO.setImage(this.toDTO(driversAccount.getPicture()));
+            users.add(usersChatDisplayDTO);
+            usersChatDisplayDTO.setClient(false);
+            usersChatDisplayDTO.setHasMessages(false);
+        }
+
+        return users;
+
+    }
+
+    public ImageDTO toDTO(Image image){
+        if(image==null) return new ImageDTO();
+        ImageDTO imageDTO = new ImageDTO();
+
+        imageDTO.setName(image.getName());
+        if(image.getPicByte()!=null)imageDTO.setPicByte(ImageService.decompressBytes(image.getPicByte()));
+        imageDTO.setType(imageDTO.getType());
+
         return imageDTO;
     }
 

@@ -46,6 +46,11 @@ import { MakeDriveReservationComponent } from './make-drive-reservation/make-dri
 import { FindTypeOfVehicleComponent } from './find-type-of-vehicle/find-type-of-vehicle.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import {AppRoutingModule} from "./app-routing.module";
+import { MessagesClientComponent } from './messages-client/messages-client.component';
+import { MessagesAdminComponent } from './messages-admin/messages-admin.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import { NotificationsComponent } from './notifications/notifications.component';
+import {MatBadgeModule} from "@angular/material/badge";
 import { FavoriteRoutesComponent } from './favorite-routes/favorite-routes.component';
 import { FavoriteRoutesDialogComponent } from './dialog-template/favorite-routes-dialog/favorite-routes-dialog.component';
 import { PaymentComponent } from './payment/payment.component';
@@ -85,6 +90,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     FavoriteRoutesComponent,
     FavoriteRoutesDialogComponent,
     PasswordChangeComponent,
+    MessagesClientComponent,
+    MessagesAdminComponent,
+    NotificationsComponent,
     PaymentComponent,
     SelectedVehicleTypeComponent,
     RespondDriveRequestComponent,
@@ -116,7 +124,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatExpansionModule,
     MatProgressBarModule,
     MatDividerModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSidenavModule,
+    MatBadgeModule,
   ],
   providers: [
     AppService,

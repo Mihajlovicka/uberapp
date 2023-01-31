@@ -16,6 +16,10 @@ import {DriverProfileViewComponent} from "./driver-profile-view/driver-profile-v
 import {MapComponent} from "./map/map.component";
 import {AddClientsIntoDriveComponent} from "./add-clients-into-drive/add-clients-into-drive.component";
 import {MakeDriveReservationComponent} from "./make-drive-reservation/make-drive-reservation.component";
+
+import {MessagesAdminComponent} from "./messages-admin/messages-admin.component";
+import {MessagesClientComponent} from "./messages-client/messages-client.component";
+
 import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
 import { PaymentComponent } from './payment/payment.component';
@@ -38,7 +42,9 @@ const routes: Routes = [
   {path:'add-clients', component:AddClientsIntoDriveComponent},
   {path: 'make-drive-reservation', component:MakeDriveReservationComponent},
   {path:'selectedVehicle', component:SelectedVehicleTypeComponent},
-  {path:'payment', component:PaymentComponent}
+  {path:'payment', component:PaymentComponent},
+  {path: 'messages-admin',component:MessagesAdminComponent},
+  {path: 'messages-client',component:MessagesClientComponent}
 ];
 
 @NgModule({

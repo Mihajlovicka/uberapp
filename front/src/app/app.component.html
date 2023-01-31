@@ -1,2 +1,11 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<app-header #header (openNotifications)="funkcija($event)"></app-header>
+
+<mat-drawer-container class="example-container" autosize>
+  <mat-drawer #NotificationsDrawer class="example-sidenav" mode="over" style="padding:20px; max-width: 30%;">
+    <app-notifications (openNotifications)="funkcija($event)"
+                       *ngIf="notifikacije"
+                       (notificationsNumber)="newNotifications($event);"></app-notifications>
+
+  </mat-drawer>
+  <router-outlet></router-outlet>
+</mat-drawer-container>

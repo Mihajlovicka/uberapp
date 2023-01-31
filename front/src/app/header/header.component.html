@@ -12,10 +12,13 @@
   </div>
 
   <form class="form-inline">
+    <div *ngIf="isLoggedIn()" style="display: inline-block;" class="hover" (click)="openAllNotifications()">
+      <mat-icon matBadge="{{numberOfNotifications}}" matBadgeColor="warn" style="color: #673ab7;">notifications</mat-icon>
+    </div>
     <button mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
-    
+
     <button mat-raised-button color="primary" style="margin-left:8px" routerLink="/register" *ngIf="! isLoggedIn()">Registracija</button>
-    
+
     <button mat-raised-button color="primary" *ngIf="isLoggedIn()" (click)="logout()">Odjava</button>
   </form>
 </nav>
