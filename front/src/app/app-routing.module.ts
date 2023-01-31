@@ -17,6 +17,8 @@ import {MapComponent} from "./map/map.component";
 import {AddClientsIntoDriveComponent} from "./add-clients-into-drive/add-clients-into-drive.component";
 import {MakeDriveReservationComponent} from "./make-drive-reservation/make-drive-reservation.component";
 import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
+import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
+import { PaymentComponent } from './payment/payment.component';
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -34,7 +36,9 @@ const routes: Routes = [
   {path:'driversProfile', component:DriverProfileViewComponent},
   {path:'map', component:MapComponent},
   {path:'add-clients', component:AddClientsIntoDriveComponent},
-  {path: 'make-drive-reservation', component:MakeDriveReservationComponent}
+  {path: 'make-drive-reservation', component:MakeDriveReservationComponent},
+  {path:'selectedVehicle', component:SelectedVehicleTypeComponent},
+  {path:'payment', component:PaymentComponent}
 ];
 
 @NgModule({

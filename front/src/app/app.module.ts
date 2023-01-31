@@ -43,7 +43,6 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clients-into-drive.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
-import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
 import { FindTypeOfVehicleComponent } from './find-type-of-vehicle/find-type-of-vehicle.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import {AppRoutingModule} from "./app-routing.module";
@@ -53,6 +52,9 @@ import { PaymentComponent } from './payment/payment.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatDividerModule } from '@angular/material/divider';
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
+import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 
 
@@ -79,13 +81,14 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
     AddressViewComponent,
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
-    SelectVehicleTypeComponent,
     FindTypeOfVehicleComponent,
     FavoriteRoutesComponent,
     FavoriteRoutesDialogComponent,
     PasswordChangeComponent,
     PaymentComponent,
     SelectedVehicleTypeComponent,
+    RespondDriveRequestComponent,
+    DriveParticipantsComponent,
   ],
 
 
@@ -112,7 +115,8 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
     MatMenuModule,
     MatExpansionModule,
     MatProgressBarModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule
   ],
   providers: [
     AppService,

@@ -1,0 +1,40 @@
+<div  style="margin: 0 auto">
+    <ul style="list-style: none; font-size:10px"> 
+
+         <mat-card *ngIf="this.participants.length !== 0">
+            <mat-card-header>
+                <p>
+                    <mat-checkbox   style="font-size: 20px" [formControl]="disableSelect" (change)="setSplit($event)">Podeli cenu sa ostalim putnicima</mat-checkbox>
+                  </p>
+
+            </mat-card-header>
+            <hr>
+            
+            <mat-card-content>
+                <li *ngFor="let participant of participants" style="font-size: 20px;">
+                    <div class="row">
+                        <div class="col-lg-1 col-md-1 col-sm-1" >
+                
+                            <div class="row" style="margin:0 auto">
+                                <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+                                
+                            </div>
+                        </div>
+    
+                        <div class="col-lg-8 col-md-8 col-sm-8">
+                            <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-3">
+                            <p style="float:right"><small>putnik</small></p>
+                        </div>
+              
+                    </div>
+
+                    
+                </li>
+            </mat-card-content>
+       
+    </mat-card>
+    </ul>
+</div>

@@ -145,6 +145,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
 
   removeClient(client: ClientsAccount){
     this.selectedClients.splice(this.selectedClients.indexOf(client), 1)
+    this.drive.passengers = this.setPassengers();
+    this.setDrive.emit(this.drive);
   }
 
 }
