@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 import { Passenger } from '../model/passenger.model';
 
 @Component({
@@ -14,7 +15,24 @@ export class DriveParticipantsComponent implements OnInit {
   ngOnInit(): void {
   }
 
- @Input() participants: Passenger[]=[];
+  @Input() starting_price: PriceStart = PriceStart.seats5;
+
+ @Input() drive: DriveReservationForm ={
+   stops: [],
+   distance: 0,
+   duration: 0,
+   price: 0,
+   passengers: [],
+   seats: 0,
+   baby: 0,
+   babySeats: 0,
+   pets: 0,
+   owner: null,
+   routeJSON: {},
+   splitBill: false,
+   date: '',
+   ownerDebit: 0
+ }
 
  @Output() setSplitEvent= new EventEmitter<boolean>();
 

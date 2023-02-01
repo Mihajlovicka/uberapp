@@ -53,9 +53,12 @@
             </li>
             
         </ul>
+     
+        <app-drive-participants (setSplitEvent)="setSplitPayment($event)"  [starting_price]="this.starting_price" [drive]="this.drive"></app-drive-participants>
         <br>
-        <app-drive-participants (setSplitEvent)="setSplitPayment($event)" [participants]="this.drive.passengers"></app-drive-participants>
-        
+        <app-drive-bill [drive]="this.drive" [starting_price]="this.starting_price"></app-drive-bill>
+       
+
     </div>
 
     </mat-card-content>
@@ -64,8 +67,12 @@
         <label>        jeiga druze nisi popnio stanice to ti jedino obavezno toliko si lenj
         </label>
         <br>
-        <label> sad se lepo vrati na tacku jeda i popuni ih klosaru</label>
+        <label> sad se lepo vrati na tacku jedan i popuni</label>
     </mat-card-content>
+
+
+    
+
 
     <mat-card-footer></mat-card-footer>
 

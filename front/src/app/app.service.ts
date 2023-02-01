@@ -30,6 +30,7 @@ import { Drive } from "./model/drive.model";
     private registerUrl = 'http://localhost:8080/api/register';
     private addDriverUrl = 'http://localhost:8080/api/add-driver';
     private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+    private getDriveUrl = 'http://localhost:8080/api/getDrive/';
     private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
     private updateClientUrl = 'http://localhost:8080/api/updateClient';
     private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
@@ -124,6 +125,12 @@ import { Drive } from "./model/drive.model";
 
     return this.http.get<DriversAccount>(`${this.getDriverUrl + email}`).pipe(
       catchError(this.handleError<DriversAccount>()));
+  }
+
+  public getDrive(id: number): Observable<Drive>{
+    return this.http.get<Drive>(`${this.getDriveUrl + id}`).pipe(
+      catchError(this.handleError<Drive>())
+    );
   }
 
 

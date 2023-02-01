@@ -95,14 +95,15 @@ export class MapComponent implements AfterViewInit, OnInit {
     passengers: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
+    babySeats: 0,
+    pets: 0,
     owner: null,
-    routeJSON:{},
+    routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill:false,
-    date: ""
+    splitBill: false,
+    date: "",
+    ownerDebit: 0
   };
 
   @Output() setDrive = new EventEmitter<DriveReservationForm>();
@@ -480,7 +481,7 @@ export class MapComponent implements AfterViewInit, OnInit {
     if (this.drive.stops !== undefined) {
       //cena je tip_vozila + km*120 pise u specifikaciji
 
-      this.drive.price = this.drive.distance * 120 / 1000;
+      this.drive.price = this.drive.distance * 120;
 
       //console.log(this.drive);
       let addresses:any = []
@@ -588,7 +589,8 @@ export class MapComponent implements AfterViewInit, OnInit {
       //driver:null,
       //driveStatus: DriveStatus.PASSENGERS_WAITING,
       splitBill:false,
-      date:''
+      date:'',
+      ownerDebit:0
     }
     this.start = undefined
     this.end = undefined

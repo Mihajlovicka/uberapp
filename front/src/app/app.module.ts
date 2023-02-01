@@ -60,6 +60,7 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
 import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { DriveBillComponent } from './drive-bill/drive-bill.component';
 
 
 
@@ -97,6 +98,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     SelectedVehicleTypeComponent,
     RespondDriveRequestComponent,
     DriveParticipantsComponent,
+    DriveBillComponent,
   ],
 
 

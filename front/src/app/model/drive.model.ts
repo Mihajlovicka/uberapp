@@ -28,6 +28,8 @@ export interface DriveInterface{
     routeJSON: {};
     driver: DriversAccount;
     date: string;
+    splitBill: boolean;
+    ownerDebit: number;
 }
 
 export class Drive implements DriveInterface{
@@ -45,6 +47,8 @@ export class Drive implements DriveInterface{
     public seats: number;
     public driver: DriversAccount;
     public date: string;
+    public splitBill: boolean;
+    public ownerDebit: number;
     constructor(driveInt: DriveInterface){
         this.stops = driveInt.stops;
         this.distance = driveInt.distance;
@@ -60,6 +64,8 @@ export class Drive implements DriveInterface{
         this.driver = driveInt.driver;
         this.seats = driveInt.seats;
         this.date = driveInt.date;
+        this.splitBill = driveInt.splitBill;
+        this.ownerDebit = driveInt.ownerDebit;
     }
     
 }

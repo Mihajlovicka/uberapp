@@ -33,14 +33,15 @@ export class AddClientsIntoDriveComponent implements OnInit {
     passengers: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
+    babySeats: 0,
+    pets: 0,
     owner: null,
-    routeJSON:{},
+    routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill:false,
-    date:''
+    splitBill: false,
+    date: '',
+    ownerDebit: 0
   }
  
 
@@ -89,7 +90,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
         passengerName: client.user.name,
         passengerSurname: client.user.surname,
         contribution: DrivePassengerStatus.WAITING,
-        payment: PaymentPassengerStatus.NOT_PAYING
+        payment: PaymentPassengerStatus.NOT_PAYING,
+        debit:0
       }
       passengers.push(created);
       

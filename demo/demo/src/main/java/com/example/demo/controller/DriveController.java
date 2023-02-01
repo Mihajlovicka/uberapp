@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
+import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.Drive;
 import com.example.demo.service.DriveService;
@@ -9,9 +10,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,6 +25,12 @@ public class DriveController {
 
     @Autowired
     DriveConverter driveConverter;
+
+
+    @GetMapping(value="api/getDrive/{id}")
+    public ResponseEntity getDrive(@PathVariable Long id) throws DriveNotFoundException {
+       return new ResponseEntity(driveConverter.toDTO(driveService.getDrive(id)), HttpStatus.OK);
+    }
 
     @PostMapping(value="/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException {
@@ -44,6 +49,7 @@ public class DriveController {
         drive.setStops(driveReservationDTO.getStops());
         //passengeri
         drive.setPassengers(driveReservationDTO.getPassengers());
+        drive.setOwnerDebit(driveReservationDTO.getOwnerDebit());
 
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy hh:mm");
         drive.setDate(format.parse(driveReservationDTO.getDate()));
@@ -55,5 +61,7 @@ public class DriveController {
 
 
     }
+
+
 
 }

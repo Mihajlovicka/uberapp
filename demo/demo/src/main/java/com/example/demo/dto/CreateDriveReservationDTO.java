@@ -35,9 +35,11 @@ public class CreateDriveReservationDTO {
 
     private String date;
 
+    private Double ownerDebit;
+
     public CreateDriveReservationDTO(){}
 
-    public CreateDriveReservationDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientAccountDTO owner, String routeJSON, boolean splitBill, String date) {
+    public CreateDriveReservationDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientAccountDTO owner, String routeJSON, boolean splitBill, String date, Double ownerDebit) {
         this.stops = stops;
         this.distance = distance;
         this.duration = duration;
@@ -51,6 +53,7 @@ public class CreateDriveReservationDTO {
         this.routeJSON = routeJSON;
         this.splitBill = splitBill;
         this.date = date;
+        this.ownerDebit = ownerDebit;
     }
 
     public List<RealAddress> getStops() {
@@ -149,11 +152,21 @@ public class CreateDriveReservationDTO {
         this.splitBill = splitBill;
     }
 
+
+
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Double getOwnerDebit() {
+        return ownerDebit;
+    }
+
+    public void setOwnerDebit(Double ownerDebit) {
+        this.ownerDebit = ownerDebit;
     }
 }

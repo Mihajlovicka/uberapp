@@ -67,10 +67,12 @@ public class Drive {
     @Column
     private Date date;
 
+    @Column
+    private Double ownerDebit;
 
     public Drive(){}
 
-    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date) {
+    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date, Double ownerDebit) {
         this.id = id;
         this.stops = stops;
         this.distance = distance;
@@ -87,6 +89,7 @@ public class Drive {
         this.driveStatus = driveStatus;
         this.splitBill = splitBill;
         this.date = date;
+        this.ownerDebit = ownerDebit;
     }
 
     public Long getId() {
@@ -216,5 +219,13 @@ public class Drive {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Double getOwnerDebit() {
+        return ownerDebit;
+    }
+
+    public void setOwnerDebit(Double ownerDebit) {
+        this.ownerDebit = ownerDebit;
     }
 }

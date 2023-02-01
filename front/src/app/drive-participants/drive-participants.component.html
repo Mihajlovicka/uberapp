@@ -1,7 +1,7 @@
 <div  style="margin: 0 auto">
     <ul style="list-style: none; font-size:10px"> 
 
-         <mat-card *ngIf="this.participants.length !== 0">
+         <mat-card *ngIf="this.drive.passengers.length !== 0">
             <mat-card-header>
                 <p>
                     <mat-checkbox   style="font-size: 20px" [formControl]="disableSelect" (change)="setSplit($event)">Podeli cenu sa ostalim putnicima</mat-checkbox>
@@ -11,7 +11,7 @@
             <hr>
             
             <mat-card-content>
-                <li *ngFor="let participant of participants" style="font-size: 20px;">
+                <li *ngFor="let participant of this.drive.passengers" style="font-size: 20px;">
                     <div class="row">
                         <div class="col-lg-1 col-md-1 col-sm-1" >
                 
@@ -21,12 +21,19 @@
                             </div>
                         </div>
     
-                        <div class="col-lg-8 col-md-8 col-sm-8">
+                        <div class="col-lg-4 col-md-4 col-sm-4">
                             <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
                         </div>
 
-                        <div class="col-lg-3 col-md-3 col-sm-3">
-                            <p style="float:right"><small>putnik</small></p>
+                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===false">
+                           <label><small>zaduzenje: <strong>0 RSD</strong></small></label>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
+                            <label><small>zaduzenje: <strong>{{((this.drive.price+this.starting_price)/(this.drive.passengers.length+1)).toFixed(2)}} RSD</strong></small></label>
+                         </div>
+
+                        <div class="col-lg-2 col-md-2 col-sm-2">
+                            <p ><small>putnik</small></p>
                         </div>
               
                     </div>

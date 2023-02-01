@@ -23,18 +23,24 @@ public class Passenger {
     @Column
     private DrivePassengerStatus contribution;
 
+
+
     @Column
     private PaymentPassengerStatus payment;
 
+    @Column
+    private Double debit;
+
     public Passenger(){}
 
-    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment) {
+    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment, Double debit) {
         this.id = id;
         this.passengerEmail = passengerEmail;
         this.passengerName = passengerName;
         this.passengerSurname = passengerSurname;
         this.contribution = contribution;
         this.payment = payment;
+        this.debit = debit;
     }
 
     public Long getId() {
@@ -83,5 +89,13 @@ public class Passenger {
 
     public void setPassengerSurname(String passengerSurname) {
         this.passengerSurname = passengerSurname;
+    }
+
+    public Double getDebit() {
+        return debit;
+    }
+
+    public void setDebit(Double debit) {
+        this.debit = debit;
     }
 }
