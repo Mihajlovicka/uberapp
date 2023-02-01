@@ -8,6 +8,7 @@ import com.example.demo.repository.RideSimulationRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,10 +24,11 @@ public class RideSimulationService {
     @Autowired
     private CarRepository carRepository;
     @Autowired
-    private CarService carService;
+    @Lazy
+    private DriveService driveService;
 
     public RideSimulation createRide(RideSimulation ride, Car vehicle) {
-        RideSimulation returnRide =rideRepository.save(ride);
+        RideSimulation returnRide = rideRepository.save(ride);
         Car storedVehicle = this.carRepository.findById(vehicle.getId()).orElseThrow(
                 () -> new NotFoundException("Vehicle does not exist"));
         returnRide.setCar(storedVehicle);
@@ -36,11 +38,6 @@ public class RideSimulationService {
     public RideSimulation changeRide(int id) {
         RideSimulation ride = this.rideRepository.findById(id).orElseThrow(() -> new NotFoundException("Ride does not exist!"));
         ride.setRideStatus(RideStatus.ENDED);
-        //???????????????????//////
-
-        carService.changeStatus(ride.getCar(), DriverStatus.AVAILABLE);
-
-        //?????????????????????????
         return this.rideRepository.save(ride);
     }
 
@@ -49,10 +46,14 @@ public class RideSimulationService {
     }
 
     public RideSimulation getRealRide(int id) {
-        for(RideSimulation r: getRides(RideStatus.STARTED)){
-            if(r.getCar().getId() == id) return r;
+        for (RideSimulation r : getRides(RideStatus.STARTED)) {
+            if (r.getCar().getId() == id) return r;
         }
-        throw new NotFoundException("Ride does not exist");
+        Drive drive = driveService.getCarCurrentDrive(id);
+        if (drive != null) {
+            return createRideSim(drive);
+        }
+        throw new NotFoundException("No current drive for this car");
     }
 
     public int deleteRide(int id) {
@@ -62,14 +63,12 @@ public class RideSimulationService {
         return car_id;
     }
 
-    public Location getCarEndStop(Long id) throws JsonProcessingException {
-        Car c = carRepository.findById(id).orElseThrow(() -> new NotFoundException("Car not found."));
-        RideSimulation ride = rideRepository.findByCar(c);
-        if(ride == null) {
-            throw new NotFoundException("Ride not found.");
-        }
-        ResponseRouteHelp route = new ObjectMapper().readValue(ride.getRouteJSON(), ResponseRouteHelp.class);
-        ArrayList<ArrayList<Double>> coords = route.getMetadata().getQuery().getCoordinates();
-        return new Location(coords.get(1).get(1),coords.get(1).get(0));
+    public RideSimulation createRideSim(Drive d) {
+        RideSimulation ride = new RideSimulation();
+        ride.setRideStatus(RideStatus.STARTED);
+        ride.setCar(d.getDriver().getCar());
+        ride.setRouteJSON(d.getRouteJSON());
+        return rideRepository.save(ride);
     }
+
 }

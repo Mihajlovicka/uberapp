@@ -48,6 +48,9 @@ public class Drive {
     @Column
     private DriveStatus driveStatus;
 
+    @Column
+    private DriveTimeStatus driveTimeStatus;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private ClientsAccount owner;
@@ -70,7 +73,7 @@ public class Drive {
 
     public Drive(){}
 
-    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date) {
+    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date, DriveTimeStatus driveTimeStatus) {
         this.id = id;
         this.stops = stops;
         this.distance = distance;
@@ -87,6 +90,15 @@ public class Drive {
         this.driveStatus = driveStatus;
         this.splitBill = splitBill;
         this.date = date;
+        this.driveTimeStatus = driveTimeStatus;
+    }
+
+    public DriveTimeStatus getDriveTimeStatus() {
+        return driveTimeStatus;
+    }
+
+    public void setDriveTimeStatus(DriveTimeStatus driveTimeStatus) {
+        this.driveTimeStatus = driveTimeStatus;
     }
 
     public Long getId() {

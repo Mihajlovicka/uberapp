@@ -111,9 +111,8 @@ export class ProfileViewComponent implements OnInit {
 
       console.log(resp);
       console.log(this.logged_user.role)
-      let role:any = this.logged_user.role;
 
-      if(role.name=="ROLE_ADMINISTRATOR"){
+      if(this.logged_user.role==="ROLE_ADMINISTRATOR"){
         this.isAdmin=true;
       }
 

@@ -1,18 +1,26 @@
 <mat-stepper #stepper>
   <mat-step>
-   <app-map [drive]="currentDrive" (setDrive)="setDriveValues($event)"  (nextStep)="goToNext()"></app-map>
+    
+      <app-map  [drive]="currentDrive" (setDrive)="setDriveValues($event)"  (nextStep)="goToNext()"></app-map>
+  
+   
      
   </mat-step>
    
   <mat-step>
-      
-    <app-find-type-of-vehicle [drive]="currentDrive" (setDrive)="setDriveValues($event)" (nextParentStep)="goToNext()"></app-find-type-of-vehicle>
+        <app-find-type-of-vehicle [drive]="currentDrive" (setDrive)="setDriveValues($event)" (nextParentStep)="goToNext()"></app-find-type-of-vehicle>
+
+
       
   </mat-step>
 
 
   <mat-step>
-    <app-add-clients-into-drive [drive]="currentDrive" (setDrive)="setDriveValues($event)"></app-add-clients-into-drive>
+    <div class="col-md-8" style="margin:0 auto">
+      <app-add-clients-into-drive [drive]="currentDrive" (setDrive)="setDriveValues($event)"></app-add-clients-into-drive>
+
+    </div>
+
   </mat-step>
 
   <mat-step>

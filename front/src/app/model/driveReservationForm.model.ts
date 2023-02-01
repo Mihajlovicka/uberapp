@@ -29,7 +29,7 @@ export interface DriveReservationFormInterface{
   routeJSON:{};
   //driveStatus: DriveStatus;
   //driver: DriversAccount|null;
-  splitBill: false;
+  splitBill: boolean;
   date: string;
 }
 
@@ -48,7 +48,7 @@ export class DriveReservationForm implements DriveReservationFormInterface{
   public routeJSON: {};
   //public driveStatus: DriveStatus;
   //public driver: DriversAccount|null;
-  public splitBill: false;
+  public splitBill: boolean;
   public date: string;
 
   constructor(driveI:DriveReservationFormInterface) {

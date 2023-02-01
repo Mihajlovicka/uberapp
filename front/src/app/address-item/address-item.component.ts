@@ -26,6 +26,7 @@ export class AddressItemComponent implements OnInit {
   @Input() showErrors:boolean = false;
   isRealAddress:boolean = false;
   clearField:boolean = true
+  frequent : MapAddress[] = [];
 
   address: MapAddress | undefined;
   @Output() addressChange = new EventEmitter<MapAddress>();
@@ -43,6 +44,7 @@ export class AddressItemComponent implements OnInit {
     }
     this.appService.getFrequentAddresses().subscribe((res:MapAddress[]) => {
       this.options = res;
+      this.frequent  = res
       this.filteredOptions = this.myControl.valueChanges.pipe(
         startWith(''),
         map(value => {

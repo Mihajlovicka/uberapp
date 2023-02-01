@@ -1,25 +1,28 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.DriveConverter;
+import com.example.demo.dto.CarSimulationDTO;
 import com.example.demo.dto.CreateDriveReservationDTO;
+import com.example.demo.dto.RideSimulationDTO;
 import com.example.demo.exception.EmailNotFoundException;
-import com.example.demo.model.Drive;
-import com.example.demo.model.Location;
+import com.example.demo.model.*;
+import com.example.demo.service.CarService;
 import com.example.demo.service.DriveService;
 import com.example.demo.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 public class DriveController {
@@ -28,6 +31,7 @@ public class DriveController {
 
     @Autowired
     UserService userService;
+
 
     @Autowired
     DriveConverter driveConverter;
@@ -60,20 +64,55 @@ public class DriveController {
 
     }
 
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping(path = "/ride/getCurrent")
+    public ResponseEntity<List<RealAddress>> getCurrent(){
+        return new ResponseEntity(driveService.getCurrentDriveStops(), HttpStatus.OK);
+    }
 
-//    @GetMapping(path = "/api/test")
-//    public ResponseEntity<String> get(){
-//        try {
-//            return new ResponseEntity(driveService.getNextDriverForRide(new Location(19.833332, 45.248861)), HttpStatus.OK);
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//            return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//            return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping(path = "/ride/getFirstFuture")
+    public ResponseEntity<Map<String, Object>> getFirstFuture(){
+        return new ResponseEntity(driveService.getFirstFutureDriveStops(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(path = "/ride/endRide")
+    public ResponseEntity<String> endRide(){
+        return new ResponseEntity(driveService.endDrive(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(path = "/ride/goToNextRide")
+    public ResponseEntity<List<RealAddress>> goToNextRide(){
+        return new ResponseEntity(driveService.goToNextDrive(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(path = "/ride/startRide")
+    public ResponseEntity<List<RealAddress>> startDrive(){
+        return new ResponseEntity(driveService.startDrive(), HttpStatus.OK);
+    }
+
+    @GetMapping( path = "/api/ride/getNewStartAddress/{id}", produces = "application/json")
+    public ResponseEntity<Location> getNewStartAddress(@PathVariable("id") int id) {
+        try {
+            return new ResponseEntity(driveService.getCarStartEndStop((long) id, true), HttpStatus.OK);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
+    @GetMapping(
+            path = "/getClientCurrentDriveStops",
+            produces = "application/json"
+    )
+    public ResponseEntity<List<RealAddress>> getClientCurrentDriveStops() {
+        return new ResponseEntity(driveService.getClientCurrentDriveStops(), HttpStatus.OK);
+    }
+
+
+
 }

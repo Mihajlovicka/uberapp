@@ -1,0 +1,42 @@
+<div class="container" style="max-height: 650px;">
+
+  <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white"> <div class="d-flex align-items-center flex-shrink-0 p-3 Link-dark text-decoration-none border-bottom">
+
+    <input name="usernameInput" class="fs-5 fw-semibold" [(ngModel)]="username">
+
+  </div>
+
+    <div class="list-group list-group-flush border-bottom scrollbar overflow-auto" #scrollMe [scrollTop]="scrollMe.clientHeight" style="min-height: 492px;max-height: 492px;">
+      <div class="list-group-item list-group-item-action py-3 lh-tight" *ngFor="let msg of messages">
+
+        <div *ngIf="msg.sender.email!=logged_user.email" class="w-75">
+          <div class=" align-items-left float-left" >
+
+            <strong class="mb-1">Admin</strong>
+
+          </div>
+          <br>
+          <div class="mb-1 small float-left">{{msg.message}}</div>
+        </div>
+        <div *ngIf="msg.sender.email==logged_user.email" style="text-align: right" class="w-75 float-right">
+          <div class=" align-items-right float-right" >
+
+            <strong class="mb-1">{{msg.sender.name + " " + msg.sender.surname}}</strong>
+
+          </div>
+          <br>
+          <div class="mb-1 small float-right">{{msg.message}}</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <form (submit)="submit()">
+
+    <input name="messageInput" class="form-control" placeholder="Write a message" [(ngModel)]="message"/>
+
+  </form>
+
+</div>

@@ -1,4 +1,4 @@
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, Input, OnInit } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { BankStatus } from '../model/clientsAccount.model';
@@ -16,6 +16,10 @@ export class PaymentComponent implements OnInit{
 
   constructor(private service: AppService) { }
 
+
+  
+
+
  
 
   @Input() drive:DriveReservationForm = {
@@ -32,7 +36,7 @@ export class PaymentComponent implements OnInit{
     routeJSON:{},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill: false,
+    splitBill:false,
     date:""
   };
 
@@ -106,6 +110,10 @@ export class PaymentComponent implements OnInit{
     date: ''
   }
 
+
+  setSplitPayment(split: boolean){
+    this.drive.splitBill=split;
+  }
  
 
 

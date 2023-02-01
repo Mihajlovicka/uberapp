@@ -30,6 +30,8 @@ class QuickstartUser(HttpUser):
             self.get_new_coordinates()
         elif self.vehicle['status'] == 'BUSY':
             self.get_existing_coordinates()
+        elif self.vehicle['status'] == 'GOING_TO_LOCATION':
+            self.get_going_to_location_coordinates()
 
     @task
     def update_vehicle_coordinates(self):
@@ -42,16 +44,27 @@ class QuickstartUser(HttpUser):
         if len(self.coordinates) > 0:
             new_coordinate = self.coordinates.pop(0)
             self.client.put(f"/api/car/{self.vehicle['id']}", json={
-                'latitude': new_coordinate[0],
-                'longitude': new_coordinate[1]
+                'latitude': new_coordinate[1],
+                'longitude': new_coordinate[0]
             })
+            if self.to_dest:
+                self.client.post(f"/api/car/timeLeft/{self.vehicle['id']}", json={
+                    'time': self.time_left
+                })
+                if self.time_left - self.time_minus < 0:
+                    self.time_left = 0
+                else:
+                    self.time_left -= self.time_minus
             if status_changed:
                 self.end_ride()
                 if new_status == 'AVAILABLE':
-                    self.departure = [new_coordinate[1], new_coordinate[0]]
+                    self.departure = [new_coordinate[1], new_coordinate[0]] #lat lng
                     self.get_new_coordinates()
                 if new_status == 'BUSY':
                     self.get_existing_coordinates()
+                if new_status == 'GOING_TO_LOCATION':
+                    self.departure = [new_coordinate[1], new_coordinate[0]]
+                    self.get_going_to_location_coordinates()
         elif len(self.coordinates) == 0 and not status_changed:
             self.end_ride()
             self.departure = self.destination
@@ -60,7 +73,7 @@ class QuickstartUser(HttpUser):
 
     def get_new_coordinates(self):
          #krece od random stanice i ide na jednu random izabranu lokaciju
-        self.destination = taxi_stops[randrange(0, len(taxi_stops))]
+        self.destination = taxi_stops[randrange(0, len(taxi_stops))] #lat lng
         while (self.departure[0] == self.destination[0]):
             self.destination = taxi_stops[randrange(0, len(taxi_stops))]
 
@@ -79,12 +92,13 @@ class QuickstartUser(HttpUser):
             'vehicle': {
                 'id': self.vehicle['id'],
                 'licensePlateNumber': self.vehicle['licensePlateNumber'],
-                'latitude': self.coordinates[0][0],
-                'longitude': self.coordinates[0][1]
+                'latitude': self.coordinates[0][1],
+                'longitude': self.coordinates[0][0]
             } # napravi voznju jednu ima ruta   i vozilo     i poctna stanica je postavljena
         }).json()
         self.real_ride = False
         self.fake_ride = True
+        self.to_dest = False
 
 
 #da li treba da dodje prvo do pocetne stanice
@@ -93,12 +107,44 @@ class QuickstartUser(HttpUser):
         routeJson = json.loads(self.ride['routeJSON'])
         self.coordinates = routeJson['features'][0]['geometry']['coordinates'] #uzima sve koordinate
         self.departure = [self.coordinates[0][1], self.coordinates[0][0]] #krece od random stanice i ide na jednu random izabranu lokaciju
-        self.destination = [self.coordinates[-1][1], self.coordinates[-1][0]]
+        self.destination = [self.coordinates[-1][1], self.coordinates[-1][0]]#lat lng
         self.real_ride = True
         self.fake_ride = False
+        self.to_dest = False
+
+    def get_going_to_location_coordinates(self):
+        #krece od random stanice i ide na jednu random izabranu lokaciju
+        cords = self.client.get(f'/api/ride/getNewStartAddress/{self.vehicle["id"]}').json()
+
+        self.destination = [cords['latitude'],cords['longitude']]
+        response = requests.get(f'https://routing.openstreetmap.de/routed-car/route/v1/driving/'
+                                f'{self.departure[1]},{self.departure[0]};{self.destination[1]},{self.destination[0]}'
+                                f'?geometries=geojson&overview=false&alternatives=true&steps=true')
+        self.routeGeoJSON = response.json()
+        self.coordinates = [] #dobio je rutu od stanice do lokacije
+
+        for step in self.routeGeoJSON['routes'][0]['legs'][0]['steps']:
+            self.coordinates = [*self.coordinates, *step['geometry']['coordinates']] #uzima sve koordinate
+
+        self.time_left = self.routeGeoJSON['routes']['duration']
+        self.time_minus = self.time_left/len(self.coordinates)
+        self.ride = self.client.post('/api/ride', json={
+            'routeJSON': json.dumps(self.routeGeoJSON),
+            'rideStatus': 0,
+            'vehicle': {
+                'id': self.vehicle['id'],
+                'licensePlateNumber': self.vehicle['licensePlateNumber'],
+                'latitude': self.coordinates[0][1],
+                'longitude': self.coordinates[0][0]
+            } # napravi voznju jednu ima ruta   i vozilo     i poctna stanica je postavljena
+        }).json()
+        self.real_ride = False
+        self.fake_ride = False
+        self.to_dest = True
 
     def end_ride(self):
         if self.real_ride:
             self.client.put(f"/api/ride/{self.ride['id']}")
-        elif self.fake_ride:
+        elif self.fake_ride or self.to_dest:
             self.client.delete(f"/api/ride/{self.ride['id']}")
+

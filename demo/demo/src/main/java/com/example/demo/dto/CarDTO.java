@@ -18,7 +18,7 @@ public class CarDTO {
 
     private int numOfSeats;
 
-    public CarDTO(String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType, int numOfSeats){
+    public CarDTO(String brand, String model, String color, String plateNumber, CarBodyType bodyType, Fuel fuelType, int numOfSeats) {
         this.brand = brand;
         this.model = model;
         this.color = color;
@@ -28,7 +28,8 @@ public class CarDTO {
         this.numOfSeats = numOfSeats;
     }
 
-    public CarDTO(){}
+    public CarDTO() {
+    }
 
     public String getBrand() {
         return brand;
@@ -85,4 +86,5 @@ public class CarDTO {
     public void setNumOfSeats(int numOfSeats) {
         this.numOfSeats = numOfSeats;
     }
+
 }

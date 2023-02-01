@@ -144,14 +144,14 @@ export class MapComponent implements AfterViewInit, OnInit {
     this.stompClient.subscribe('/map-updates/update-car-position', (message: { body: string }) => {
       let vehicle: Vehicle = JSON.parse(message.body);
       let existingVehicle = this.vehicles[vehicle.id];
-      existingVehicle.setLatLng([vehicle.longitude, vehicle.latitude]);
+      existingVehicle.setLatLng([vehicle.latitude, vehicle.longitude]);
       existingVehicle.update();
     });
     this.stompClient.subscribe('/map-updates/new-ride', (message: { body: string }) => {
       let ride: Ride = JSON.parse(message.body);
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
-      let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
+      let markerLayer = L.marker([ride.vehicle.latitude, ride.vehicle.longitude], {
         icon: L.icon({
           iconUrl: 'assets/green.png',
           iconSize: [20, 20],
@@ -166,7 +166,7 @@ export class MapComponent implements AfterViewInit, OnInit {
       let ride: Ride = JSON.parse(message.body);
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
-      let markerLayer = L.marker([ride.vehicle.longitude, ride.vehicle.latitude], {
+      let markerLayer = L.marker([ride.vehicle.latitude, ride.vehicle.longitude], {
         icon: L.icon({
           iconUrl: 'assets/red.png',
           iconSize: [20, 20],

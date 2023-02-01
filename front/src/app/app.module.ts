@@ -46,16 +46,25 @@ import { AddressViewComponent } from './address-view/address-view.component';
 import { AddClientsIntoDriveComponent } from './add-clients-into-drive/add-clients-into-drive.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MakeDriveReservationComponent } from './make-drive-reservation/make-drive-reservation.component';
-import { SelectVehicleTypeComponent } from './select-vehicle-type/select-vehicle-type.component';
 import { FindTypeOfVehicleComponent } from './find-type-of-vehicle/find-type-of-vehicle.component';
 import { PasswordChangeComponent } from './password-change/password-change.component';
 import {AppRoutingModule} from "./app-routing.module";
+import { MessagesClientComponent } from './messages-client/messages-client.component';
+import { MessagesAdminComponent } from './messages-admin/messages-admin.component';
+import {MatSidenavModule} from "@angular/material/sidenav";
+import { NotificationsComponent } from './notifications/notifications.component';
+import {MatBadgeModule} from "@angular/material/badge";
 import { FavoriteRoutesComponent } from './favorite-routes/favorite-routes.component';
 import { FavoriteRoutesDialogComponent } from './dialog-template/favorite-routes-dialog/favorite-routes-dialog.component';
 import { PaymentComponent } from './payment/payment.component';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatDividerModule } from '@angular/material/divider';
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
+import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import { RidesDriverComponent } from './rides-driver/rides-driver.component';
+import { RideClientComponent } from './ride-client/ride-client.component';
 
 
 
@@ -82,13 +91,19 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
     AddressViewComponent,
     AddClientsIntoDriveComponent,
     MakeDriveReservationComponent,
-    SelectVehicleTypeComponent,
     FindTypeOfVehicleComponent,
     FavoriteRoutesComponent,
     FavoriteRoutesDialogComponent,
     PasswordChangeComponent,
+    MessagesClientComponent,
+    MessagesAdminComponent,
+    NotificationsComponent,
     PaymentComponent,
     SelectedVehicleTypeComponent,
+    RespondDriveRequestComponent,
+    DriveParticipantsComponent,
+    RidesDriverComponent,
+    RideClientComponent,
   ],
 
 
@@ -115,7 +130,10 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
     MatMenuModule,
     MatExpansionModule,
     MatProgressBarModule,
-    MatDividerModule
+    MatDividerModule,
+    MatCheckboxModule,
+    MatSidenavModule,
+    MatBadgeModule,
   ],
   providers: [
     AppService,
