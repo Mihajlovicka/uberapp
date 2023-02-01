@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
+import com.example.demo.dto.DriveDTO;
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.Drive;
@@ -26,6 +27,9 @@ public class DriveController {
     @Autowired
     DriveConverter driveConverter;
 
+
+    //@PatchMapping(value="api/acceptDrive/{id}")
+    //public ResponseEntity acceptDriveParticipation(@PathVariable Long id){
 
     @GetMapping(value="api/getDrive/{id}")
     public ResponseEntity getDrive(@PathVariable Long id) throws DriveNotFoundException {

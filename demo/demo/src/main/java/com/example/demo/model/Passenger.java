@@ -31,9 +31,12 @@ public class Passenger {
     @Column
     private Double debit;
 
+    @Column
+    private boolean payingEnabled;
+
     public Passenger(){}
 
-    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment, Double debit) {
+    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment, Double debit, boolean payingEnabled) {
         this.id = id;
         this.passengerEmail = passengerEmail;
         this.passengerName = passengerName;
@@ -41,6 +44,7 @@ public class Passenger {
         this.contribution = contribution;
         this.payment = payment;
         this.debit = debit;
+        this.payingEnabled = payingEnabled;
     }
 
     public Long getId() {
@@ -97,5 +101,14 @@ public class Passenger {
 
     public void setDebit(Double debit) {
         this.debit = debit;
+    }
+
+
+    public boolean isPayingEnabled() {
+        return payingEnabled;
+    }
+
+    public void setPayingEnabled(boolean payingEnabled) {
+        this.payingEnabled = payingEnabled;
     }
 }

@@ -11,7 +11,7 @@
                 </div>
                    
                 <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === true">
-                    <label ><strong>{{((this.drive.price + this.starting_price)/(this.drive.passengers.length+1)).toFixed(2)}} RSD</strong></label>
+                    <label ><strong>{{((this.drive.price + this.starting_price)/(this.numOfPartitions+1)).toFixed(2)}} RSD</strong></label>
                 </div>
 
             </mat-card-header>

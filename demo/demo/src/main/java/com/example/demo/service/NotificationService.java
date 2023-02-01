@@ -48,13 +48,30 @@ public class NotificationService {
 
     public void addedToDriveNotify(Set<Passenger> passengers, Long id) throws EmailNotFoundException {
         for(Passenger passenger: passengers){
-            addNotification(new Notification(
-                    "Nova voznja",
-                    "Cao " + passenger.getPassengerName()+"!"+"Dodati ste u voznju. Udjite na link kako bi ste videli vise o ovome.",
-                    userService.findByEmail(passenger.getPassengerEmail()),
-                    "/passenger/accept-drive/"+id));
+            if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED)){
+                addNotification(new Notification(
+                        "Nova voznja",
+                        "Cao " + passenger.getPassengerName()+"!"+"Dodati ste u voznju. Kliknite kako bi ste videli vise o ovome.",
+                        userService.findByEmail(passenger.getPassengerEmail()),
+                        "/passenger/accept-drive/"+id));
+            }
+
         }
     };
+
+
+    public void notifyAboutPayment(Set<Passenger> passengers, Long id){
+        for (Passenger passenger: passengers){
+            //proveriti da li moze da plati
+            if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED) && !passenger.getPayment().equals(PaymentPassengerStatus.REJECTED)){
+                addNotification(new Notification(
+                        "Placanje",
+                        "Cao " + passenger.getPassengerName()+"!"+"Poslato Vam je vase zadusenje za prihvacenu voznju. Kliknite kako bi ste videli vise o ovome.",
+                        userService.findByEmail(passenger.getPassengerEmail()),
+                        "/passenger/accept-payment/"+id));
+            }
+        }
+    }
 
 
 
