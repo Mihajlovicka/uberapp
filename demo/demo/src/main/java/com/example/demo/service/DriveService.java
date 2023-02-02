@@ -616,8 +616,8 @@ public class DriveService {
 
         drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
 
-       driveRepository.save(drive);
-
+        driveRepository.save(drive);
+        notificationService.paymentFailedDriveCanceledNotify(transaction.getSender());
     }
 
 

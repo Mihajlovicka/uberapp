@@ -10,15 +10,26 @@
         </div>
     </div>
 
-    <label>Aplikacija <strong>YUBER</strong> zahteva odobrenje za online placanje.</label><br><br>
-    <label> Da li zelite da izvrsite transakciju u iznosu od <strong>{{this.transaction.amount}} RSD</strong>?</label>
-    
-    <div style="display:flex; margin-bottom:5% ; justify-content: space-between;">
-        <button class="btn btn-success" (click)="acceptTransaction()">
-            Odobri
-        </button>
-        <button class="btn btn-danger" (click)="declineTransaction()">Odbij</button>
+    <div *ngIf="this.transaction.transactionStatus==='WAITING_VERIFICATION'">
+        <label>Aplikacija <strong>YUBER</strong> zahteva odobrenje za online placanje.</label><br><br>
+        <label> Da li zelite da izvrsite transakciju u iznosu od <strong>{{this.transaction.amount}} RSD</strong>?</label>
+        
+        <div style="display:flex; margin-bottom:5% ; justify-content: space-between;">
+            <button class="btn btn-success" (click)="acceptTransaction()">
+                Odobri
+            </button>
+            <button class="btn btn-danger" (click)="declineTransaction()">Odbij</button>
+        </div>
     </div>
+
+
+    <div *ngIf="this.transaction.transactionStatus!=='WAITING_VERIFICATION'">
+        <label>
+            Transakcija je zatvorena.
+        </label>
+    </div>
+
+  
 
   
 </div>

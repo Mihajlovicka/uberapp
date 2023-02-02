@@ -73,7 +73,7 @@ public class BankController {
         //postaviti status voznje na failed
         driveService.driveFailedMoneyTransactionRejected(bankTransaction);
 
-        notificationService.paymentFailedDriveCanceledNotify(bankTransaction.getSender());
+
         return new ResponseEntity(bankConverter.toDTO(bankTransaction), HttpStatus.OK);
     }
 

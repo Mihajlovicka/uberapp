@@ -106,10 +106,7 @@ public class BankService {
         closeReservation(bankTransaction.getAmount(), findByAccountNumber(clientsBankAccountNumber));
 
         bankTransaction.setTransactionStatus(TransactionStatus.FAILED);
-
-
-
-
+        
         return bankTransactionRepository.save(bankTransaction);
     }
 
