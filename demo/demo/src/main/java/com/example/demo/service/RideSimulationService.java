@@ -1,15 +1,19 @@
 package com.example.demo.service;
 
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.Car;
-import com.example.demo.model.DriverStatus;
-import com.example.demo.model.RideSimulation;
-import com.example.demo.model.RideStatus;
+import com.example.demo.model.*;
+import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.repository.CarRepository;
 import com.example.demo.repository.RideSimulationRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -20,10 +24,11 @@ public class RideSimulationService {
     @Autowired
     private CarRepository carRepository;
     @Autowired
-    private CarService carService;
+    @Lazy
+    private DriveService driveService;
 
     public RideSimulation createRide(RideSimulation ride, Car vehicle) {
-        RideSimulation returnRide =rideRepository.save(ride);
+        RideSimulation returnRide = rideRepository.save(ride);
         Car storedVehicle = this.carRepository.findById(vehicle.getId()).orElseThrow(
                 () -> new NotFoundException("Vehicle does not exist"));
         returnRide.setCar(storedVehicle);
@@ -33,23 +38,22 @@ public class RideSimulationService {
     public RideSimulation changeRide(int id) {
         RideSimulation ride = this.rideRepository.findById(id).orElseThrow(() -> new NotFoundException("Ride does not exist!"));
         ride.setRideStatus(RideStatus.ENDED);
-        //???????????????????//////
-
-        carService.changeStatus(ride.getCar(), DriverStatus.AVAILABLE);
-
-        //?????????????????????????
         return this.rideRepository.save(ride);
     }
 
-    public List<RideSimulation> getRides() {
-        return this.rideRepository.findAllByRideStatus(RideStatus.STARTED);
+    public List<RideSimulation> getRides(RideStatus status) {
+        return this.rideRepository.findAllByRideStatus(status);
     }
 
     public RideSimulation getRealRide(int id) {
-        for(RideSimulation r: getRides()){
-            if(r.getCar().getId() == id) return r;
+        for (RideSimulation r : getRides(RideStatus.STARTED)) {
+            if (r.getCar().getId() == id) return r;
         }
-        throw new NotFoundException("Ride does not exist");
+        Drive drive = driveService.getCarCurrentDrive(id);
+        if (drive != null) {
+            return createRideSim(drive);
+        }
+        throw new NotFoundException("No current drive for this car");
     }
 
     public int deleteRide(int id) {
@@ -58,4 +62,13 @@ public class RideSimulationService {
         rideRepository.deleteById(id);
         return car_id;
     }
+
+    public RideSimulation createRideSim(Drive d) {
+        RideSimulation ride = new RideSimulation();
+        ride.setRideStatus(RideStatus.STARTED);
+        ride.setCar(d.getDriver().getCar());
+        ride.setRouteJSON(d.getRouteJSON());
+        return rideRepository.save(ride);
+    }
+
 }

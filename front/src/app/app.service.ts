@@ -6,7 +6,7 @@ import {Role, User} from "./model/user.model";
 import {ClientsAccount} from "./model/clientsAccount.model";
 import {BabySeat, CarBodyType, Fuel} from "./model/car.model";
 import {DriverCarInfo} from "./model/driverCarInfo.model";
-import {DriversAccount} from "./model/driversAccount.model";
+import {DriversAccount, DriverStatus} from "./model/driversAccount.model";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 import {Image} from "./model/image.model";
@@ -19,7 +19,13 @@ import {Notification} from "./model/notification.model";
 
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
+
 import {Grade} from "./model/grade.model";
+
+import {MapAddress} from "./model/mapAddress.model";
+import {Vehicle} from "./model/Vehicle";
+import { Stop } from "./model/stop.model";
+
 
 
 @Injectable({
@@ -31,6 +37,7 @@ import {Grade} from "./model/grade.model";
     private registerUrl = 'http://localhost:8080/api/register';
     private addDriverUrl = 'http://localhost:8080/api/add-driver';
     private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+    private getDriveUrl = 'http://localhost:8080/api/getDrive/';
     private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
     private updateClientUrl = 'http://localhost:8080/api/updateClient';
     private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
@@ -127,6 +134,12 @@ import {Grade} from "./model/grade.model";
       catchError(this.handleError<DriversAccount>()));
   }
 
+  public getDrive(id: number): Observable<Drive>{
+    return this.http.get<Drive>(`${this.getDriveUrl + id}`).pipe(
+      catchError(this.handleError<Drive>())
+    );
+  }
+
 
 
   public register(registerForm: RegisterForm): Observable<ClientsAccount> {
@@ -154,7 +167,7 @@ import {Grade} from "./model/grade.model";
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
   }
-  public getDrive(driveID:number): Observable<Drive>{
+  public getDriveForGrade(driveID:number): Observable<Drive>{
     return this.http.get<Drive>(`http://localhost:8080/api/getDrive?driveID=`+driveID).pipe(catchError(this.handleError<Drive>()));
   }
   public addGrade(grade:Grade):Observable<any>{
@@ -303,5 +316,58 @@ import {Grade} from "./model/grade.model";
     return this.http.delete<number>(this.host + "/ride/delete_favorite/" + favoriteRideID, this.httpOptions).pipe(
       catchError(this.handleError<any>("Doslo je do greske."))
     )
+  }
+
+
+  getFrequentAddresses(): Observable<MapAddress[]>{
+    return this.http.get<MapAddress[]>(this.host + "/frequentAddresses" , this.httpOptions).pipe(
+      catchError(this.handleError<any>("Doslo je do greske."))
+    )
+  }
+
+  getDriverCar():Observable<Vehicle> {
+    return this.http.get<Vehicle>(this.host + "/api/car/getDriversCar" , this.httpOptions)
+  }
+
+  getDriverStatus():Observable<DriversAccount>{
+    return this.http.get<DriversAccount>(this.host + "/getDriver" , this.httpOptions).pipe(
+      catchError(this.handleError<any>("Doslo je do greske."))
+    )
+  }
+
+  getCurrentRide() :Observable<Stop[]>{
+    return this.http.get<Stop[]>(this.host + "/ride/getCurrent" , this.httpOptions)
+  }
+
+  getFirstFutureRide() :Observable<any>{
+    return this.http.get<any>(this.host + "/ride/getFirstFuture" , this.httpOptions)
+  }
+
+  endRide() {
+    return this.http.post<any>(this.host + "/ride/endRide" , this.httpOptions)
+  }
+
+  startNextRide() :Observable<any>{
+    return this.http.post<any>(this.host + "/ride/goToNextRide" , this.httpOptions)
+  }
+
+  startRide() {
+    return this.http.post<any>(this.host + "/ride/startRide" , this.httpOptions)
+  }
+
+  getClientCurrentCar() : Observable<Vehicle> {
+    return this.http.get<Vehicle>(this.host + "/api/car/getClientCurrentCar" , this.httpOptions)
+  }
+
+  getClientCurrentDrive():Observable<Stop[]> {
+    return this.http.get<Stop[]>(this.host + "/getClientCurrentDriveStops" , this.httpOptions)
+  }
+
+  notifyPassengers() {
+    return this.http.post<any>(this.host + "/notifyPassengers" , this.httpOptions)
+  }
+
+  cancelRide(result: any) {
+    return this.http.post<any>(this.host + "/cancelRide", result , this.httpOptions)
   }
 }

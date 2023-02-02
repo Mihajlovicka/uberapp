@@ -390,6 +390,15 @@ public class UserService {
         return false;
     }
 
+    public List<DriversAccount> getDriversByStatus(DriverStatus status){
+        return this.driversRepository.getByDriverStatus(status);
+    }
+
+    public DriversAccount getDriver(Long id) {
+        DriversAccount driver = driversRepository.findById(id).orElseThrow(() -> new NotFoundException("Vozac ne postoji."));
+        return driver;
+    }
+
     public User getAdmin() {
         for(User user : getAdmins()){
             if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
@@ -408,5 +417,20 @@ public class UserService {
         }
         return admins;
     }
+
+    public DriversAccount getLoggedDriver(){
+        User user = getLoggedIn();
+        DriversAccount driver = getDriver(user.getEmail());
+        return driver;
+    }
+
+    public void updateDriverStatus(DriverStatus status) {
+        DriversAccount driver = getLoggedDriver();
+        driver.setDriverStatus(status);
+        driversRepository.save(driver);
+    }
+
+
+    public User findByEmail(String email){return userRepository.findUserByEmail(email);}
 
 }

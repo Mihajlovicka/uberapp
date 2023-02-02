@@ -1,0 +1,22 @@
+<div style="margin:0 auto">
+    <ul style="list-style: none;">
+        <mat-card>
+            <mat-card-header style="font-size:18px; display:flex; justify-content: space-between;">
+                <div class="col-md-7 col-lg-7 col-sm-7">
+                    <label >Vase zaduzenje: </label>
+                </div>
+                   
+                <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === false">
+                    <label ><strong>{{this.drive.price + this.starting_price}} RSD</strong></label>
+                </div>
+                   
+                <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === true">
+                    <label ><strong>{{((this.drive.price + this.starting_price)/(this.drive.passengers.length+1)).toFixed(2)}} RSD</strong></label>
+                </div>
+
+            </mat-card-header>
+
+        </mat-card>
+
+    </ul>
+</div>

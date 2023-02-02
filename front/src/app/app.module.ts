@@ -1,5 +1,8 @@
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/sr';
+registerLocaleData(localeFr);
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -60,12 +63,19 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
 import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+
 import { DriveHistoryClientComponent } from './drive-history-client/drive-history-client.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import { DriveHistoryDriverComponent } from './drive-history-driver/drive-history-driver.component';
 import { AddGradeComponent } from './add-grade/add-grade.component';
 import {NgxMaterialRatingModule} from "ngx-material-rating";
+
+import { RidesDriverComponent } from './rides-driver/rides-driver.component';
+import { RideClientComponent } from './ride-client/ride-client.component';
+import { DriveBillComponent } from './drive-bill/drive-bill.component';
+import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
+
 
 
 
@@ -103,9 +113,15 @@ import {NgxMaterialRatingModule} from "ngx-material-rating";
     SelectedVehicleTypeComponent,
     RespondDriveRequestComponent,
     DriveParticipantsComponent,
+
     DriveHistoryClientComponent,
     DriveHistoryDriverComponent,
     AddGradeComponent,
+
+    RidesDriverComponent,
+    RideClientComponent,
+    DriveBillComponent,
+    CancelDriveReasonDialogComponent,
   ],
 
 
@@ -147,7 +163,8 @@ import {NgxMaterialRatingModule} from "ngx-material-rating";
     useClass:AuthInterceptor,
     multi:true},
     UserAuthService,
-    MapService
+    MapService,
+    { provide: LOCALE_ID, useValue: 'sr-RS'}
   ],
   bootstrap: [AppComponent]
 

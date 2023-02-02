@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Grade, GradeStatus} from "../model/grade.model";
 import {Role, Status, User} from "../model/user.model";
-import {Drive, DriveStatus} from "../model/drive.model";
+import {Drive, DriveStatus, DriveType} from "../model/drive.model";
 import {BankStatus} from "../model/clientsAccount.model";
 import {CarBodyType, Fuel} from "../model/car.model";
 import {DriverStatus} from "../model/driversAccount.model";
@@ -107,7 +107,12 @@ export class AddGradeComponent implements OnInit {
         },
         driverStatus: DriverStatus.AVAILABLE,
       },
-      date: ''
+      date: '',
+      splitBill: false,
+      ownerDebit: 0,
+      driveType: DriveType.NOW,
+      startDate: '',
+      endDate: ''
     }
   }
 
@@ -134,7 +139,7 @@ export class AddGradeComponent implements OnInit {
       this.drive_id = params['driveID']
     });
 
-    this.appService.getDrive(this.drive_id).subscribe((resp: Drive) => {
+    this.appService.getDriveForGrade(this.drive_id).subscribe((resp: Drive) => {
       this.grade.drive = resp;
 
       console.log(resp);

@@ -18,14 +18,15 @@ export class SelectedVehicleTypeComponent implements OnInit {
     passengers: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
+    babySeats: 0,
+    pets: 0,
     owner: null,
-    routeJSON:{},
+    routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
     splitBill: false,
-    date: ""
+    date: "",
+    ownerDebit: 0
   };
 
   ngOnInit(): void {

@@ -1,12 +1,22 @@
 package com.example.demo.service;
 
-import com.example.demo.model.FavoriteRide;
-import com.example.demo.model.User;
+import com.example.demo.model.*;
+import com.example.demo.model.help.ResponseTableHelp;
 import com.example.demo.repository.FavoriteRidesRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class FavoriteRideService {
@@ -29,4 +39,19 @@ public class FavoriteRideService {
     public void delete(int id) {
         favoriteRidesRepository.deleteById(id);
     }
+
+
+    public List<RealAddress> getFrequentAddresses() {
+        List<FavoriteRide> rides = getAllFavorites();
+        List<RealAddress> addresses = new ArrayList<>();
+        for(FavoriteRide r: rides){
+            for(RealAddress a:r.getRealAddress()){
+                if(!addresses.contains(a)) addresses.add(a);
+            }
+        }
+        return addresses;
+    }
 }
+
+
+

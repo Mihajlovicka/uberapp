@@ -48,6 +48,9 @@ public class Drive {
     @Column
     private DriveStatus driveStatus;
 
+    @Column
+    private DriveType driveType;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private ClientsAccount owner;
@@ -63,14 +66,24 @@ public class Drive {
     private boolean splitBill;
 
 
-    @DateTimeFormat(pattern = "dd-MM-yyyy hh:mm")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
     @Column
     private Date date;
 
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    @Column
+    private Date startDate;
+
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm")
+    @Column
+    private Date endDate;
+
+    @Column
+    private Double ownerDebit;
 
     public Drive(){}
 
-    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date) {
+    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date, DriveType driveTimeStatus, Double ownerDebit, Date startDate, Date endDate) {
         this.id = id;
         this.stops = stops;
         this.distance = distance;
@@ -87,6 +100,34 @@ public class Drive {
         this.driveStatus = driveStatus;
         this.splitBill = splitBill;
         this.date = date;
+        this.ownerDebit = ownerDebit;
+        this.driveType = driveTimeStatus;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
+
+    public DriveType getDriveType() {
+        return driveType;
+    }
+
+    public void setDriveType(DriveType driveTimeStatus) {
+        this.driveType = driveTimeStatus;
     }
 
     public Long getId() {
@@ -216,5 +257,13 @@ public class Drive {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public Double getOwnerDebit() {
+        return ownerDebit;
+    }
+
+    public void setOwnerDebit(Double ownerDebit) {
+        this.ownerDebit = ownerDebit;
     }
 }

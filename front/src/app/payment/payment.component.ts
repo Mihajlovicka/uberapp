@@ -2,8 +2,8 @@ import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, EventE
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { BankStatus } from '../model/clientsAccount.model';
-import { Drive, DriveStatus } from '../model/drive.model';
-import { DriveReservationForm } from '../model/driveReservationForm.model';
+import {Drive, DriveStatus, DriveType} from '../model/drive.model';
+import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 import { DriverStatus } from '../model/driversAccount.model';
 import { Role, Status } from '../model/user.model';
 
@@ -21,6 +21,8 @@ export class PaymentComponent implements OnInit{
 
 
 
+  @Input() starting_price: PriceStart = PriceStart.seats5;
+
 
   @Input() drive:DriveReservationForm = {
     stops: [],
@@ -30,14 +32,15 @@ export class PaymentComponent implements OnInit{
     passengers: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
+    babySeats: 0,
+    pets: 0,
     owner: null,
-    routeJSON:{},
+    routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill:false,
-    date:""
+    splitBill: false,
+    date: "",
+    ownerDebit: 0
   };
 
   created: Drive={
@@ -108,12 +111,18 @@ export class PaymentComponent implements OnInit{
       },
       driverStatus: DriverStatus.AVAILABLE,
     },
-    date: ''
+    date: '',
+    splitBill: false,
+    ownerDebit: 0,
+    driveType: DriveType.NOW,
+    startDate: '',
+    endDate: ''
   }
 
 
   setSplitPayment(split: boolean){
     this.drive.splitBill=split;
+
   }
 
 
@@ -122,12 +131,22 @@ export class PaymentComponent implements OnInit{
   ngOnInit(){}
 
   create(){
+    this.drive.price = this.drive.price+this.starting_price;
+
+
+    if(this.drive.splitBill === true){
+      this.drive.passengers.forEach(passenger  => {
+        passenger.debit = Number((this.drive.price/(this.drive.passengers.length+1)).toFixed(2));
+      });
+    }
+
     this.service.createDriveReservation(this.drive).subscribe(
       (resp: Drive) =>{
         this.created = resp;
-        console.log(this.created)
-      }
+        console.log(this.created);}
+
     )
+    this.drive.price = this.drive.price - this.starting_price;
   }
 
 

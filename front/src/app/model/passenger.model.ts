@@ -19,6 +19,7 @@ export interface PassengerInterface{
     passengerSurname: string,
     contribution: DrivePassengerStatus,
     payment: PaymentPassengerStatus
+    debit: number;
     
 }
 
@@ -28,11 +29,13 @@ export class Passenger implements PassengerInterface{
     public passengerSurname: string;
     public contribution: DrivePassengerStatus;
     public payment: PaymentPassengerStatus;
+    public debit: number;
     constructor(passengerInt: PassengerInterface){
         this.passengerEmail = passengerInt.passengerEmail;
         this.passengerName = passengerInt.passengerName;
         this.passengerSurname = passengerInt.passengerSurname;
         this.contribution = passengerInt.contribution;
         this.payment = passengerInt.payment;
+        this.debit = passengerInt.debit;
     }
 }

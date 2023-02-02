@@ -20,6 +20,7 @@ public class CarService {
     @Autowired
     @Lazy
     private UserService userService;
+    @Autowired@Lazy private DriveService driveService;
 
 
     //izmeniti jedan vozac jedna kola i to je to!!!!!!!
@@ -81,5 +82,20 @@ public class CarService {
             }
         }
         throw new NotFoundException("Status for car not found!");
+    }
+
+    public Car getDriversCar() {
+        User user = userService.getLoggedIn();
+        DriversAccount driver = userService.getDriver(user.getEmail());
+        return driver.getCar();
+    }
+
+    public Car getCar(Long id) {
+        Car c = carRepository.findById(id).orElseThrow(() -> new NotFoundException("Car not found."));
+        return c;
+    }
+
+    public Car getClientCurrentCar() {
+        return driveService.getClientCurrentCar();
     }
 }

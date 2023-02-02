@@ -23,9 +23,15 @@ import {MessagesClientComponent} from "./messages-client/messages-client.compone
 import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
 import { PaymentComponent } from './payment/payment.component';
+
 import {DriveHistoryClientComponent} from "./drive-history-client/drive-history-client.component";
 import {DriveHistoryDriverComponent} from "./drive-history-driver/drive-history-driver.component";
 import {AddGradeComponent} from "./add-grade/add-grade.component";
+
+import {RidesDriverComponent} from "./rides-driver/rides-driver.component";
+import {RideClientComponent} from "./ride-client/ride-client.component";
+import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -48,9 +54,15 @@ const routes: Routes = [
   {path:'payment', component:PaymentComponent},
   {path: 'messages-admin',component:MessagesAdminComponent},
   {path: 'messages-client',component:MessagesClientComponent},
+
   {path: 'drive-history-client',component:DriveHistoryClientComponent},
   {path: 'drive-history-driver',component:DriveHistoryDriverComponent},
   {path: 'drive-rating',component:AddGradeComponent},
+
+  {path: 'rides-dr',component:RidesDriverComponent,  canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
+  {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
+  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent}
+
 ];
 
 @NgModule({

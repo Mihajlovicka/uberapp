@@ -36,12 +36,18 @@ public class DriveDTO {
     private boolean splitBill;
 
     private String date;
+    private String startDate;
+    private String endDate;
+
+    private Double ownerDebit;
+
+    private DriveType driveType;
 
     public DriveDTO(){
 
     }
 
-    public DriveDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String Date) {
+    public DriveDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String date, Double ownerDebit, String startDate, String endDate, DriveType driveType) {
         this.stops = stops;
         this.distance = distance;
         this.duration = duration;
@@ -57,6 +63,34 @@ public class DriveDTO {
         this.driver = driver;
         this.splitBill = splitBill;
         this.date = date;
+        this.ownerDebit = ownerDebit;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.driveType = driveType;
+    }
+
+    public DriveType getDriveType() {
+        return driveType;
+    }
+
+    public void setDriveType(DriveType driveType) {
+        this.driveType = driveType;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public List<RealAddress> getStops() {
@@ -177,5 +211,13 @@ public class DriveDTO {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public Double getOwnerDebit() {
+        return ownerDebit;
+    }
+
+    public void setOwnerDebit(Double ownerDebit) {
+        this.ownerDebit = ownerDebit;
     }
 }

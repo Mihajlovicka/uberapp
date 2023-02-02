@@ -4,7 +4,8 @@ import {Image} from "./image.model";
 
 export enum DriverStatus{
     AVAILABLE = 'AVAILABLE',
-    BUSY = 'BUSY'
+    BUSY = 'BUSY',
+    GOING_TO_LOCATION = 'GOING_TO_LOCATION'
 }
 
 interface DriversAccountInterface{

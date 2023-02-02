@@ -35,9 +35,13 @@ public class DriveConverter {
         dto.setSeats(drive.getSeats());
         dto.setPets(drive.getPets());
         dto.setSplitBill(drive.isSplitBill());
+        dto.setOwnerDebit(drive.getOwnerDebit());
 
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        dto.setDriveType(drive.getDriveType());
 
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        dto.setStartDate(dateFormat.format(drive.getStartDate()));
+        dto.setEndDate(dateFormat.format(drive.getEndDate()));
         dto.setDate(dateFormat.format(drive.getDate()));
 
         return dto;

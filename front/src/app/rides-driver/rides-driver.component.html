@@ -1,0 +1,167 @@
+
+<div class="container" style="margin: 0 auto">
+  <div class="row">
+    <div class="map-container">
+      <div class="map-frame">
+        <div id="map"
+             leaflet
+             (leafletMapReady)="onMapReady($event)"
+             [leafletOptions]="options"
+             [leafletLayers]="mainGroup"
+        ></div>
+      </div>
+    </div>
+    <form class="data col">
+      <div class="row">
+        <h3 class="col">Trenutna voznja</h3>
+      </div>
+      <div class="row">
+        <div *ngIf="status === 'AVAILABLE'; then thenBlockNext else elseBlockNext"></div>
+        <ng-template #thenBlockNext>
+          <h5 class="col">Trenutno nemate voznju</h5>
+        </ng-template>
+        <ng-template #elseBlockNext>
+          <mat-card-content *ngIf="stops.length">
+            <div style="margin: 0 auto;">
+              <ul style="list-style: none;">
+                <mat-card class="example-card">
+                  <mat-card-content>
+                    <li *ngFor="let stop of stops; let i = index" style="font-size: 16px;">
+                      <div *ngIf="i===0" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+                          </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div  *ngIf="i===stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+
+                          </div>
+
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div *ngIf="i!== 0 && i!== stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <p style="color:white">aa</p>
+                          </div>
+
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                    </li>
+                  </mat-card-content>
+                </mat-card>
+              </ul>
+            </div>
+
+          </mat-card-content>
+        </ng-template>
+
+      </div>
+      <div *ngIf="status === 'BUSY'" class="row justify-content-end">
+        <button mat-raised-button type="button" class="col-6" color="primary"
+                (click)="endRide()">Zavrsi voznju
+        </button>
+      </div>
+      <div *ngIf="status === 'GOING_TO_LOCATION' && !arrived" class="row justify-content-end">
+        <button mat-raised-button type="button" class="col-6" color="primary"
+                (click)="notifyPassengers()">Stigao na odrediste
+        </button>
+      </div>
+      <div *ngIf="status === 'GOING_TO_LOCATION' && arrived" class="row justify-content-end">
+        <button mat-raised-button type="button" class="col-6" color="primary"
+                (click)="startRide()">Pocni voznju
+        </button>
+      </div>
+      <div *ngIf="status === 'GOING_TO_LOCATION'" class="row justify-content-end">
+        <button mat-raised-button type="button" class="col-6" color="primary"
+                (click)="cancelRide()">Otkazi voznju
+        </button>
+      </div>
+
+
+
+      <div class="row">
+        <h4 class="col">Sledeca voznja</h4>
+      </div>
+      <div class="row">
+          <div *ngIf="nextStops.length===0; then thenBlockNext1 else elseBlockNext1"></div>
+          <ng-template #thenBlockNext1>
+            <h5 class="col">Nema sledece voznje</h5>
+          </ng-template>
+          <ng-template #elseBlockNext1>
+            <mat-card-content *ngIf="nextStops.length">
+              <div style="margin: 0 auto;">
+                <ul style="list-style: none;">
+                  <mat-card class="example-card">
+                    <mat-card-content>
+                      <div class="col-md-8 col-sm-8">
+                        <p><small><strong>Datum i vreme{{nextDate}}</strong></small></p>
+                      </div>
+                      <li *ngFor="let stop of nextStops; let i = index" style="font-size: 16px;">
+                        <div *ngIf="i===0" class="row">
+                          <div class="col-md-1 col-sm-1" >
+                            <div class="row" style="margin:0 auto">
+                              <span class="material-icons" style="color:#673ab7;">flag</span>
+                            </div>
+                          </div>
+                          <div class="col-md-8 col-sm-8">
+                            <p><small><strong>{{stop.name}}</strong></small></p>
+                          </div>
+                        </div>
+                        <div  *ngIf="i===nextStops.length-1" class="row">
+                          <div class="col-md-1 col-sm-1" >
+                            <div class="row" style="margin:0 auto">
+                              <span class="material-icons" style="color:#673ab7;">flag</span>
+
+                            </div>
+
+                          </div>
+                          <div class="col-md-8 col-sm-8">
+                            <p><small><strong>{{stop.name}}</strong></small></p>
+                          </div>
+                        </div>
+                        <div *ngIf="i!== 0 && i!== nextStops.length-1" class="row">
+                          <div class="col-md-1 col-sm-1" >
+                            <div class="row" style="margin:0 auto">
+                              <p style="color:white">aa</p>
+                            </div>
+
+                          </div>
+                          <div class="col-md-8 col-sm-8">
+                            <p><small><strong>{{stop.name}}</strong></small></p>
+                          </div>
+                        </div>
+                      </li>
+                    </mat-card-content>
+                  </mat-card>
+                </ul>
+              </div>
+
+            </mat-card-content>
+
+          </ng-template>
+      </div>
+      <div *ngIf="stops.length===0 && nextStops.length!==0;" class="row justify-content-end">
+        <button mat-raised-button type="button" class="col-6" color="primary"
+                (click)="goToNewStartLocation()">Kreni na adresu
+        </button>
+      </div>
+
+
+
+    </form>
+  </div>
+</div>
