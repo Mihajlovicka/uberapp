@@ -6,7 +6,7 @@ import {Role, User} from "./model/user.model";
 import {ClientsAccount} from "./model/clientsAccount.model";
 import {BabySeat, CarBodyType, Fuel} from "./model/car.model";
 import {DriverCarInfo} from "./model/driverCarInfo.model";
-import {DriversAccount} from "./model/driversAccount.model";
+import {DriversAccount, DriverStatus} from "./model/driversAccount.model";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.component";
 import {Image} from "./model/image.model";
@@ -21,6 +21,13 @@ import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
 import { BankTransaction } from "./model/bankTransaction.model";
 import { BankAccount } from "./model/bankAccount.model";
+
+import {Grade} from "./model/grade.model";
+
+import {MapAddress} from "./model/mapAddress.model";
+import {Vehicle} from "./model/Vehicle";
+import { Stop } from "./model/stop.model";
+
 
 
 @Injectable({
@@ -192,6 +199,15 @@ import { BankAccount } from "./model/bankAccount.model";
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
   }
+  public getDriveForGrade(driveID:number): Observable<Drive>{
+    return this.http.get<Drive>(`http://localhost:8080/api/getDrive?driveID=`+driveID).pipe(catchError(this.handleError<Drive>()));
+  }
+  public addGrade(grade:Grade):Observable<any>{
+    return this.http.post("http://localhost:8080/api/newGrade",grade,this.httpOptions).pipe(catchError(this.handleError<any>("Dodavanje ocene ")));
+  }
+  public getAllDrivesClient(email:string): Observable<Drive[]>{
+    return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
+  }
 
 
   public addDriverCarAccount(addForm: DriverCarInfo): Observable<DriversAccount> {
@@ -332,5 +348,62 @@ import { BankAccount } from "./model/bankAccount.model";
     return this.http.delete<number>(this.host + "/ride/delete_favorite/" + favoriteRideID, this.httpOptions).pipe(
       catchError(this.handleError<any>("Doslo je do greske."))
     )
+  }
+
+
+  getFrequentAddresses(): Observable<MapAddress[]>{
+    return this.http.get<MapAddress[]>(this.host + "/frequentAddresses" , this.httpOptions).pipe(
+      catchError(this.handleError<any>("Doslo je do greske."))
+    )
+  }
+
+  getDriverCar():Observable<Vehicle> {
+    return this.http.get<Vehicle>(this.host + "/api/car/getDriversCar" , this.httpOptions)
+  }
+
+  getDriverStatus():Observable<DriversAccount>{
+    return this.http.get<DriversAccount>(this.host + "/getDriver" , this.httpOptions).pipe(
+      catchError(this.handleError<any>("Doslo je do greske."))
+    )
+  }
+
+  getCurrentRide() :Observable<Stop[]>{
+    return this.http.get<Stop[]>(this.host + "/ride/getCurrent" , this.httpOptions)
+  }
+
+  getFirstFutureRide() :Observable<any>{
+    return this.http.get<any>(this.host + "/ride/getFirstFuture" , this.httpOptions)
+  }
+
+  endRide() {
+    return this.http.post<any>(this.host + "/ride/endRide" , this.httpOptions)
+  }
+
+  startNextRide() :Observable<any>{
+    return this.http.post<any>(this.host + "/ride/goToNextRide" , this.httpOptions)
+  }
+
+  startRide() {
+    return this.http.post<any>(this.host + "/ride/startRide" , this.httpOptions)
+  }
+
+  getClientCurrentCar() : Observable<Vehicle> {
+    return this.http.get<Vehicle>(this.host + "/api/car/getClientCurrentCar" , this.httpOptions)
+  }
+
+  getClientCurrentDrive():Observable<Stop[]> {
+    return this.http.get<Stop[]>(this.host + "/getClientCurrentDriveStops" , this.httpOptions)
+  }
+
+  notifyPassengers() {
+    return this.http.post<any>(this.host + "/notifyPassengers" , this.httpOptions)
+  }
+
+  cancelRide(result: any) {
+    return this.http.post<any>(this.host + "/cancelRide", result , this.httpOptions)
+  }
+
+  changeAvailability():Observable<any> {
+    return this.http.post<any>(this.host + "/changeAvailability" , this.httpOptions).pipe()
   }
 }

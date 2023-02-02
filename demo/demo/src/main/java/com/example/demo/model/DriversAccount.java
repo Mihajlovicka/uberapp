@@ -27,15 +27,27 @@ public class DriversAccount{
     @Column
     private DriverStatus driverStatus;
 
+    @Column
+    private boolean driversAvailability = false;
+
     public DriversAccount(){}
 
-    public DriversAccount(Long id, User user, Image picture, String phone, Car car, DriverStatus driverStatus) {
+    public DriversAccount(Long id, User user, Image picture, String phone, Car car, DriverStatus driverStatus, boolean driversAvailability) {
         this.id = id;
         this.user = user;
         this.picture = picture;
         this.phone = phone;
         this.car = car;
         this.driverStatus = driverStatus;
+        this.driversAvailability = driversAvailability;
+    }
+
+    public boolean getDriversAvailability() {
+        return driversAvailability;
+    }
+
+    public void setDriversAvailability(boolean driversAvailability) {
+        this.driversAvailability = driversAvailability;
     }
 
     public Long getId(){return id;}

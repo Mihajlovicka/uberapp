@@ -10,6 +10,7 @@ import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -50,6 +51,12 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    private UserConverter userConverter;
+    @Autowired@Lazy
+    private DriveService driveService;
 
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
@@ -174,7 +181,7 @@ public class UserService {
         return client;
     }
 
-    private DriversAccount getDriverByEmail(String email){
+    public DriversAccount getDriverByEmail(String email){
         DriversAccount driver = null;
         for(DriversAccount d : driversRepository.findAll()){
             if(d.getUser().getEmail().equals(email)){
@@ -388,6 +395,15 @@ public class UserService {
         return false;
     }
 
+    public List<DriversAccount> getDriversByStatus(DriverStatus status){
+        return this.driversRepository.getByDriverStatus(status);
+    }
+
+    public DriversAccount getDriver(Long id) {
+        DriversAccount driver = driversRepository.findById(id).orElseThrow(() -> new NotFoundException("Vozac ne postoji."));
+        return driver;
+    }
+
     public User getAdmin() {
         for(User user : getAdmins()){
             if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
@@ -398,11 +414,30 @@ public class UserService {
     }
 
     public List<User> getAdmins() {
-        return userRepository.findAll();
+        List<User> admins = new ArrayList<User>();
+        for(User user : userRepository.findAll()){
+            if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
+                admins.add(user);
+            }
+        }
+        return admins;
+    }
+
+    public DriversAccount getLoggedDriver(){
+        User user = getLoggedIn();
+        DriversAccount driver = getDriver(user.getEmail());
+        return driver;
+    }
+
+    public void updateDriverStatus(DriverStatus status) {
+        DriversAccount driver = getLoggedDriver();
+        driver.setDriverStatus(status);
+        driversRepository.save(driver);
     }
 
 
     public User findByEmail(String email){return userRepository.findUserByEmail(email);}
+
 
     public boolean canAffordDrive(String clientsEmail, double price) throws EmailNotFoundException {
         ClientsAccount clientsAccount = findClientsAccount(clientsEmail);
@@ -411,6 +446,27 @@ public class UserService {
         if(clientsAccount.getClientsBankAccount().getBalance()-price<0) return false;
 
             return true;
+    }
+
+
+    public void changeDriverAvailabilityStatus(String email, boolean status) {
+        DriversAccount driver = getDriverByEmail(email);
+        driver.setDriversAvailability(status);
+        if(status){
+           driveService.cancelFutureDrives(driver);
+        }
+        driversRepository.save(driver);
+    }
+
+    public String changeAvailability() {
+        User u = getLoggedIn();
+        DriversAccount driver = getDriverByEmail(u.getEmail());
+        changeDriverAvailabilityStatus(u.getEmail(), !driver.getDriversAvailability());
+        return "";
+    }
+
+    public void saveDriverAvailabilityStatus(DriversAccount driver) {
+        driversRepository.save(driver);
     }
 
 }

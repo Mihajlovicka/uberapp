@@ -14,10 +14,10 @@ public class MessageDTO {
     public MessageDTO() {
     }
 
-    public MessageDTO(UserDTO sender, UserDTO reciever, String message, Timestamp timeSent, boolean read) {
+    public MessageDTO(UserDTO sender, UserDTO receiver, String message, Timestamp timeSent, boolean read) {
 
         this.sender = sender;
-        this.reciever = reciever;
+        this.reciever = receiver;
         this.message = message;
         this.read = read;
     }

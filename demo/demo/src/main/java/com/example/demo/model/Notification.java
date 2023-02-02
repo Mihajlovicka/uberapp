@@ -45,6 +45,13 @@ public class Notification {
     public Notification() {
     }
 
+    public Notification(Notification notification) {
+        this.message = notification.message;
+        this.userToNotify = notification.userToNotify;
+        this.href = notification.href;
+        this.title = notification.title;
+    }
+
     public Long getId() {
         return id;
     }

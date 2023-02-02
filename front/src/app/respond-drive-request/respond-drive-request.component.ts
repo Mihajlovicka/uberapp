@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
-import { Drive, DriveStatus } from '../model/drive.model';
+import {Drive, DriveStatus, DriveType} from '../model/drive.model';
 import { DriverStatus } from '../model/driversAccount.model';
 import { Role, Status } from '../model/user.model';
 
@@ -47,6 +47,7 @@ export class RespondDriveRequestComponent implements OnInit {
   }
 
   drive: Drive={
+    id:0,
     stops: [],
     distance: 0,
     duration: 0,
@@ -111,11 +112,15 @@ export class RespondDriveRequestComponent implements OnInit {
         model: '',
         numOfSeats: 5
       },
-      driverStatus: DriverStatus.AVAILABLE
+      driverStatus: DriverStatus.AVAILABLE,
+      driversAvailability:true
     },
     date: '',
     splitBill: false,
-    ownerDebit: 0
+    ownerDebit: 0,
+    driveType: DriveType.NOW,
+    startDate: '',
+    endDate: ''
   }
 
   constructor(private route: ActivatedRoute, private service: AppService) { }

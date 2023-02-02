@@ -61,7 +61,6 @@ public class RideSimController {
         RideSimulationDTO rideDTO = new RideSimulationDTO(ride, status);
         this.simpMessagingTemplate.convertAndSend("/map-updates/new-existing-ride", rideDTO);
         return new ResponseEntity<>(rideDTO, HttpStatus.OK);
-        //obavestiti zbog fronta
     }
 
     @DeleteMapping(
@@ -69,7 +68,7 @@ public class RideSimController {
             produces = "text/plain"
     )
     public ResponseEntity<Map> deleteRide(@PathVariable("id") int  id) {
-        int car_id = this.rideSimService.deleteRide(id);
+        RideSimulation car_id = this.rideSimService.changeRide(id);
         Map map = new HashMap<String, Integer>();
         map.put("carId", car_id);
         map.put("rideId", id);

@@ -2,7 +2,7 @@ import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, EventE
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
 import { BankStatus } from '../model/clientsAccount.model';
-import { Drive, DriveStatus } from '../model/drive.model';
+import {Drive, DriveStatus, DriveType} from '../model/drive.model';
 import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 import { DriverStatus } from '../model/driversAccount.model';
 import { PaymentPassengerStatus } from '../model/passenger.model';
@@ -19,11 +19,11 @@ export class PaymentComponent implements OnInit{
 
 
 
-  
+
 
 
   @Input() starting_price: PriceStart = PriceStart.seats5;
- 
+
 
   @Input() drive:DriveReservationForm = {
     stops: [],
@@ -45,6 +45,7 @@ export class PaymentComponent implements OnInit{
   };
 
   created: Drive={
+    id: 0,
     stops: [],
     distance: 0,
     duration: 0,
@@ -110,10 +111,14 @@ export class PaymentComponent implements OnInit{
         color: ''
       },
       driverStatus: DriverStatus.AVAILABLE,
+      driversAvailability:true,
     },
     date: '',
     splitBill: false,
-    ownerDebit: 0
+    ownerDebit: 0,
+    driveType: DriveType.NOW,
+    startDate: '',
+    endDate: ''
   }
 
   numberOfPartition: number = 0;
@@ -135,8 +140,8 @@ export class PaymentComponent implements OnInit{
   
     //pogledati kpjim komponentama se vraca ovo 
     //bil i ono za prikaz pass vljd
+
   }
- 
 
 
 
@@ -175,7 +180,7 @@ export class PaymentComponent implements OnInit{
       (resp: Drive) =>{
         this.created = resp;
         console.log(this.created);}
-        
+
     )
     this.drive.price = this.drive.price - this.starting_price;
   }

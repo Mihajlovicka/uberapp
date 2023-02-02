@@ -4,7 +4,8 @@ import {Image} from "./image.model";
 
 export enum DriverStatus{
     AVAILABLE = 'AVAILABLE',
-    BUSY = 'BUSY'
+    BUSY = 'BUSY',
+    GOING_TO_LOCATION = 'GOING_TO_LOCATION'
 }
 
 interface DriversAccountInterface{
@@ -12,8 +13,8 @@ interface DriversAccountInterface{
     picture: Image;
     phone: string;
     car: Car;
-    driverStatus: DriverStatus.AVAILABLE;
-
+    driverStatus: DriverStatus;
+    driversAvailability:boolean
 }
 
 export class DriversAccount implements DriversAccountInterface{
@@ -21,7 +22,8 @@ export class DriversAccount implements DriversAccountInterface{
     public picture: Image;
     public phone: string;
     public car: Car;
-    public driverStatus: DriverStatus.AVAILABLE;
+    public driverStatus: DriverStatus;
+    public driversAvailability:boolean;
 
     constructor(driversInt: DriversAccountInterface){
         this.user = driversInt.user;
@@ -29,6 +31,6 @@ export class DriversAccount implements DriversAccountInterface{
         this.phone = driversInt.phone;
         this.car = driversInt.car;
         this.driverStatus = driversInt.driverStatus;
-
+        this.driversAvailability = driversInt.driversAvailability
     }
 }

@@ -297,7 +297,6 @@ public class UserController {
             if(loggedUser.getRole().getName().equals("ROLE_DRIVER")) return new ResponseEntity(userConverter.toDTO(userService.findDriversAccount(loggedUser.getEmail())), HttpStatus.OK);
         }
 
-        //jedino sto preostaje je admin a to je samo user bar za sad.............
         return new ResponseEntity(userConverter.toDTO(loggedUser), HttpStatus.OK);
     }
 
@@ -316,8 +315,23 @@ public class UserController {
         }
     }
 
+
     @GetMapping(value="api/getClientsBankAccount/{email}")
     public ResponseEntity getClientsBankAccount(@PathVariable String email) throws EmailNotFoundException {
         return new ResponseEntity(bankConverter.toDto(userService.findClientsAccount(email).getClientsBankAccount()), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @GetMapping(value = "/getDriver")
+    public ResponseEntity<DriverAccountDTO> getDriver() {
+        return new ResponseEntity(userService.getLoggedDriver(), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(value = "/changeAvailability")
+    public ResponseEntity<String> changeAvailability() {
+        return new ResponseEntity(userService.changeAvailability(), HttpStatus.OK);
+
+    }
 }
+

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.JwtAuthenticationRequest;
 import com.example.demo.dto.UserTokenState;
+import com.example.demo.model.DriversAccount;
 import com.example.demo.model.Status;
 import com.example.demo.model.User;
 import com.example.demo.service.UserService;
@@ -53,10 +54,26 @@ public class AuthenticationController {
 		if(!(user.getStatus().equals(Status.ACTIVE) || user.getStatus().equals(Status.UNDERREVISION))){
 			return new ResponseEntity<UserTokenState>(HttpStatus.UNAUTHORIZED);
 		}
+		if(user.getRole().getName().equals("ROLE_DRIVER")){
+			DriversAccount driver = userService.getDriverByEmail(user.getEmail());
+			driver.setDriversAvailability(false);
+			userService.saveDriverAvailabilityStatus(driver);
+		}
 		String jwt = tokenUtils.generateToken(user.getUsername());
 		int expiresIn = tokenUtils.getExpiredIn();
 
 		// Vrati token kao odgovor na uspesnu autentifikaciju
 		return ResponseEntity.ok(new UserTokenState(jwt, expiresIn, user.getRole().getName()));
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity logout(){
+		User user = userService.getLoggedIn();
+		if(user.getRole().getName().equals("ROLE_DRIVER")){
+			DriversAccount driver = userService.getDriverByEmail(user.getEmail());
+			driver.setDriversAvailability(false);
+			userService.saveDriverAvailabilityStatus(driver);
+		}
+		return new ResponseEntity<>(null,HttpStatus.OK);
 	}
 }

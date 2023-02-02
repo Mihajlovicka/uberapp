@@ -1,0 +1,79 @@
+
+<div class="container" style="margin: 0 auto">
+  <div class="row">
+    <div class="map-container">
+      <div class="map-frame">
+        <div id="map"
+             leaflet
+             (leafletMapReady)="onMapReady($event)"
+             [leafletOptions]="options"
+             [leafletLayers]="mainGroup"
+        ></div>
+      </div>
+    </div>
+    <form class="data col">
+      <div class="row">
+        <h3 class="col">Trenutna voznja</h3>
+      </div>
+      <div class="row">
+        <h6 class="col" *ngIf="timeLeft!==0">Vreme do dolazka vozila: {{timeLeft}} min</h6>
+<!--        <h6 class="col" *ngIf="timeLeft===0">Vozilo je doslo</h6>-->
+      </div>
+      <div class="row">
+        <div *ngIf="stops.length === 0; then thenBlockNext else elseBlockNext"></div>
+        <ng-template #thenBlockNext>
+          <h5 class="col">Trenutno nemate voznju</h5>
+        </ng-template>
+        <ng-template #elseBlockNext>
+          <mat-card-content>
+            <div style="margin: 0 auto;">
+              <ul style="list-style: none;">
+                <mat-card class="example-card">
+                  <mat-card-content>
+                    <li *ngFor="let stop of stops; let i = index" style="font-size: 16px;">
+                      <div *ngIf="i===0" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+                          </div>
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div  *ngIf="i===stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+
+                          </div>
+
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div *ngIf="i!== 0 && i!== stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1" >
+                          <div class="row" style="margin:0 auto">
+                            <p style="color:white">aa</p>
+                          </div>
+
+                        </div>
+                        <div class="col-md-8 col-sm-8">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                    </li>
+                  </mat-card-content>
+                </mat-card>
+              </ul>
+            </div>
+
+          </mat-card-content>
+        </ng-template>
+
+      </div></form>
+
+  </div>
+</div>

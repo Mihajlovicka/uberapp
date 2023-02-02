@@ -1,0 +1,30 @@
+.container{
+  margin-top: 2%;
+  max-width: 80%!important;
+}
+.map-container {
+  top: 0;
+  left: 0;
+  margin: 15px;
+  height: 80vh;
+  width: 50%;
+}
+.map-frame{
+  border: 2px solid darkslateblue;
+  height: 100%;
+}
+#map{
+  height: 100%;
+}
+
+.data{
+  max-width: 70%;
+}
+
+
+.example-button-row button{
+  margin-right: 8px;
+}
+mat-card-content{
+  width: 100%;
+}

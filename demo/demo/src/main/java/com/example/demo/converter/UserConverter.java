@@ -42,7 +42,7 @@ public class UserConverter {
     }
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){
-        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), this.toDTO(driversAccount.getPicture()), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus());
+        return new DriverAccountDTO(this.toDTO(driversAccount.getUser()), this.toDTO(driversAccount.getPicture()), driversAccount.getPhone(), carConverter.todto(driversAccount.getCar()), driversAccount.getDriverStatus(), driversAccount.getDriversAvailability());
     }
 
     public List<UsersChatDisplayDTO> getUsersChats(List<ClientsAccount> clientsAccounts, List<DriversAccount> driversAccounts) {
@@ -117,6 +117,8 @@ public class UserConverter {
         driversAccount.getCar().setModel(driverAccountDTO.getCar().getModel());
         driversAccount.getCar().setFuelType(driverAccountDTO.getCar().getFuelType());
         driversAccount.getCar().setPlateNumber(driverAccountDTO.getCar().getPlateNumber());
+
+        driversAccount.setDriversAvailability(driverAccountDTO.getDriversAvailability());
 
         driversAccount.setPhone(driverAccountDTO.getPhone());
         //driversAccount.setPicture(driverAccountDTO.getPicture());

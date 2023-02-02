@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class DriveConverter {
@@ -35,10 +37,23 @@ public class DriveConverter {
         dto.setSplitBill(drive.isSplitBill());
         dto.setOwnerDebit(drive.getOwnerDebit());
 
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        dto.setDriveType(drive.getDriveType());
 
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+        if(drive.getStartDate()!=null)
+            dto.setStartDate(dateFormat.format(drive.getStartDate()));
+        if(drive.getEndDate()!=null)
+            dto.setEndDate(dateFormat.format(drive.getEndDate()));
         dto.setDate(dateFormat.format(drive.getDate()));
 
         return dto;
+    }
+
+    public List<DriveDTO> toDTOs(List<Drive> drives) {
+        List<DriveDTO> driveDTOs = new ArrayList<DriveDTO>();
+        for(Drive drive : drives){
+            driveDTOs.add(this.toDTO(drive));
+        }
+        return driveDTOs;
     }
 }
