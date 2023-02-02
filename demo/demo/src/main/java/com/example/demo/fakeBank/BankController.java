@@ -5,6 +5,7 @@ import com.example.demo.exception.BankAccountNumberDoNotExistException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.TransactionIdDoesNotExistException;
 import com.example.demo.model.ClientsAccount;
+import com.example.demo.service.DriveService;
 import com.example.demo.service.NotificationService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class BankController {
 
     @Autowired
     NotificationService notificationService;
+
+    @Autowired
+    DriveService driveService;
 
 
     // ne poziva se sa fronta..samo da se napuni baza
@@ -66,6 +70,9 @@ public class BankController {
     @PostMapping(value="bank/declineTransaction/{id}")
     public ResponseEntity declineTransaction(@PathVariable Long id, @RequestBody ClientsBankAccountDTO clientsBankAccount) throws TransactionIdDoesNotExistException {
         BankTransaction bankTransaction = bankService.declineTransaction(id, clientsBankAccount.getAccountNumber());
+        //postaviti status voznje na failed
+        driveService.driveFailedMoneyTransactionRejected(bankTransaction);
+
         notificationService.paymentFailedDriveCanceledNotify(bankTransaction.getSender());
         return new ResponseEntity(bankConverter.toDTO(bankTransaction), HttpStatus.OK);
     }

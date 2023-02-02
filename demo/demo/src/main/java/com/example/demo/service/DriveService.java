@@ -4,6 +4,7 @@ package com.example.demo.service;
 import com.example.demo.exception.DoesNotHaveEnoughMoneyException;
 import com.example.demo.exception.NotDrivePassengerException;
 import com.example.demo.fakeBank.BankService;
+import com.example.demo.fakeBank.BankTransaction;
 import com.example.demo.model.*;
 
 
@@ -578,7 +579,7 @@ public class DriveService {
     }
 
 
-    public Drive declineDrivePartiticipation(Long driveId) throws DriveNotFoundException, NotDrivePassengerException {
+    public Drive declineDriveParticipation(Long driveId) throws DriveNotFoundException, NotDrivePassengerException {
         String passengersEmail = userService.getLoggedUser().getEmail();
         Drive drive = getDrive(driveId);
 
@@ -606,6 +607,20 @@ public class DriveService {
         return drive;
 
     }
+
+
+    public void driveFailedMoneyTransactionRejected(BankTransaction transaction)  {
+
+        //ovo je owenr voznje, zato sto us sutini placanje se odbija finalno s njim...tek kad on odbije, ili nema para voznja je fail
+        Drive drive = driveRepository.findByOwner_User_Email(transaction.getSender());
+
+        drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
+
+       driveRepository.save(drive);
+
+    }
+
+
 
     public Drive acceptDriveParticipation(Long driveId) throws DriveNotFoundException, NotDrivePassengerException {
         String passengersEmail = userService.getLoggedUser().getEmail();
