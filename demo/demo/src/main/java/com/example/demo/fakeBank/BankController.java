@@ -13,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 @RestController
 public class BankController {
 
@@ -63,8 +66,12 @@ public class BankController {
     }
 
     @PostMapping(value="bank/acceptTransaction/{id}")
-    public ResponseEntity acceptTransaction(@PathVariable Long id) throws TransactionIdDoesNotExistException {
-        return new ResponseEntity(bankConverter.toDTO(bankService.acceptTransaction(id)), HttpStatus.OK);
+    public ResponseEntity acceptTransaction(@PathVariable Long id) throws TransactionIdDoesNotExistException, EmailNotFoundException, URISyntaxException, IOException, InterruptedException {
+        BankTransaction transaction = bankService.acceptTransaction(id);
+        //trebam namestiti status voznje
+        driveService.ownerPaymentAccepted(transaction);
+
+        return new ResponseEntity(bankConverter.toDTO(transaction), HttpStatus.OK);
     }
 
     @PostMapping(value="bank/declineTransaction/{id}")

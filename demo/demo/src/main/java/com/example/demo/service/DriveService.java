@@ -70,12 +70,7 @@ public class DriveService {
     private RideSimulationService rideSimulationService;
 
 
-    //odbije --> jbg
-    //status je failed
-    //prihvati da plati
-    //pravi se banka transakcija
-    //menja se status waut for passengers
-    //obavestavaju se ovi mali govnari
+
     //notificationService.addedToDriveNotify(drive.getPassengers(), saved.getId());
 
 
@@ -116,6 +111,61 @@ public class DriveService {
         return saved;
 
     }
+
+    public Drive driveWaitingForPassengers(Drive drive) throws EmailNotFoundException {
+        drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
+        notificationService.addedToDriveNotify(drive.getPassengers(), drive.getId());
+
+
+        return driveRepository.save(drive);
+
+    }
+
+    public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException {
+        //za now voznju?????????????????????:)
+        drive.setDriveType(DriveType.FUTURE);
+        String foundDriverEmail = getNextDriverForCurrentRide(drive);
+        //Long foundDriverId = getNextDriverForFutureRide(drive);
+        if (foundDriverEmail.equals("")) {
+            notificationService.addNotificationMultiple(new Notification("Voznja odbijena", "Cao! Nazalost, vaza voznja je odbijena. Trenutno nema slobodnih vozila.",null,""), makeUsersFromPassengersForNotification(drive));
+            throw new NotFoundException("Nema trenutno slobodnog vozaca.");
+        }
+
+
+        DriversAccount driver = userService.getDriver(foundDriverEmail);
+        drive.setDriver(driver);
+        notificationService.addNotification(new Notification("Nova voznja", "Dodeljena vam je nova voznja. " + drive.getDate(), driver.getUser(),"localhost:4200/rides-dr"));
+
+
+        notificationService.addNotificationMultiple(new Notification("Voznja odobrena", "Vasa voznja je odobrena. ", null,""), makeUsersFromPassengersForNotification(drive));
+
+
+        return driveRepository.save(drive);
+
+    }
+
+    public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException {
+        drive.setDriveStatus(DriveStatus.DRIVER_WAITING);
+        Drive saved = driveRepository.save(drive);
+
+        //i treba se trigerovati trazenje vozaca
+
+        return findAvailableDriver(saved);
+
+    }
+
+    public void ownerPaymentAccepted(BankTransaction transaction) throws EmailNotFoundException, URISyntaxException, IOException, InterruptedException {
+        //ovo je owenr voznje, zato sto us sutini placanje se odbija finalno s njim...tek kad on odbije, ili nema para voznja je fail
+        Drive drive = driveRepository.findByOwner_User_Email(transaction.getSender());
+        //ako ima passengere
+        if(drive.getPassengers().size()>0) drive = driveWaitingForPassengers(drive);
+
+        //ako nema passengere
+        if(drive.getPassengers().size() == 0)drive = paymentDone(drive);
+
+    }
+
+
 
     /**
     public Drive saveDrive(Drive drive) throws URISyntaxException, IOException, InterruptedException, EmailNotFoundException {
