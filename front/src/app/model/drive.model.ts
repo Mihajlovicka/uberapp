@@ -4,6 +4,7 @@ import { Passenger } from "./passenger.model";
 import { Stop } from "./stop.model";
 
 export enum DriveStatus{
+    OWNER_PAYMENT_WAITING = 'OWNER_PAYMENT_WAITING',
     PASSENGERS_WAITING = 'PASSENGERS_WAITING',
     PAYMENT_WAITING = 'PAYMENT_WAITING',
     DRIVER_WAITING = 'DRIVER_WAITING',

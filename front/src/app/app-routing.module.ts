@@ -24,6 +24,7 @@ import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.compone
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
 import { PaymentComponent } from './payment/payment.component';
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+import { RespondToPaymentRequestComponent } from './respond-to-payment-request/respond-to-payment-request.component';
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -46,7 +47,8 @@ const routes: Routes = [
   {path:'payment', component:PaymentComponent},
   {path: 'messages-admin',component:MessagesAdminComponent},
   {path: 'messages-client',component:MessagesClientComponent},
-  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent}
+  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
+  {path :"passenger/confirmPayment/:id", component: RespondToPaymentRequestComponent}
 ];
 
 @NgModule({

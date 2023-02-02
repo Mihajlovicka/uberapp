@@ -1,0 +1,25 @@
+<div class="col-md-6" style="margin:2% auto; border: solid 1px darkgreen;margin-bottom:10%">
+    <div class="row">
+        <div class="col-md-3" style="margin:5% auto">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Otp_bank_Logo.svg" style="width:80%;">
+        </div>
+       
+        <div class="col-md-8" style="margin:5% auto">
+            <label style="font-size:30px; color:darkgreen"><strong>Zahtev za omogucavanje placanja</strong></label>
+           
+        </div>
+    </div>
+
+    <label>Aplikacija <strong>YUBER</strong> zahteva odobrenje za online placanje.</label><br><br>
+    <label> Da li zelite da izvrsite transakciju u iznosu od <strong>{{this.transaction.amount}} RSD</strong>?</label>
+    
+    <div style="display:flex; margin-bottom:5% ; justify-content: space-between;">
+        <button class="btn btn-success" (click)="acceptTransaction()">
+            Odobri
+        </button>
+        <button class="btn btn-danger" (click)="declineTransaction()">Odbij</button>
+    </div>
+
+  
+</div>
+

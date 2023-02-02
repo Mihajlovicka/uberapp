@@ -57,4 +57,61 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(bankAccountNumberDoNotExist, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(value={DoesNotHaveEnoughMoneyException.class})
+    public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(DoesNotHaveEnoughMoneyException e){
+        DoesNotHaveEnoughMoneyBean doesNotHaveEnoughMoneyException = new DoesNotHaveEnoughMoneyBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(doesNotHaveEnoughMoneyException, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value={DriveNotFoundException.class})
+    public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(DriveNotFoundException e){
+        DriveNotFoundBean driveNotFoundBean = new DriveNotFoundBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(driveNotFoundBean, HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(value={NotDrivePassengerException.class})
+    public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(NotDrivePassengerException e){
+        NotDrivePassengerBean notDrivePassengerBean = new NotDrivePassengerBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(notDrivePassengerBean, HttpStatus.CONFLICT);
+    }
+
+
+    @ExceptionHandler(value={NotificationNotFoundException.class})
+    public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(NotificationNotFoundException e){
+        NotificationNotFoundBean notificationNotFoundBean = new NotificationNotFoundBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(notificationNotFoundBean, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(value={TransactionIdDoesNotExistException.class})
+    public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(TransactionIdDoesNotExistException e){
+        TransactionIdDoesNotExistBean transactionIdDoesNotExistBean = new TransactionIdDoesNotExistBean(
+                e.getMessage(),
+                HttpStatus.CONFLICT,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(transactionIdDoesNotExistBean, HttpStatus.CONFLICT);
+    }
+
 }

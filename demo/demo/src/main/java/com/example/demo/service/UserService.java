@@ -51,8 +51,6 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserConverter userConverter;
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
 
@@ -405,5 +403,14 @@ public class UserService {
 
 
     public User findByEmail(String email){return userRepository.findUserByEmail(email);}
+
+    public boolean canAffordDrive(String clientsEmail, double price) throws EmailNotFoundException {
+        ClientsAccount clientsAccount = findClientsAccount(clientsEmail);
+        if(!clientsAccount.getBankStatus().equals(BankStatus.ACTIVE)) return false;
+        // do ovde dolazi samo ako je status aktivan..sto znaci i da ima bank account svakako
+        if(clientsAccount.getClientsBankAccount().getBalance()-price<0) return false;
+
+            return true;
+    }
 
 }

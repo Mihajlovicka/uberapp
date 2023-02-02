@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
 import com.example.demo.dto.DriveDTO;
+import com.example.demo.exception.DoesNotHaveEnoughMoneyException;
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.Drive;
@@ -37,7 +38,7 @@ public class DriveController {
     }
 
     @PostMapping(value="/api/createDriveReservation")
-    public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException {
+    public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, DoesNotHaveEnoughMoneyException {
         Drive drive = new Drive();
         drive.setDistance(driveReservationDTO.getDistance());
         drive.setDuration(driveReservationDTO.getDuration());

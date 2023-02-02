@@ -150,8 +150,17 @@ export class PaymentComponent implements OnInit{
     if(this.drive.splitBill === true){
       
       this.drive.passengers.forEach(passenger  => {
+        if(passenger.payingEnabled===true){
         passenger.debit = Number((this.drive.price/(this.numberOfPartition+1)).toFixed(2));
+        this.drive.ownerDebit = passenger.debit;
+        }
+        if(passenger.payingEnabled===false){
+          passenger.debit = 0;
+        }
       });
+
+
+      
     }
 
     if(this.drive.splitBill===false){
@@ -159,6 +168,7 @@ export class PaymentComponent implements OnInit{
         passenger.debit = 0;
         passenger.payment = PaymentPassengerStatus.NOT_PAYING;
       })
+      this.drive.ownerDebit = this.drive.price;
     }
 
     this.service.createDriveReservation(this.drive).subscribe(

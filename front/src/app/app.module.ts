@@ -61,6 +61,7 @@ import { RespondDriveRequestComponent } from './respond-drive-request/respond-dr
 import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { DriveBillComponent } from './drive-bill/drive-bill.component';
+import { RespondToPaymentRequestComponent } from './respond-to-payment-request/respond-to-payment-request.component';
 
 
 
@@ -99,6 +100,7 @@ import { DriveBillComponent } from './drive-bill/drive-bill.component';
     RespondDriveRequestComponent,
     DriveParticipantsComponent,
     DriveBillComponent,
+    RespondToPaymentRequestComponent,
   ],
 
 

@@ -19,6 +19,8 @@ import {Notification} from "./model/notification.model";
 
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
+import { BankTransaction } from "./model/bankTransaction.model";
+import { BankAccount } from "./model/bankAccount.model";
 
 
 @Injectable({
@@ -39,12 +41,16 @@ import { Drive } from "./model/drive.model";
     private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
     private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
     private getLoggedUrl = 'http://localhost:8080/api/getLogged';
-    private host = 'http://localhost:8080'
+    private host = 'http://localhost:8080';
     private getLoggedUserUrl = 'http://localhost:8080/api/getLoggedUser';
     private blockUserUrl = 'http://localhost:8080/api/blockUser';
     private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
     private changePasswordUrl = 'http://localhost:8080/api/changePassword';
-    private crateDriveReservationUrl="http://localhost:8080/api/createDriveReservation"
+    private crateDriveReservationUrl="http://localhost:8080/api/createDriveReservation";
+    private getBankTransactionUrl="http://localhost:8080/passenger/confirmPayment/";
+    private acceptPaymentUrl = "http://localhost:8080/bank/acceptTransaction/";
+    private declinePaymentUrl = "http://localhost:8080/bank/declineTransaction/";
+    private getClientsBankAccountUrl = "http://localhost:8080/api/getClientsBankAccount/";
 
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -80,6 +86,24 @@ import { Drive } from "./model/drive.model";
               public dialog: MatDialog) {
 
 
+  }
+
+  getClientsBankAccount(email: string){
+      return this.http.get<BankAccount>(`${this.getClientsBankAccountUrl + email}`).pipe(
+        catchError(this.handleError<BankAccount>())
+      )
+  }
+
+  acceptPayment(id: number): Observable<BankTransaction>{
+    return this.http.post<BankTransaction>(`${this.acceptPaymentUrl + id}`, this.httpOptions).pipe(
+      catchError(this.handleError<BankTransaction>())
+    )
+  }
+
+  declinePayment(id: number, bankAccount: BankAccount): Observable<BankTransaction>{
+      return this.http.post<BankTransaction>(`${this.declinePaymentUrl + id}`, bankAccount, this.httpOptions).pipe(
+        catchError(this.handleError<BankTransaction>())
+      )
   }
 
   declineBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount> {
@@ -130,6 +154,14 @@ import { Drive } from "./model/drive.model";
   public getDrive(id: number): Observable<Drive>{
     return this.http.get<Drive>(`${this.getDriveUrl + id}`).pipe(
       catchError(this.handleError<Drive>())
+    );
+
+
+  }
+
+  public getTransictionInfo(id: number): Observable<BankTransaction>{
+    return this.http.get<BankTransaction>(`${this.getBankTransactionUrl +id}`).pipe(
+      catchError(this.handleError<BankTransaction>())
     );
   }
 

@@ -315,4 +315,9 @@ public class UserController {
             return new ResponseEntity("", HttpStatus.BAD_REQUEST);
         }
     }
+
+    @GetMapping(value="api/getClientsBankAccount/{email}")
+    public ResponseEntity getClientsBankAccount(@PathVariable String email) throws EmailNotFoundException {
+        return new ResponseEntity(bankConverter.toDto(userService.findClientsAccount(email).getClientsBankAccount()), HttpStatus.OK);
+    }
 }
