@@ -413,12 +413,11 @@ public class DriveService {
         return new ArrayList<>();
     }
 
-    public List<User> makeUsersFromPassengersForNotification(Drive drive){
+    public List<User> makeUsersFromPassengersForNotification(Drive drive) throws EmailNotFoundException {
         List<User> users = new ArrayList<>();
         users.add(drive.getOwner().getUser());
         for(Passenger p: drive.getPassengers()){
-            User u = new User();
-            u.setEmail(p.getPassengerEmail());
+            User u = userService.getByEmail(p.getPassengerEmail());
             users.add(u);
         }
         return users;
@@ -435,14 +434,14 @@ public class DriveService {
     }
 
 
-    public void notifyPassengers() {
+    public void notifyPassengers() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             notificationService.addNotificationMultiple(new Notification("Vozilo je stiglo", "Vase vozilo ceka.", null,""), makeUsersFromPassengersForNotification(drive));
         }
     }
 
-    public void cancelDrive(String reason) {
+    public void cancelDrive(String reason) throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
@@ -465,7 +464,7 @@ public class DriveService {
         return driveRepository.findAll();
     }
 
-    public void cancelFutureDrives(DriversAccount driver) {
+    public void cancelFutureDrives(DriversAccount driver) throws EmailNotFoundException {
         for(Drive drive:driveRepository.findByDriver(driver)){
             if(drive.getDriveType().equals(DriveType.FUTURE)){
                 notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));

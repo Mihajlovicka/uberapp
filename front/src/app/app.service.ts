@@ -164,6 +164,9 @@ import { Stop } from "./model/stop.model";
   public getUsersChatDisplay(): Observable<UsersChatDisplay[]>{
     return this.http.get<UsersChatDisplay[]>(`http://localhost:8080/api/getUsersChats`).pipe(catchError(this.handleError<UsersChatDisplay[]>()));
   }
+  public getGradesForDrive(driveID: number): Observable<Grade[]>{
+    return this.http.get<Grade[]>(`http://localhost:8080/api/getGrades?driveID=` + driveID).pipe(catchError(this.handleError<Grade[]>()));
+  }
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
   }

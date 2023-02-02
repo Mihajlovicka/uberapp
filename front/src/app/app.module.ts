@@ -78,6 +78,7 @@ import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive
 import { DriveViewComponent } from './drive-view/drive-view.component';
 
 import { ReportsComponent } from './reports/reports.component';
+import { GradesOverviewComponent } from './grades-overview/grades-overview.component';
 
 
 @NgModule({
@@ -125,6 +126,7 @@ import { ReportsComponent } from './reports/reports.component';
     CancelDriveReasonDialogComponent,
     DriveViewComponent,
     ReportsComponent,
+    GradesOverviewComponent,
   ],
   imports: [
         BrowserModule,

@@ -130,7 +130,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/notifyPassengers")
-    public ResponseEntity notifyPassengers(){
+    public ResponseEntity notifyPassengers() throws EmailNotFoundException {
         driveService.notifyPassengers();
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -138,7 +138,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/cancelRide")
-    public ResponseEntity cancelRide(@RequestBody String reason){
+    public ResponseEntity cancelRide(@RequestBody String reason) throws EmailNotFoundException {
         driveService.cancelDrive(reason);
         return new ResponseEntity<>(null, HttpStatus.OK);
 

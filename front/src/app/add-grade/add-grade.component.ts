@@ -16,6 +16,7 @@ import {ActivatedRoute} from "@angular/router";
 })
 export class AddGradeComponent implements OnInit {
   drive_id:number = 0;
+  disable: boolean = false;
 
   logged_user: User = {
     username: '',
@@ -88,7 +89,7 @@ export class AddGradeComponent implements OnInit {
           email: '',
           username: '',
           role: Role.ROLE_DRIVER,
-          status: Status.ACTIVE
+          status: Status.ACTIVE,
         },
         phone: '',
         picture: {
@@ -106,6 +107,7 @@ export class AddGradeComponent implements OnInit {
           color: ''
         },
         driverStatus: DriverStatus.AVAILABLE,
+        driversAvailability: true,
       },
       date: '',
       splitBill: false,
@@ -142,11 +144,22 @@ export class AddGradeComponent implements OnInit {
     this.appService.getDriveForGrade(this.drive_id).subscribe((resp: Drive) => {
       this.grade.drive = resp;
 
+      console.log(this.calculateDiff(this.grade.drive.endDate))
+      if(this.calculateDiff(this.grade.drive.endDate) >= 3){
+        this.appService.openErrorDialog("Nije moguce oceniti voznju, proslo je 3 dana.");
+        this.disable = true;
+      }
       console.log(resp);
     });
 
   }
 
+  calculateDiff(dateSent : any){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
+
+    return Math.floor((Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()) - Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate(), dateSent.getHours(), dateSent.getMinutes(), dateSent.getSeconds()) ) /(1000 * 60 * 60 * 24));
+  }
   saveGrade(){
     this.appService.addGrade(this.grade).subscribe((resp: any) => {
 

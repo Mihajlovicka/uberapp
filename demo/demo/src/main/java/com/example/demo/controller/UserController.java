@@ -324,7 +324,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(value = "/changeAvailability")
-    public ResponseEntity<String> changeAvailability() {
+    public ResponseEntity<String> changeAvailability() throws EmailNotFoundException {
         return new ResponseEntity(userService.changeAvailability(), HttpStatus.OK);
     }
 }
