@@ -96,6 +96,7 @@ public class DriveService {
 
     public String getNextDriverForCurrentRide(Drive drive) throws URISyntaxException, IOException, InterruptedException {
         List<DriversAccount> drivers = this.userService.getDriversByStatus(DriverStatus.AVAILABLE);
+        drivers = getAvailableDrivers(drivers);
         Map<String, Map<String, Double>> distances = new HashMap<>();
         Location startLocation = drive.getStops().get(0).getLocation();
         if (drivers.size() > 0) {
@@ -105,10 +106,21 @@ public class DriveService {
         }
         if (distances.size() == 0) {
             drivers = this.userService.getDriversByStatus(DriverStatus.BUSY);
+            drivers = getAvailableDrivers(drivers);
             distances = getBusyDriversDistancesNow(drivers, drive);
         }
         if (distances.size() == 0) return "";
         return getMinDistanceDriver(distances);
+    }
+
+    private List<DriversAccount> getAvailableDrivers(List<DriversAccount> drivers) {
+        List<DriversAccount> driversFiltered = new ArrayList<>();
+        for(DriversAccount d: drivers){
+            if(d.getDriversAvailability()){
+                driversFiltered.add(d);
+            }
+        }
+        return driversFiltered;
     }
 
     private Map<String, Map<String, Double>> getFreeDriversDistancesNow(List<DriversAccount> drivers, Drive drive) throws IOException, URISyntaxException, InterruptedException {
@@ -386,11 +398,12 @@ public class DriveService {
         }
     }
 
-    public void cancelRide(String reason) {
+    public void cancelDrive(String reason) {
         Drive drive = getCurrentDrive();
         if(drive != null){
             notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
             drive.setDriveStatus(DriveStatus.DRIVE_REJECTED);
+            drive.setDriveType(DriveType.PAST);
             driveRepository.save(drive);
             userService.changeDriverStatus(drive.getDriver(), DriverStatus.AVAILABLE);
             notificationService.addNotificationMultiple(new Notification(
@@ -408,4 +421,15 @@ public class DriveService {
         return driveRepository.findAll();
     }
 
+    public void cancelFutureDrives(DriversAccount driver) {
+        for(Drive drive:driveRepository.findByDriver(driver)){
+            if(drive.getDriveType().equals(DriveType.FUTURE)){
+                notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
+                drive.setDriveStatus(DriveStatus.DRIVE_REJECTED);
+                drive.setDriveType(DriveType.PAST);
+                driveRepository.save(drive);
+                userService.changeDriverStatus(drive.getDriver(), DriverStatus.AVAILABLE);
+            }
+        }
+    }
 }

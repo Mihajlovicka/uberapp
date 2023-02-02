@@ -58,7 +58,8 @@ export class DriverProfileViewComponent implements OnInit {
       fuelType: Fuel.AUTOGAS,
       numOfSeats:5,
     },
-    driverStatus: DriverStatus.AVAILABLE
+    driverStatus: DriverStatus.AVAILABLE,
+    driversAvailability:true
   }
   private selectedFile: File | undefined;
 
@@ -239,4 +240,10 @@ export class DriverProfileViewComponent implements OnInit {
     })
   }
 }
+
+  changeStatus() {
+    this.appService.changeAvailability().subscribe((res:any) =>{
+      this.driversAccount.driversAvailability = !this.driversAccount.driversAvailability
+    })
+  }
 }

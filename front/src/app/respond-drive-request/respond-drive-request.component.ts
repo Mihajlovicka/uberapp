@@ -111,7 +111,8 @@ export class RespondDriveRequestComponent implements OnInit {
         model: '',
         numOfSeats: 5
       },
-      driverStatus: DriverStatus.AVAILABLE
+      driverStatus: DriverStatus.AVAILABLE,
+      driversAvailability:true
     },
     date: '',
     splitBill: false,

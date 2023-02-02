@@ -357,4 +357,8 @@ import { Stop } from "./model/stop.model";
   cancelRide(result: any) {
     return this.http.post<any>(this.host + "/cancelRide", result , this.httpOptions)
   }
+
+  changeAvailability():Observable<any> {
+    return this.http.post<any>(this.host + "/changeAvailability" , this.httpOptions).pipe()
+  }
 }

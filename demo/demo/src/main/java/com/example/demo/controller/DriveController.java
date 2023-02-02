@@ -1,13 +1,10 @@
 package com.example.demo.controller;
 
 import com.example.demo.converter.DriveConverter;
-import com.example.demo.dto.CarSimulationDTO;
 import com.example.demo.dto.CreateDriveReservationDTO;
-import com.example.demo.dto.RideSimulationDTO;
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.*;
-import com.example.demo.service.CarService;
 import com.example.demo.service.DriveService;
 import com.example.demo.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -131,7 +128,7 @@ public class DriveController {
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/cancelRide")
     public ResponseEntity cancelRide(@RequestBody String reason){
-        driveService.cancelRide(reason);
+        driveService.cancelDrive(reason);
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

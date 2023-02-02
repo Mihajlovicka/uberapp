@@ -14,7 +14,7 @@ interface DriversAccountInterface{
     phone: string;
     car: Car;
     driverStatus: DriverStatus.AVAILABLE;
-
+    driversAvailability:boolean
 }
 
 export class DriversAccount implements DriversAccountInterface{
@@ -23,6 +23,7 @@ export class DriversAccount implements DriversAccountInterface{
     public phone: string;
     public car: Car;
     public driverStatus: DriverStatus.AVAILABLE;
+    public driversAvailability:boolean;
 
     constructor(driversInt: DriversAccountInterface){
         this.user = driversInt.user;
@@ -30,6 +31,6 @@ export class DriversAccount implements DriversAccountInterface{
         this.phone = driversInt.phone;
         this.car = driversInt.car;
         this.driverStatus = driversInt.driverStatus;
-
+        this.driversAvailability = driversInt.driversAvailability
     }
 }

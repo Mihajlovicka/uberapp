@@ -48,6 +48,7 @@ export class UserAuthService {
     return localStorage.getItem('token');
   }
   public clear(){
+    return this.http.post(this.PATH_OF_API + 'auth/logout', {headers: this.requestHeader})
     localStorage.clear();
   }
   public isLoggedIn(){

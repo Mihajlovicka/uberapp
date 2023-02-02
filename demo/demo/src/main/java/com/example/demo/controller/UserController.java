@@ -321,5 +321,11 @@ public class UserController {
     public ResponseEntity<DriverAccountDTO> getDriver() {
         return new ResponseEntity(userService.getLoggedDriver(), HttpStatus.OK);
     }
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(value = "/changeAvailability")
+    public ResponseEntity<String> changeAvailability() {
+        return new ResponseEntity(userService.changeAvailability(), HttpStatus.OK);
+    }
 }
 

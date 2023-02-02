@@ -13,14 +13,26 @@ public class DriverAccountDTO {
 
     private DriverStatus driverStatus;
 
+    private boolean driversAvailability;
+
+
     public DriverAccountDTO(){}
 
-    public DriverAccountDTO(UserDTO user, ImageDTO picture, String phone, CarDTO car, DriverStatus driverStatus){
+    public DriverAccountDTO(UserDTO user, ImageDTO picture, String phone, CarDTO car, DriverStatus driverStatus, boolean driversAvailability){
         this.user = user;
         this.picture = picture;
         this.phone = phone;
         this.car = car;
         this.driverStatus = driverStatus;
+        this.driversAvailability = driversAvailability;
+    }
+
+    public boolean getDriversAvailability() {
+        return driversAvailability;
+    }
+
+    public void setDriversAvailability(boolean driversAvailability) {
+        this.driversAvailability = driversAvailability;
     }
 
     public UserDTO getUser() {

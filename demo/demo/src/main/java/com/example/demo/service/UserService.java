@@ -10,6 +10,7 @@ import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,6 +54,8 @@ public class UserService {
 
     @Autowired
     private UserConverter userConverter;
+    @Autowired@Lazy
+    private DriveService driveService;
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
 
@@ -176,7 +179,7 @@ public class UserService {
         return client;
     }
 
-    private DriversAccount getDriverByEmail(String email){
+    public DriversAccount getDriverByEmail(String email){
         DriversAccount driver = null;
         for(DriversAccount d : driversRepository.findAll()){
             if(d.getUser().getEmail().equals(email)){
@@ -427,4 +430,23 @@ public class UserService {
 
     public User findByEmail(String email){return userRepository.findUserByEmail(email);}
 
+    public void changeDriverAvailabilityStatus(String email, boolean status) {
+        DriversAccount driver = getDriverByEmail(email);
+        driver.setDriversAvailability(status);
+        if(status){
+           driveService.cancelFutureDrives(driver);
+        }
+        driversRepository.save(driver);
+    }
+
+    public String changeAvailability() {
+        User u = getLoggedIn();
+        DriversAccount driver = getDriverByEmail(u.getEmail());
+        changeDriverAvailabilityStatus(u.getEmail(), !driver.getDriversAvailability());
+        return "";
+    }
+
+    public void saveDriverAvailabilityStatus(DriversAccount driver) {
+        driversRepository.save(driver);
+    }
 }

@@ -65,7 +65,8 @@ export class AddCarComponent implements OnInit {
       fuelType: Fuel.GASOLINE,
       numOfSeats:5,
     },
-    driverStatus: DriverStatus.AVAILABLE
+    driverStatus: DriverStatus.AVAILABLE,
+    driversAvailability:true
   }
 
   ngOnInit(): void {
