@@ -400,7 +400,13 @@ public class UserService {
     }
 
     public List<User> getAdmins() {
-        return userRepository.findAll();
+        List<User> admins = new ArrayList<User>();
+        for(User user : userRepository.findAll()){
+            if(user.getRole().getName().equals("ROLE_ADMINISTRATOR")){
+                admins.add(user);
+            }
+        }
+        return admins;
     }
 
 }

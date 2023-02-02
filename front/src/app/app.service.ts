@@ -153,6 +153,9 @@ import { Drive } from "./model/drive.model";
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
   }
+  public getAllDrivesClient(email:string): Observable<Drive[]>{
+    return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
+  }
 
 
   public addDriverCarAccount(addForm: DriverCarInfo): Observable<DriversAccount> {

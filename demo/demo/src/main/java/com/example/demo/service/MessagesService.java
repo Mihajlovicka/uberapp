@@ -42,7 +42,7 @@ public class MessagesService {
         User sender = userService.getByEmail(message.getSender().getEmail());
         m.setSender(sender);
         User reciever = null;
-        if(message.getSender().getRole().equals("ROLE_CLIENT")){
+        if(message.getSender().getRole().equals("ROLE_CLIENT") || message.getSender().getRole().equals("ROLE_DRIVER")){
             reciever = userService.getAdmin();
             notificationService.addNotificationMultiple(
                     new Notification(

@@ -9,9 +9,7 @@ import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,8 +50,14 @@ public class DriveController {
 
         return new ResponseEntity(driveConverter.toDTO(saved), HttpStatus.CREATED);
 
-
-
     }
 
+
+    @GetMapping(value = "/api/getDrivesClient")
+    public ResponseEntity getDriver(@RequestParam String email) throws EmailNotFoundException {
+
+
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
+
+    }
 }

@@ -23,6 +23,8 @@ import {MessagesClientComponent} from "./messages-client/messages-client.compone
 import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
 import { PaymentComponent } from './payment/payment.component';
+import {DriveHistoryClientComponent} from "./drive-history-client/drive-history-client.component";
+import {DriveHistoryDriverComponent} from "./drive-history-driver/drive-history-driver.component";
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -44,7 +46,9 @@ const routes: Routes = [
   {path:'selectedVehicle', component:SelectedVehicleTypeComponent},
   {path:'payment', component:PaymentComponent},
   {path: 'messages-admin',component:MessagesAdminComponent},
-  {path: 'messages-client',component:MessagesClientComponent}
+  {path: 'messages-client',component:MessagesClientComponent},
+  {path: 'drive-history-client',component:DriveHistoryClientComponent},
+  {path: 'drive-history-driver',component:DriveHistoryDriverComponent}
 ];
 
 @NgModule({

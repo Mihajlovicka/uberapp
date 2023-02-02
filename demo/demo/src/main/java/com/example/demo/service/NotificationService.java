@@ -41,8 +41,9 @@ public class NotificationService {
 
     public void addNotificationMultiple(Notification notification, List<User> users){
         for(User user : users){
-            notification.setUserToNotify(user);
-            addNotification(notification);
+            Notification newNotification = new Notification(notification);
+            newNotification.setUserToNotify(user);
+            addNotification(newNotification);
         }
     }
 
