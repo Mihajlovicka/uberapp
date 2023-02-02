@@ -40,8 +40,10 @@ public class DriveConverter {
         dto.setDriveType(drive.getDriveType());
 
         DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        dto.setStartDate(dateFormat.format(drive.getStartDate()));
-        dto.setEndDate(dateFormat.format(drive.getEndDate()));
+        if(drive.getStartDate()!=null)
+            dto.setStartDate(dateFormat.format(drive.getStartDate()));
+        if(drive.getEndDate()!=null)
+            dto.setEndDate(dateFormat.format(drive.getEndDate()));
         dto.setDate(dateFormat.format(drive.getDate()));
 
         return dto;

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.example.demo.model.Drive;
+import com.example.demo.model.DriveType;
 import com.example.demo.model.Notification;
 import com.example.demo.service.DriveService;
 import com.example.demo.service.NotificationService;
@@ -30,7 +31,7 @@ public class ScheduledTasks {
         log.info("The time is now {}", dateFormat.format(new Date()));
         //ako je 15 min pred salji vozacu i driveru
         //ako je 10 i 5 min pre a=salji klijentu
-        for(Drive d: driveService.getAllDrives()){
+        for(Drive d: driveService.getDriveByType(DriveType.FUTURE)){
             Date starting = d.getDate();
             Date nowTimePlus14 = new Date(System.currentTimeMillis() + 14*60*1000);
             Date nowTimePlus15 = new Date(System.currentTimeMillis() + 15*60*1000);

@@ -55,7 +55,9 @@ public class AuthenticationController {
 			return new ResponseEntity<UserTokenState>(HttpStatus.UNAUTHORIZED);
 		}
 		if(user.getRole().getName().equals("ROLE_DRIVER")){
-			userService.changeDriverAvailabilityStatus(user.getEmail(), true);
+			DriversAccount driver = userService.getDriverByEmail(user.getEmail());
+			driver.setDriversAvailability(false);
+			userService.saveDriverAvailabilityStatus(driver);
 		}
 		String jwt = tokenUtils.generateToken(user.getUsername());
 		int expiresIn = tokenUtils.getExpiredIn();
@@ -65,12 +67,13 @@ public class AuthenticationController {
 	}
 
 	@PostMapping("/logout")
-	public void logout(){
+	public ResponseEntity logout(){
 		User user = userService.getLoggedIn();
 		if(user.getRole().getName().equals("ROLE_DRIVER")){
 			DriversAccount driver = userService.getDriverByEmail(user.getEmail());
 			driver.setDriversAvailability(false);
 			userService.saveDriverAvailabilityStatus(driver);
 		}
+		return new ResponseEntity<>(null,HttpStatus.OK);
 	}
 }

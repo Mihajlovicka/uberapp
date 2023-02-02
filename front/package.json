@@ -25,6 +25,7 @@
     "@types/socket.io": "^3.0.2",
     "angular-material": "^0.8.0",
     "bootstrap": "^4.6.2",
+    "core-js": "2.5.1",
     "font-awesome": "^4.7.0",
     "leaflet": "^1.9.3",
     "leaflet-routing-machine": "^3.2.12",

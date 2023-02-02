@@ -121,7 +121,7 @@ public class DriveService {
     }
 
     public Drive getDrive(Long id) throws DriveNotFoundException {
-        Drive drive =  driveRepository.findById(id).get();
+        Drive drive =  driveRepository.findById(id).orElse(null);
         if(drive==null)throw new DriveNotFoundException("Drive does not exist!");
         return drive;
     }
@@ -475,5 +475,9 @@ public class DriveService {
                 userService.changeDriverStatus(drive.getDriver(), DriverStatus.AVAILABLE);
             }
         }
+    }
+
+    public List<Drive> getDriveByType(DriveType type) {
+        return driveRepository.findByDriveType(type);
     }
 }

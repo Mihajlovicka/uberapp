@@ -75,8 +75,9 @@ import { RidesDriverComponent } from './rides-driver/rides-driver.component';
 import { RideClientComponent } from './ride-client/ride-client.component';
 import { DriveBillComponent } from './drive-bill/drive-bill.component';
 import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
+import { DriveViewComponent } from './drive-view/drive-view.component';
 
-
+import { ReportsComponent } from './reports/reports.component';
 
 
 @NgModule({
@@ -122,10 +123,10 @@ import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive
     RideClientComponent,
     DriveBillComponent,
     CancelDriveReasonDialogComponent,
+    DriveViewComponent,
+    ReportsComponent,
   ],
-
-
-    imports: [
+  imports: [
         BrowserModule,
         HttpClientModule,
         FormsModule,
@@ -164,12 +165,9 @@ import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive
     multi:true},
     UserAuthService,
     MapService,
-    { provide: LOCALE_ID, useValue: 'sr-RS'}
+    { provide: LOCALE_ID, useValue: 'sr-RS'},
   ],
   bootstrap: [AppComponent]
-
-
-
 })
 export class AppModule { }
 

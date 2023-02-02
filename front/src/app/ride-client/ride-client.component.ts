@@ -8,6 +8,7 @@ import {Vehicle} from "../model/Vehicle";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import {Ride} from "../model/Ride";
+
 L.Icon.Default.imagePath = 'assets/';
 
 

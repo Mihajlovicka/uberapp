@@ -31,6 +31,8 @@ import {AddGradeComponent} from "./add-grade/add-grade.component";
 import {RidesDriverComponent} from "./rides-driver/rides-driver.component";
 import {RideClientComponent} from "./ride-client/ride-client.component";
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+import {DriveViewComponent} from "./drive-view/drive-view.component";
+import {ReportsComponent} from "./reports/reports.component";
 
 
 const routes: Routes = [
@@ -61,7 +63,9 @@ const routes: Routes = [
 
   {path: 'rides-dr',component:RidesDriverComponent,  canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
-  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent}
+  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
+  {path: "drive/:id", component:DriveViewComponent},
+  {path: "reports", component:ReportsComponent}
 
 ];
 
