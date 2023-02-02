@@ -19,6 +19,7 @@ import {Notification} from "./model/notification.model";
 
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
+import {Grade} from "./model/grade.model";
 
 
 @Injectable({
@@ -152,6 +153,12 @@ import { Drive } from "./model/drive.model";
   }
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
+  }
+  public getDrive(driveID:number): Observable<Drive>{
+    return this.http.get<Drive>(`http://localhost:8080/api/getDrive?driveID=`+driveID).pipe(catchError(this.handleError<Drive>()));
+  }
+  public addGrade(grade:Grade):Observable<any>{
+    return this.http.post("http://localhost:8080/api/newGrade",grade,this.httpOptions).pipe(catchError(this.handleError<any>("Dodavanje ocene ")));
   }
   public getAllDrivesClient(email:string): Observable<Drive[]>{
     return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));

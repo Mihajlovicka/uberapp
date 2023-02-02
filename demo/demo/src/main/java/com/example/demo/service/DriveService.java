@@ -7,6 +7,7 @@ import com.example.demo.model.Passenger;
 import com.example.demo.model.User;
 import com.example.demo.repository.DriveRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -56,5 +57,12 @@ public class DriveService {
             }
         }
         return drives;
+    }
+
+    public Drive getDrive(int driveID) {
+        for (Drive drive: driveRepository.findAll()) {
+            if(drive.getId() == driveID) return drive;
+        }
+        return null;
     }
 }

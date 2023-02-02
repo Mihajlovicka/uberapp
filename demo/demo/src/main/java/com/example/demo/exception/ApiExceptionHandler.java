@@ -56,5 +56,26 @@ public class ApiExceptionHandler {
 
         return new ResponseEntity<>(bankAccountNumberDoNotExist, HttpStatus.CONFLICT);
     }
+    @ExceptionHandler(value = {AlreadyGradedException.class})
+    public ResponseEntity<Object> handlerAlreadyGraded(AlreadyGradedException e){
+        AlreadyGradedBean alreadyGradedBean = new AlreadyGradedBean(
+                e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(alreadyGradedBean, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(value = {NotificationNotFoundException.class})
+    public ResponseEntity<Object> handlerNotificationNotFound(NotificationNotFoundException e){
+        NotificationNotFoundBean notificationNotFoundBean = new NotificationNotFoundBean(
+                e.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(notificationNotFoundBean, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
 }

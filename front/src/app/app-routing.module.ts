@@ -25,6 +25,7 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
 import { PaymentComponent } from './payment/payment.component';
 import {DriveHistoryClientComponent} from "./drive-history-client/drive-history-client.component";
 import {DriveHistoryDriverComponent} from "./drive-history-driver/drive-history-driver.component";
+import {AddGradeComponent} from "./add-grade/add-grade.component";
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -48,7 +49,8 @@ const routes: Routes = [
   {path: 'messages-admin',component:MessagesAdminComponent},
   {path: 'messages-client',component:MessagesClientComponent},
   {path: 'drive-history-client',component:DriveHistoryClientComponent},
-  {path: 'drive-history-driver',component:DriveHistoryDriverComponent}
+  {path: 'drive-history-driver',component:DriveHistoryDriverComponent},
+  {path: 'drive-rating',component:AddGradeComponent},
 ];
 
 @NgModule({

@@ -14,6 +14,7 @@ export enum DriveStatus{
   }
 
 export interface DriveInterface{
+    id: number;
     stops: Stop[];
     distance: number;
     duration: number;
@@ -31,6 +32,7 @@ export interface DriveInterface{
 }
 
 export class Drive implements DriveInterface{
+    public id: number;
     public stops: Stop[];
     public distance: number;
     public duration: number;
@@ -46,6 +48,7 @@ export class Drive implements DriveInterface{
     public driver: DriversAccount;
     public date: string;
     constructor(driveInt: DriveInterface){
+        this.id = driveInt.id;
         this.stops = driveInt.stops;
         this.distance = driveInt.distance;
         this.duration = driveInt.duration;
@@ -61,5 +64,5 @@ export class Drive implements DriveInterface{
         this.seats = driveInt.seats;
         this.date = driveInt.date;
     }
-    
+
 }

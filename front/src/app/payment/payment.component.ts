@@ -17,10 +17,10 @@ export class PaymentComponent implements OnInit{
   constructor(private service: AppService) { }
 
 
-  
 
 
- 
+
+
 
   @Input() drive:DriveReservationForm = {
     stops: [],
@@ -41,6 +41,7 @@ export class PaymentComponent implements OnInit{
   };
 
   created: Drive={
+    id: 0,
     stops: [],
     distance: 0,
     duration: 0,
@@ -114,7 +115,7 @@ export class PaymentComponent implements OnInit{
   setSplitPayment(split: boolean){
     this.drive.splitBill=split;
   }
- 
+
 
 
 

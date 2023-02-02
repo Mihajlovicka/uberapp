@@ -54,10 +54,18 @@ public class DriveController {
 
 
     @GetMapping(value = "/api/getDrivesClient")
-    public ResponseEntity getDriver(@RequestParam String email) throws EmailNotFoundException {
+    public ResponseEntity getDrives(@RequestParam String email) throws EmailNotFoundException {
 
 
         return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
+
+    }
+
+    @GetMapping(value = "/api/getDrive")
+    public ResponseEntity getDrive(@RequestParam String driveID) throws EmailNotFoundException {
+
+        int driveId = Integer.valueOf(driveID);
+        return new ResponseEntity(driveService.getDrive(driveId), HttpStatus.OK);
 
     }
 }
