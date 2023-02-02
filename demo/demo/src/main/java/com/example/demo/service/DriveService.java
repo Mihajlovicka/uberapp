@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+
+import com.example.demo.exception.EmailNotFoundException;
+
 import com.example.demo.converter.UserConverter;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.NotFoundException;
@@ -7,13 +10,20 @@ import com.example.demo.model.*;
 import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.model.help.ResponseTableHelp;
 import com.example.demo.exception.DriveNotFoundException;
+
 import com.example.demo.model.Drive;
 import com.example.demo.model.DriveStatus;
+import com.example.demo.model.Passenger;
+import com.example.demo.model.User;
 import com.example.demo.repository.DriveRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.IOException;
 import java.net.URI;
@@ -74,6 +84,40 @@ public class DriveService {
         notificationService.addNotificationMultiple(new Notification("Nova voznja", "Vasa voznja je odobrena. ", null,""), makeUsersFromPassengersForNotification(drive));
         return driveRepository.save(drive);
 
+    }
+
+
+    public List<Drive> getDrivesForUser(String email) throws EmailNotFoundException {
+        List<Drive> drives = new ArrayList<Drive>();
+        User user = userService.getByEmail(email);
+        for(Drive drive : driveRepository.findAll()){
+            if(user.getRole().getName().equals("ROLE_CLIENT")) {
+                if (drive.getOwner().getUser().getEmail().equals(email)) {
+                    drives.add(drive);
+                } else {
+                    for (Passenger passenger : drive.getPassengers()) {
+                        if (passenger.getPassengerEmail().equals(email)) {
+                            drives.add(drive);
+                        }
+                    }
+                }
+            }
+            else{
+                if(drive.getDriver() != null) {
+                    if (drive.getDriver().getUser().getEmail().equals(email)) {
+                        drives.add(drive);
+                    }
+                }
+            }
+        }
+        return drives;
+    }
+
+    public Drive getDrive(int driveID) {
+        for (Drive drive: driveRepository.findAll()) {
+            if(drive.getId() == driveID) return drive;
+        }
+        return null;
     }
 
     public Drive getDrive(Long id) throws DriveNotFoundException {

@@ -1,0 +1,91 @@
+<table (matSortChange)="sortData($event)" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+  <ng-container
+    *ngFor="let column of columns"
+    [matColumnDef]="column.columnDef"
+
+  >
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+    <td mat-cell *matCellDef="let row" (click)="ispisi(row);">{{column.cell(row)}}</td>
+  </ng-container>
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation();">
+        <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+        <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        Putnici:
+
+        <ul style="list-style: none; width:50%; margin:0 auto">
+          <li style="font-size: 15px;">
+            <div class="row">
+              <div class="col-lg-1 col-md-1 col-sm-1" >
+
+                <div class="row" style="margin:0 auto">
+                  <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+
+                </div>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6">
+                <p><small><strong>{{element.owner.user.name}} {{element.owner.user.surname}}</strong></small></p>
+              </div>
+              <div class="col-lg-5 col-md-5 col-sm-5">
+                <p><small>{{element.owner.user.email}}</small></p>
+              </div>
+
+
+            </div>
+
+
+          </li>
+
+              <li *ngFor="let participant of element.passengers" style="font-size: 15px;">
+                <div class="row">
+                  <div class="col-lg-1 col-md-1 col-sm-1" >
+
+                    <div class="row" style="margin:0 auto">
+                      <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+
+                    </div>
+                  </div>
+
+                  <div class="col-lg-6 col-md-6 col-sm-6">
+                    <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
+                  </div>
+                  <div class="col-lg-5 col-md-5 col-sm-5">
+                    <p><small>{{participant.passengerEmail}}</small></p>
+                  </div>
+
+
+
+                </div>
+
+
+              </li>
+
+        </ul>
+      </div>
+    </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === row"
+      (click)="ispisi(row);">></tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="5" style="text-align: center">
+      Trenutno nemate prethodnih voznji.
+    </td>
+  </tr>
+
+
+</table>

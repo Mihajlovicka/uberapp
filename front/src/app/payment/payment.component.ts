@@ -44,6 +44,7 @@ export class PaymentComponent implements OnInit{
   };
 
   created: Drive={
+    id: 0,
     stops: [],
     distance: 0,
     duration: 0,
@@ -124,7 +125,6 @@ export class PaymentComponent implements OnInit{
     this.drive.splitBill=split;
 
   }
-
 
 
 

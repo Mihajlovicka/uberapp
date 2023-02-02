@@ -47,6 +47,7 @@ export class RespondDriveRequestComponent implements OnInit {
   }
 
   drive: Drive={
+    id:0,
     stops: [],
     distance: 0,
     duration: 0,

@@ -11,7 +11,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.access.prepost.PreAuthorize;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -65,7 +67,15 @@ public class DriveController {
 
         return new ResponseEntity(driveConverter.toDTO(saved), HttpStatus.CREATED);
 
+    }
 
+
+
+    @GetMapping(value = "/api/getDrivesClient")
+    public ResponseEntity getDrives(@RequestParam String email) throws EmailNotFoundException {
+
+
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -130,6 +140,14 @@ public class DriveController {
     public ResponseEntity cancelRide(@RequestBody String reason){
         driveService.cancelDrive(reason);
         return new ResponseEntity<>(null, HttpStatus.OK);
+
     }
 
+    @GetMapping(value = "/api/getDrive")
+    public ResponseEntity getDrive(@RequestParam String driveID) throws EmailNotFoundException {
+
+        int driveId = Integer.valueOf(driveID);
+        return new ResponseEntity(driveService.getDrive(driveId), HttpStatus.OK);
+
+    }
 }

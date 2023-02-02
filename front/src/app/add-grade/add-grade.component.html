@@ -1,0 +1,43 @@
+
+<mat-card style="width: 80%; margin:0 auto; padding: 20px;align-content: center; text-align: center">
+  <mat-card-header>
+
+  </mat-card-header>
+  <mat-card-content>
+    <h3 align="center" style="padding: 20px;">Ocenjivanje voznje</h3>
+    <div style="width: 80%; margin: 0 auto">
+        <div style="display: inline-block; padding: 10px;" class="col-md-6">
+          <mat-card>
+            <mat-card-header>
+
+            </mat-card-header>
+            <mat-card-content>
+              <h4 align="center" style="padding: 20px;">Ocenjivanje voznje</h4>
+              <ngx-material-rating [color]="'primary'" [(ngModel)]="grade.gradeDriver" [max]="5">
+              </ngx-material-rating>
+            </mat-card-content>
+          </mat-card>
+        </div>
+        <div style="display: inline-block; padding: 10px;" class="col-md-6">
+          <mat-card>
+            <mat-card-header>
+
+            </mat-card-header>
+            <mat-card-content>
+              <h4 align="center" style="padding: 20px;">Ocenjivanje vozila</h4>
+              <ngx-material-rating [color]="'primary'" [(ngModel)]="grade.gradeCar" [max]="5">
+              </ngx-material-rating>
+            </mat-card-content>
+          </mat-card>
+        </div>
+    </div>
+    <div style="width: 80%; margin:20px auto;">
+      <mat-form-field class="example-full-width w-100" >
+        <mat-label>Ostavite komentar</mat-label>
+        <textarea matInput placeholder="Prostor za Vas komentar..." [(ngModel)]="grade.comment" style="height: 150px;"></textarea>
+      </mat-form-field>
+    </div>
+    <button mat-raised-button color="primary" style="margin-left:8px" (click)="saveGrade();">Posalji</button>
+
+  </mat-card-content>
+</mat-card>

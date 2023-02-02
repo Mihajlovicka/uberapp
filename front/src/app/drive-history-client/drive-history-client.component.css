@@ -1,0 +1,16 @@
+table {
+  width: 90%;
+  margin: 20px auto;
+}
+
+th.mat-sort-header-sorted {
+  color: black;
+}
+
+table td{
+  padding: 10px;
+}
+
+table th {
+  margin: 0 auto;
+}

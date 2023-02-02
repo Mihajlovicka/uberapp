@@ -63,10 +63,19 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
 import { DriveParticipantsComponent } from './drive-participants/drive-participants.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+
+import { DriveHistoryClientComponent } from './drive-history-client/drive-history-client.component';
+import {MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import { DriveHistoryDriverComponent } from './drive-history-driver/drive-history-driver.component';
+import { AddGradeComponent } from './add-grade/add-grade.component';
+import {NgxMaterialRatingModule} from "ngx-material-rating";
+
 import { RidesDriverComponent } from './rides-driver/rides-driver.component';
 import { RideClientComponent } from './ride-client/ride-client.component';
 import { DriveBillComponent } from './drive-bill/drive-bill.component';
 import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
+
 
 
 
@@ -104,6 +113,11 @@ import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive
     SelectedVehicleTypeComponent,
     RespondDriveRequestComponent,
     DriveParticipantsComponent,
+
+    DriveHistoryClientComponent,
+    DriveHistoryDriverComponent,
+    AddGradeComponent,
+
     RidesDriverComponent,
     RideClientComponent,
     DriveBillComponent,
@@ -111,34 +125,37 @@ import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive
   ],
 
 
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatStepperModule,
-    MatButtonModule,
-    MatIconModule,
-    MatInputModule,
-    FormsModule,
-    MatCardModule,
-    LeafletModule,
-    MatAutocompleteModule,
-    MatDialogModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatMenuModule,
-    MatExpansionModule,
-    MatProgressBarModule,
-    MatDividerModule,
-    MatCheckboxModule,
-    MatSidenavModule,
-    MatBadgeModule,
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        FormsModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatFormFieldModule,
+        MatStepperModule,
+        MatButtonModule,
+        MatIconModule,
+        MatInputModule,
+        FormsModule,
+        MatCardModule,
+        LeafletModule,
+        MatAutocompleteModule,
+        MatDialogModule,
+        MatRadioModule,
+        MatTooltipModule,
+        MatSlideToggleModule,
+        MatMenuModule,
+        MatExpansionModule,
+        MatProgressBarModule,
+        MatDividerModule,
+        MatCheckboxModule,
+        MatSidenavModule,
+        MatBadgeModule,
+        MatTableModule,
+        MatSortModule,
+        NgxMaterialRatingModule,
+    ],
   providers: [
     AppService,
     AuthGuard,
