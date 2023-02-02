@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Razlog otkazivanja voznje</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill">
+    <mat-label>Razlog</mat-label>
+    <input  matInput [(ngModel)]="data.reason">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Otkazi</button>
+  <button mat-button [mat-dialog-close]="data.reason" cdkFocusInitial>Potvrdi</button>
+</div>

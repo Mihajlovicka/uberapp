@@ -423,4 +423,8 @@ public class UserService {
         driver.setDriverStatus(status);
         driversRepository.save(driver);
     }
+
+
+    public User findByEmail(String email){return userRepository.findUserByEmail(email);}
+
 }

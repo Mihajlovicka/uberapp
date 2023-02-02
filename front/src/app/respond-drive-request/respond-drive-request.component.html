@@ -1,0 +1,586 @@
+<div class="col-md-6" style="margin: 0 auto; margin-top:2%">
+<mat-card class="example-card " >
+    <mat-card-header>
+      <mat-card-title>Informacije o voznji</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <div style="margin: 0 auto;">
+        <ul style="list-style: none;">
+            <mat-card class="example-card">
+                <mat-card-content>
+            <li *ngFor="let stop of this.drive.stops; let i = index" style="font-size: 16px;">
+                        <div *ngIf="i===0" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <span class="material-icons" style="color:#673ab7;">flag</span>
+                                </div>
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                        </div>
+                        <div  *ngIf="i===this.drive.stops.length-1" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <span class="material-icons" style="color:#673ab7;">flag</span>
+                                  
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                        </div>
+                        <div *ngIf="i!== 0 && i!== this.drive.stops.length-1" class="row">
+                            <div class="col-md-1 col-sm-1" >
+                                <div class="row" style="margin:0 auto">
+                                    <p style="color:white">aa</p>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-8 col-sm-8">
+                                <p><small><strong>{{stop.name}}</strong></small></p>
+                            </div>
+                            </div>
+            </li>
+        </mat-card-content>
+    </mat-card>
+        </ul>
+        <br>
+        <ul style="list-style: none;">
+            <li>
+                <mat-card class="example-card" style="margin: 0 auto;margin-bottom:5%">
+                    <mat-card-content>
+                        <div class="row" *ngIf="this.drive.seats === 5">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://images.drive.com.au/driveau/image/private/c_fill,f_auto,g_auto,h_675,q_auto:eco,w_1200/ca-s3/2011/11/ac-schnitzer-bmw-1-series-f20-1-625x416" alt="Photo of a hatchback">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Hatchback</strong></p>
+                                </div>
+                
+                                <div class="row" style="font-size: 16px;">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>4</strong> putnika</label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ; ">
+                                                  <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                  <label><strong>2</strong> kofera</label>
+                                                </div>
+                                               
+                                            </div>
+                        
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                    
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                    
+                                </div>
+                                
+                                
+                
+                               
+                            </div>
+                        </div>
+                
+                
+                
+                
+                        <div class="row" *ngIf="this.drive.seats === 4">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://mediaservice.audi.com/media/cdb/data/e9ee8df7-d576-4602-b490-df0a062802f7.jpg" alt="Photo of a coupe">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Coupe</strong></p>
+                                </div>
+                
+                                <div class="row" style="font-size:16px">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>3</strong> putnika </label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ;">
+                                                  <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                  <label><strong>1</strong> kofer</label>
+                                                </div>
+                                                
+                                            </div>
+                        
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ;">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                               
+                
+                            </div>
+                        </div>
+                
+                
+                
+                
+                        <div class="row" *ngIf="this.drive.seats === 6">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://autorepublika.com/wp-content/uploads/2021/12/renault-espace.jpg" alt="Photo of a minivan">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Minivan</strong></p>
+                
+                                </div>
+                
+                                <div class="row" style="font-size:16px">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>5</strong> putnika </label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                <label><strong>4</strong> kofera</label>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                    
+                                            <div *ngIf="drive.babySeats>1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                                
+                
+                
+                            </div>
+                        </div>
+                
+                
+                
+                
+                
+                        <div class="row" *ngIf="this.drive.seats === 7">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://www.motorparks.co.uk/upload/big/20191128040728288_Frozen%20White.jpg" alt="Photo of a minivan">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Minivan</strong></p>
+                
+                                </div>
+                
+                                <div class="row" style="font-size:16px">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>6</strong> putnika </label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ; ">
+                                                  <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                  <label><strong>4</strong> kofera</label>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>1 && drive.babySeats<4" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>4" class="row" style="margin: 0 auto ;">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decijih sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                
+                              
+                
+                            </div>
+                        </div>
+                
+                
+                
+                
+                        <div class="row" *ngIf="this.drive.seats === 8">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://www.mr-box.com/images/demo/53659-dfc73.png" alt="Photo of a minivan">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Minivan</strong></p>
+                
+                                </div>
+                
+                                <div class="row" style="font-size: 16px;">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>7</strong> putnika </label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ;">
+                                                  <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                  <label><strong>6</strong> kofera</label>
+                                                </div>
+                                               
+                                            </div>
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>1 && drive.babySeats<4" class="row" style="margin: 0 auto ;">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>4" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decijih sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                
+                                
+                
+                            </div>
+                        </div>
+                
+                
+                
+                
+                
+                        
+                        <div class="row" *ngIf="this.drive.seats === 9">
+                            <div class="col-md-5 col-sm-5 col-lg-5">
+                                <img mat-card-image src="https://www.ford.co.uk/content/dam/guxeu/rhd/central/cvs/2018-transit-custom/bodystyles/ford-transit_custom-uk-MCA-16x9-768x432-van-hero-white.png.renditions.extra-large_668x376.png.renditions.original.png" alt="Photo of a kombi">
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-6">
+                                <div class="row">
+                                    <p style="font-size: 26px; margin-left: 2%;"><strong>Kombi</strong></p>
+                
+                                </div>
+                
+                                <div class="row" style="font-size: 16px;">
+                                    <div class="col">
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="row" style="margin: 0 auto;">
+                                                    <span class="material-icons" style="color:#673ab7;"> airline_seat_recline_normal </span>
+                                                    <label><strong>8</strong> putnika </label>
+                                                </div>
+                                                <div class="row" style="margin: 0 auto ;">
+                                                  <span class="material-icons" style="color:#673ab7;">luggage</span>
+                                                  <label><strong>6</strong> kofera</label>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col" >
+                                                <div *ngIf="this.drive.baby>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.baby===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Deca</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets>0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">check</span>
+                                                </div>
+                                                <div *ngIf="this.drive.pets===0" class="row"  style="margin: 0 auto;">
+                                                    <label><strong>Ljubimci</strong></label>
+                                                    <span class="material-icons" style="color:#673ab7;">clear</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="float:left; margin-left: 1%;">
+                                            <div *ngIf="drive.babySeats===1" class="row" style="margin: 0 auto ; ">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decije sediste</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>1 && drive.babySeats<4" class="row" style="margin: 0 auto ;">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decija sedista</label>
+                                            </div>
+                            
+                                            <div *ngIf="drive.babySeats>4" class="row" style="margin: 0 auto ;">
+                                                <span class="material-icons" style="color:#673ab7;">child_friendly</span>
+                                                <label><strong>{{this.drive.babySeats}}</strong> decijih sedista</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                
+                               
+                
+                            </div>
+                        </div>
+                
+                
+                        
+                
+                
+                    </mat-card-content>
+                </mat-card>
+            </li>
+            
+        </ul>
+        <div  style="margin: 0 auto">
+            <ul style="list-style: none; font-size:10px"> 
+        
+                 <mat-card >
+                  
+                    <mat-card-content>
+                        <li *ngFor="let participant of this.drive.passengers" style="font-size: 20px;">
+                            <div class="row" *ngIf="participant.passengerEmail!==this.logged.user.email">
+                                <div class="col-lg-1 col-md-1 col-sm-1" >
+                        
+                                    <div class="row" style="margin:0 auto">
+                                        <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+                                        
+                                    </div>
+                                </div>
+            
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
+                                </div>
+        
+                                
+                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
+                                    <label><small>zaduzenje: <strong>{{participant.debit}} RSD</strong></small></label>
+                                 </div>
+        
+                                <div class="col-lg-2 col-md-2 col-sm-2">
+                                    <p ><small>putnik</small></p>
+                                </div>
+                      
+                            </div>
+        
+                            
+                        </li>
+                        <li style="font-size: 20px;">
+                            <div class="row">
+                                <div class="col-lg-1 col-md-1 col-sm-1" >
+                        
+                                    <div class="row" style="margin:0 auto">
+                                        <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+                                        
+                                    </div>
+                                </div>
+            
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <p><small><strong>{{drive.owner.user.name}} {{drive.owner.user.surname}}</strong></small></p>
+                                </div>
+        
+                                
+                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
+                                    <label><small>zaduzenje: <strong>{{drive.ownerDebit}} RSD</strong></small></label>
+                                 </div>
+        
+                                <div class="col-lg-2 col-md-2 col-sm-2">
+                                    <p><small>vlasnik</small></p>
+                                </div>
+                      
+                            </div>
+                        </li>
+
+                    </mat-card-content>
+               
+            </mat-card>
+            </ul>
+        </div>
+        
+        <br>
+        <div style="margin:0 auto">
+            <ul style="list-style: none;">
+                <mat-card>
+                    <mat-card-header style="font-size:18px; display:flex; justify-content: space-between;">
+                        <div class="col-md-7 col-lg-7 col-sm-7">
+                            <label >Vase zaduzenje: </label>
+                        </div>
+                       
+                        <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === true">
+                            <label ><strong>{{drive.ownerDebit}} RSD</strong></label>
+                        </div>
+                        <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === false">
+                            <label ><strong>0 RSD</strong></label>
+                        </div>
+        
+                    </mat-card-header>
+                   
+        
+                </mat-card>
+        
+            </ul>
+        </div>
+       
+
+    </div>
+
+    </mat-card-content>
+  
+
+     <mat-card-actions>
+        
+           
+       
+        
+    </mat-card-actions>
+    
+    
+</mat-card>
+<br>
+<button style="float: right;" mat-raised-button type="button" color="primary">Prihvatam voznju</button>
+<button style="float: left;" mat-raised-button type="button" color="secondary">Odbijam voznju</button>
+
+</div>

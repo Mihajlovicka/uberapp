@@ -33,6 +33,7 @@ import { Stop } from "./model/stop.model";
     private registerUrl = 'http://localhost:8080/api/register';
     private addDriverUrl = 'http://localhost:8080/api/add-driver';
     private getClientUrl = 'http://localhost:8080/api/getClient?email=';
+    private getDriveUrl = 'http://localhost:8080/api/getDrive/';
     private getDriverUrl = 'http://localhost:8080/api/getDriver?email=';
     private updateClientUrl = 'http://localhost:8080/api/updateClient';
     private updateDriverUrl = 'http://localhost:8080/api/updateDriver';
@@ -127,6 +128,12 @@ import { Stop } from "./model/stop.model";
 
     return this.http.get<DriversAccount>(`${this.getDriverUrl + email}`).pipe(
       catchError(this.handleError<DriversAccount>()));
+  }
+
+  public getDrive(id: number): Observable<Drive>{
+    return this.http.get<Drive>(`${this.getDriveUrl + id}`).pipe(
+      catchError(this.handleError<Drive>())
+    );
   }
 
 
@@ -341,5 +348,13 @@ import { Stop } from "./model/stop.model";
 
   getClientCurrentDrive():Observable<Stop[]> {
     return this.http.get<Stop[]>(this.host + "/getClientCurrentDriveStops" , this.httpOptions)
+  }
+
+  notifyPassengers() {
+    return this.http.post<any>(this.host + "/notifyPassengers" , this.httpOptions)
+  }
+
+  cancelRide(result: any) {
+    return this.http.post<any>(this.host + "/cancelRide", result , this.httpOptions)
   }
 }

@@ -65,6 +65,8 @@ import { DriveParticipantsComponent } from './drive-participants/drive-participa
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { RidesDriverComponent } from './rides-driver/rides-driver.component';
 import { RideClientComponent } from './ride-client/ride-client.component';
+import { DriveBillComponent } from './drive-bill/drive-bill.component';
+import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
 
 
 
@@ -104,6 +106,8 @@ import { RideClientComponent } from './ride-client/ride-client.component';
     DriveParticipantsComponent,
     RidesDriverComponent,
     RideClientComponent,
+    DriveBillComponent,
+    CancelDriveReasonDialogComponent,
   ],
 
 

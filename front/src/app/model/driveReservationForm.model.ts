@@ -7,12 +7,12 @@ import { Stop } from "./stop.model";
 
 
 export enum PriceStart{
-  COUPE=200,
-  HATCHBACK=200,
-  MINIVAN6=500,
-  MINIVAN7=500,
-  MINIVAN8=500,
-  KOMBI9=100
+  seats4 = 200,
+  seats5 = 200,
+  seats6 = 500,
+  seats7 = 500,
+  seats8 = 500,
+  seats9 = 1000
 }
 
 export interface DriveReservationFormInterface{
@@ -31,6 +31,7 @@ export interface DriveReservationFormInterface{
   //driver: DriversAccount|null;
   splitBill: boolean;
   date: string;
+  ownerDebit: number;
 }
 
 export class DriveReservationForm implements DriveReservationFormInterface{
@@ -50,6 +51,7 @@ export class DriveReservationForm implements DriveReservationFormInterface{
   //public driver: DriversAccount|null;
   public splitBill: boolean;
   public date: string;
+  public ownerDebit: number;
 
   constructor(driveI:DriveReservationFormInterface) {
     this.stops = driveI.stops
@@ -67,6 +69,7 @@ export class DriveReservationForm implements DriveReservationFormInterface{
     //this.driver = driveI.driver;
     this.splitBill = driveI.splitBill;
     this.date = driveI.date;
+    this.ownerDebit = driveI.ownerDebit;
   }
 }
 

@@ -4,6 +4,7 @@ import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CarSimulationDTO;
 import com.example.demo.dto.CreateDriveReservationDTO;
 import com.example.demo.dto.RideSimulationDTO;
+import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.service.CarService;
@@ -36,6 +37,11 @@ public class DriveController {
     @Autowired
     DriveConverter driveConverter;
 
+    @GetMapping(value="api/getDrive/{id}")
+    public ResponseEntity getDrive(@PathVariable Long id) throws DriveNotFoundException {
+        return new ResponseEntity(driveConverter.toDTO(driveService.getDrive(id)), HttpStatus.OK);
+    }
+
     @PostMapping(value = "/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, URISyntaxException, IOException, InterruptedException {
         Drive drive = new Drive();
@@ -53,7 +59,8 @@ public class DriveController {
         drive.setStops(driveReservationDTO.getStops());
         //passengeri
         drive.setPassengers(driveReservationDTO.getPassengers());
-
+        drive.setOwnerDebit(driveReservationDTO.getOwnerDebit());
+        drive.setDriveType(DriveType.FUTURE);
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
         drive.setDate(format.parse(driveReservationDTO.getDate()));
 
@@ -113,6 +120,19 @@ public class DriveController {
         return new ResponseEntity(driveService.getClientCurrentDriveStops(), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(path = "/notifyPassengers")
+    public ResponseEntity notifyPassengers(){
+        driveService.notifyPassengers();
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 
+
+    @PreAuthorize("hasRole('ROLE_DRIVER')")
+    @PostMapping(path = "/cancelRide")
+    public ResponseEntity cancelRide(@RequestBody String reason){
+        driveService.cancelRide(reason);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
 
 }

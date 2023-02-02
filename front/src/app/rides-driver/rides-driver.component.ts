@@ -8,6 +8,10 @@ import {AppService} from "../app.service";
 import {DriversAccount, DriverStatus} from "../model/driversAccount.model";
 import {Stop} from '../model/stop.model';
 import {DatePipe} from "@angular/common";
+import {MatDialog} from '@angular/material/dialog';
+import {
+  CancelDriveReasonDialogComponent
+} from "../dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component";
 
 L.Icon.Default.imagePath = 'assets/';
 
@@ -41,9 +45,10 @@ export class RidesDriverComponent implements OnInit {
   nextStops: Stop[] = []
   nextDate: string = ''
   stops: Stop[] = []
+  arrived:boolean=true
 
-
-  constructor(private appService: AppService) {
+  constructor(private appService: AppService,
+              public dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -189,6 +194,29 @@ export class RidesDriverComponent implements OnInit {
   }
 
   cancelRide() {
-    // this.appService.cancelRide()
+    const dialogRef = this.dialog.open(CancelDriveReasonDialogComponent, {
+      data: {reason: ''},
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result !== '' && result !== undefined) {
+        this.appService.cancelRide(result).subscribe((res:any) => {
+          this.appService.openErrorDialog("Voznja otkazana.");
+          this.stops = []
+          this.status = 'AVAILABLE'
+        })
+      }
+      else if(result !== undefined){
+        this.appService.openErrorDialog("Razlog nije unet. Voznja nece biti otkazana.");
+      }
+    });
+
   }
+
+  notifyPassengers() {
+    // this.appService.notifyPassengers().subscribe((res:any) => {
+    //   this.arrived = true
+    // })
+  }
+
 }

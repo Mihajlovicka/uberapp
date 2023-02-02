@@ -25,6 +25,7 @@ import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-v
 import { PaymentComponent } from './payment/payment.component';
 import {RidesDriverComponent} from "./rides-driver/rides-driver.component";
 import {RideClientComponent} from "./ride-client/ride-client.component";
+import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
 
 const routes: Routes = [
   { path: 'register', component: RegisterComponent},
@@ -49,6 +50,7 @@ const routes: Routes = [
   {path: 'messages-client',component:MessagesClientComponent},
   {path: 'rides-dr',component:RidesDriverComponent,  canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
+  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent}
 ];
 
 @NgModule({

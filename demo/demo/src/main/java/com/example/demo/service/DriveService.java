@@ -1,12 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.converter.UserConverter;
-import com.example.demo.dto.MessageDTO;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.model.help.ResponseTableHelp;
+import com.example.demo.exception.DriveNotFoundException;
+import com.example.demo.model.Drive;
+import com.example.demo.model.DriveStatus;
 import com.example.demo.repository.DriveRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,7 +21,6 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.Timestamp;
 import java.util.*;
 
 
@@ -33,6 +34,7 @@ public class DriveService {
 
     @Autowired
     private NotificationService notificationService;
+
     @Autowired
     private UserConverter conv;
 
@@ -49,20 +51,37 @@ public class DriveService {
         drive.setDriver(null);
         //drive startus se stavlja na waiting passengers
         drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
-        drive.setDriveTimeStatus(DriveTimeStatus.NOW);
+        drive.setDriveType(DriveType.NOW);
         String foundDriverEmail = getNextDriverForCurrentRide(drive);
 //        Long foundDriverId = getNextDriverForFutureRide(drive);
         if (foundDriverEmail.equals("")) {
+            notificationService.addNotificationMultiple(new Notification("Obavestenje", "Vasa voznja je odbijena. Nema slobodnih vozila.",null,""), makeUsersFromPassengersForNotification(drive));
             throw new NotFoundException("Nema trenutno slobodnog vozaca.");
-        }
-        DriversAccount driver = userService.getDriver(foundDriverEmail);
 
+        }
+
+//        Drive saved = driveRepository.save(drive);
+//
+//
+//        notificationService.addedToDriveNotify(drive.getPassengers(), saved.getId());
+//
+//
+//        return saved;
+
+        DriversAccount driver = userService.getDriver(foundDriverEmail);
         drive.setDriver(driver);
         notificationService.addNotification(new Notification("Nova voznja", "Dodeljena vam je nova voznja. " + drive.getDate(), driver.getUser(),"localhost:4200/rides-dr"));
-        notificationService.addNotificationMultiple(new Notification("Nova voznja", "Vasa voznja je odobrena. ", driver.getUser(),""), makeUsersFromPassengersForNotification(drive));
+        notificationService.addNotificationMultiple(new Notification("Nova voznja", "Vasa voznja je odobrena. ", null,""), makeUsersFromPassengersForNotification(drive));
         return driveRepository.save(drive);
 
     }
+
+    public Drive getDrive(Long id) throws DriveNotFoundException {
+        Drive drive =  driveRepository.findById(id).get();
+        if(drive==null)throw new DriveNotFoundException("Drive does not exist!");
+        return drive;
+    }
+
 
 
     public String getNextDriverForFutureRide(Drive drive) {
@@ -220,7 +239,7 @@ public class DriveService {
     private Drive getCurrentDrive(){
         DriversAccount driver = userService.getLoggedDriver();
         for (Drive d : driveRepository.findByDriver(driver)) {
-            if(d.getDriveTimeStatus().equals(DriveTimeStatus.NOW))
+            if(d.getDriveType().equals(DriveType.NOW))
                 return d;
         }
         return null;
@@ -232,7 +251,7 @@ public class DriveService {
         List<Drive> future = new ArrayList<>();
         DriversAccount driver = userService.getLoggedDriver();
         for (Drive d : driveRepository.findByDriver(driver)) {
-            if(d.getDriveTimeStatus().equals(DriveTimeStatus.FUTURE))
+            if(d.getDriveType().equals(DriveType.FUTURE))
                 future.add(d);
         }
         Collections.sort(future, new Comparator<Drive>() {
@@ -261,8 +280,10 @@ public class DriveService {
     public String endDrive() {
         Drive drive = getCurrentDrive();
         if(drive != null){
-            drive.setDriveTimeStatus(DriveTimeStatus.PAST);
+            drive.setDriveType(DriveType.PAST);
             userService.updateDriverStatus(DriverStatus.AVAILABLE);
+            drive.setDriveStatus(DriveStatus.DRIVE_ENDED);
+            drive.setEndDate(new Date());
             driveRepository.save(drive);
             return "Voznja zavrsena";
         }
@@ -275,7 +296,7 @@ public class DriveService {
     public List<RealAddress> goToNextDrive() {
         Drive drive = getFirstFutureDrive();
         if(drive != null){
-            drive.setDriveTimeStatus(DriveTimeStatus.NOW);
+            drive.setDriveType(DriveType.NOW);
             userService.updateDriverStatus(DriverStatus.GOING_TO_LOCATION);
             driveRepository.save(drive);
             return drive.getStops();
@@ -286,6 +307,9 @@ public class DriveService {
     public String startDrive() {
         Drive drive = getCurrentDrive();
         if(drive != null){
+            drive.setDriveStatus(DriveStatus.DRIVE_STARTED);
+            drive.setStartDate(new Date());
+            driveRepository.save(drive);
             userService.updateDriverStatus(DriverStatus.BUSY);
             rideSimulationService.createRideSim(drive);
             return "Zapoceta nova voznja.";
@@ -295,7 +319,7 @@ public class DriveService {
 
     public Location getCarStartEndStop(Long id,boolean first) throws JsonProcessingException {
         Car c = carService.getCar(id);
-        for(Drive d: driveRepository.findByDriveTimeStatus(DriveTimeStatus.NOW)){
+        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getDriver().getCar().getId().equals(c.getId())){
                 ResponseRouteHelp route = new ObjectMapper().readValue(d.getRouteJSON(), ResponseRouteHelp.class);
                 ArrayList<ArrayList<Double>> coords = route.getMetadata().getQuery().getCoordinates();
@@ -309,7 +333,7 @@ public class DriveService {
 
     public Car getClientCurrentCar(){
         User user = userService.getLoggedIn();
-        for(Drive d: driveRepository.findByDriveTimeStatus(DriveTimeStatus.NOW)){
+        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
                 return d.getDriver().getCar();
             for(Passenger passenger:d.getPassengers()){
@@ -322,7 +346,7 @@ public class DriveService {
 
     public List<RealAddress> getClientCurrentDriveStops() {
         User user = userService.getLoggedIn();
-        for(Drive d: driveRepository.findByDriveTimeStatus(DriveTimeStatus.NOW)){
+        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
                 return d.getStops();
             for(Passenger passenger:d.getPassengers()){
@@ -333,7 +357,7 @@ public class DriveService {
         return new ArrayList<>();
     }
 
-    private List<User> makeUsersFromPassengersForNotification(Drive drive){
+    public List<User> makeUsersFromPassengersForNotification(Drive drive){
         List<User> users = new ArrayList<>();
         users.add(drive.getOwner().getUser());
         for(Passenger p: drive.getPassengers()){
@@ -345,11 +369,43 @@ public class DriveService {
     }
 
     public Drive getCarCurrentDrive(int id) {
-        for(Drive d: driveRepository.findByDriveTimeStatus(DriveTimeStatus.NOW)){
+        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getDriver().getCar().getId() == id){
                 return d;
             }
         }
         return null;
+
     }
+
+
+    public void notifyPassengers() {
+        Drive drive = getCurrentDrive();
+        if(drive != null){
+            notificationService.addNotificationMultiple(new Notification("Vozilo je stiglo", "Vase vozilo ceka.", null,""), makeUsersFromPassengersForNotification(drive));
+        }
+    }
+
+    public void cancelRide(String reason) {
+        Drive drive = getCurrentDrive();
+        if(drive != null){
+            notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
+            drive.setDriveStatus(DriveStatus.DRIVE_REJECTED);
+            driveRepository.save(drive);
+            userService.changeDriverStatus(drive.getDriver(), DriverStatus.AVAILABLE);
+            notificationService.addNotificationMultiple(new Notification(
+                            "Voznja otkazana",
+                            "Vozac " + drive.getDriver().getUser().getName() + " " + drive.getDriver().getUser().getSurname()+
+                            " je otkazao vonju zbog: " + reason + ".",
+                            null,
+                            ""
+                    ),userService.getAdmins()
+            );
+        }
+    }
+
+    public List<Drive> getAllDrives(){
+        return driveRepository.findAll();
+    }
+
 }

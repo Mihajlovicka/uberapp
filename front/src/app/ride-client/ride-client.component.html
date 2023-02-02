@@ -17,7 +17,7 @@
       </div>
       <div class="row">
         <h6 class="col" *ngIf="timeLeft!==0">Vreme do dolazka vozila: {{timeLeft}} min</h6>
-        <h6 class="col" *ngIf="timeLeft===0">Vozilo je doslo</h6>
+<!--        <h6 class="col" *ngIf="timeLeft===0">Vozilo je doslo</h6>-->
       </div>
       <div class="row">
         <div *ngIf="stops.length === 0; then thenBlockNext else elseBlockNext"></div>

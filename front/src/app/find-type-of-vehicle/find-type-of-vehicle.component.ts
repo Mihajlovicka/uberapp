@@ -2,7 +2,7 @@ import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angu
 import { MatAccordion } from '@angular/material/expansion';
 
 
-import { DriveReservationForm} from '../model/driveReservationForm.model';
+import { DriveReservationForm, PriceStart} from '../model/driveReservationForm.model';
 
 
 @Component({
@@ -13,6 +13,8 @@ import { DriveReservationForm} from '../model/driveReservationForm.model';
 export class FindTypeOfVehicleComponent implements OnInit {
 
   constructor() {}
+
+  
 
   @Input() drive:DriveReservationForm={
     stops: [],
@@ -28,8 +30,9 @@ export class FindTypeOfVehicleComponent implements OnInit {
     routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill:false,
-    date:''
+    splitBill: false,
+    date: '',
+    ownerDebit: 0
   }
 
   kids: string='clear';

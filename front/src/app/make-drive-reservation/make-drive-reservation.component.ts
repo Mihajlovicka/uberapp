@@ -3,7 +3,7 @@ import {FormBuilder, Validators} from '@angular/forms';
 import {STEPPER_GLOBAL_OPTIONS} from '@angular/cdk/stepper';
 
 import L from 'leaflet';
-import { DriveReservationForm} from '../model/driveReservationForm.model';
+import { DriveReservationForm, PriceStart} from '../model/driveReservationForm.model';
 import { MatStepper } from '@angular/material/stepper';
 import {DatePipe, formatDate} from "@angular/common";
 
@@ -34,15 +34,18 @@ export class MakeDriveReservationComponent implements OnInit {
     passengers: [],
     seats: 5,
     baby: 0,
-    babySeats:0,
-    pets:0,
+    babySeats: 0,
+    pets: 0,
     owner: null,
-    routeJSON:{},
+    routeJSON: {},
     //driver:null,
     //driveStatus: DriveStatus.PASSENGERS_WAITING,
-    splitBill:false,
-    date: ''
+    splitBill: false,
+    date: '',
+    ownerDebit: 0
   }
+
+  starting_price: number = 0;
 
   @ViewChild('stepper') stepper: MatStepper|undefined;
 
@@ -79,6 +82,14 @@ export class MakeDriveReservationComponent implements OnInit {
 
   }
 
+  setStartPrice(){
+    if(this.currentDrive.seats === 4)this.starting_price=PriceStart.seats4;
+    if(this.currentDrive.seats === 5)this.starting_price=PriceStart.seats5;
+    if(this.currentDrive.seats === 6)this.starting_price=PriceStart.seats6;
+    if(this.currentDrive.seats === 7)this.starting_price=PriceStart.seats7;
+    if(this.currentDrive.seats === 8)this.starting_price=PriceStart.seats8;
+    if(this.currentDrive.seats === 9)this.starting_price=PriceStart.seats9;
+  }
 
   setDriveValues(drive: DriveReservationForm){
     this.currentDrive.distance = drive.distance;
@@ -86,6 +97,9 @@ export class MakeDriveReservationComponent implements OnInit {
     this.currentDrive.price = drive.price;
     this.currentDrive.seats = drive.seats;
 
+    this.currentDrive = drive;
+
+    this.setStartPrice();
     console.log(this.currentDrive);
   }
 

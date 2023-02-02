@@ -1,8 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Drive;
-import com.example.demo.model.DriveTimeStatus;
-import com.example.demo.model.DriverStatus;
+import com.example.demo.model.DriveType;
 import com.example.demo.model.DriversAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,5 +11,5 @@ public interface DriveRepository extends JpaRepository<Drive, Long> {
 
     List<Drive> findByDriver(DriversAccount driver);
 
-    List<Drive> findByDriveTimeStatus(DriveTimeStatus driveTimeStatus);
+    List<Drive> findByDriveType(DriveType driveType);
 }

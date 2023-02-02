@@ -1,14 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DriveReservationForm } from '../model/driveReservationForm.model';
+import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 
 @Component({
-  selector: 'app-selected-vehicle-type',
-  templateUrl: './selected-vehicle-type.component.html',
-  styleUrls: ['./selected-vehicle-type.component.css']
+  selector: 'app-drive-bill',
+  templateUrl: './drive-bill.component.html',
+  styleUrls: ['./drive-bill.component.css']
 })
-export class SelectedVehicleTypeComponent implements OnInit {
+export class DriveBillComponent implements OnInit {
 
   constructor() { }
+
+  @Input() starting_price: PriceStart = PriceStart.seats5;
+
 
   @Input() drive:DriveReservationForm = {
     stops: [],

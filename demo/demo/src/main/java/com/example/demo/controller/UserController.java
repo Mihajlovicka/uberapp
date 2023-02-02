@@ -95,7 +95,7 @@ public class UserController {
         try {
             ClientsAccount ca = userService.getClient(email);
             if(ca.getPicture()==null) ca.setPicture(new Image());
-            else ca.getPicture().setPicByte(ImageService.decompressBytes(ca.getPicture().getPicByte()));
+            //else ca.getPicture().setPicByte(ImageService.decompressBytes(ca.getPicture().getPicByte()));
             ClientAccountDTO clientAccountDTO = userConverter.toDTO(ca);
             return new ResponseEntity(clientAccountDTO, HttpStatus.OK);
         } catch (RuntimeException e) {
@@ -253,7 +253,7 @@ public class UserController {
 
 
         Image image = imageService.savePicture(file, email);
-        image.setPicByte(ImageService.decompressBytes(image.getPicByte()));
+        //image.setPicByte(ImageService.decompressBytes(image.getPicByte()));
         if(image != null)
             return new ResponseEntity(userConverter.toDTO(image), HttpStatus.OK);
         else
