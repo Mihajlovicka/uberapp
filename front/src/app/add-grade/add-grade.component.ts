@@ -31,7 +31,7 @@ export class AddGradeComponent implements OnInit {
     gradeDriver:0,
     gradeCar:0,
     comment:"",
-    gradeStatus: GradeStatus.WAITING_FOR_GRADE,
+    gradeStatus: GradeStatus.GRADED,
     rater: {
       username:'',
       name:'',

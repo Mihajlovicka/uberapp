@@ -63,8 +63,65 @@
       </div>
     </div>
     <div class="data col" *ngIf="drive!==undefined">
+
       <div class="row">
-        <h3 class="col">Voznja</h3>
+        <h5 class="col">Informacije o voznji</h5>
+      </div>
+      <div class="row">
+        <mat-card-content>
+          <div style="margin: 0 auto;">
+            <ul style="list-style: none; margin:0 auto">
+              <mat-card class="example-card">
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">calendar_month</span>
+                      </div>
+                    </div>
+                    <div class="col-md-11 col-sm-11">
+                      <p><small><strong>Datum voznje: {{drive.endDate?drive.endDate.slice(0,11):""}}</strong></small></p>
+                    </div>
+                  </div>
+                </li>
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">schedule</span>
+                      </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5">
+                      <p><small><strong>Pocetak voznje: {{drive.startDate?drive.startDate.slice(11):""}}</strong></small></p>
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">schedule</span>
+                      </div>
+                    </div>
+                    <div class="col-md-5 col-sm-5">
+                      <p><small><strong>Pocetak voznje: {{drive.endDate?drive.endDate.slice(11):""}}</strong></small></p>
+                    </div>
+                  </div>
+                </li>
+
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">payments</span>
+                      </div>
+                    </div>
+                    <div class="col-md-8 col-sm-8">
+                      <p><small><strong>Cena voznje: {{drive.price.toFixed(2)}} RSD</strong></small></p>
+                    </div>
+                  </div>
+                </li>
+              </mat-card>
+            </ul>
+          </div>
+
+        </mat-card-content>
       </div>
 
       <div class="row">
@@ -151,33 +208,6 @@
 
                   </li>
                 </mat-card-content>
-              </mat-card>
-            </ul>
-          </div>
-
-        </mat-card-content>
-      </div>
-      <div class="row">
-        <h5 class="col">Informacije</h5>
-      </div>
-      <div class="row">
-        <mat-card-content>
-          <div style="margin: 0 auto;">
-            <ul style="list-style: none; margin:0 auto">
-              <mat-card class="example-card">
-                <li style="list-style: none;font-size: 16px;">
-                  <div class="row">
-                    <div class="col-md-1 col-sm-1">
-                      <div class="row" style="margin:0 auto">
-                        <span class="material-icons" style="color:#673ab7;">credit_card</span>
-                        <span class="material-icons" style="color:#673ab7;">payments</span>
-                        <span class="material-icons" style="color:#673ab7;">paid</span>
-                      </div>
-                    </div>
-                    <div class="col-md-8 col-sm-8">
-                      <p><small><strong>Cena voznje: {{drive.price}} RSD</strong></small></p>
-                    </div>
-                  </div>
               </mat-card>
             </ul>
           </div>

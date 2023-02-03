@@ -10,17 +10,25 @@ import {Router} from "@angular/router";
 export class HeaderComponent implements OnInit {
 
   numberOfNotifications: any = "";
+  numberOfMessages: any = "";
+  role: string|null = "";
   @Output() openNotifications = new EventEmitter<boolean>();
+  @Output() openSupportChat = new EventEmitter<boolean>();
   constructor(
     public service: UserAuthService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+  this.role = this.service.getRole();
   }
 
   public isLoggedIn(){
     return this.service.isLoggedIn();
+  }
+
+  public isAdmin(){
+    return this.service.getRole() == "ROLE_ADMINISTRATOR";
   }
 
   public logout(){
@@ -31,8 +39,17 @@ export class HeaderComponent implements OnInit {
   public openAllNotifications(){
     this.openNotifications.emit(true);
   }
+  public openSupport(){
+
+    this.openSupportChat.emit(true);
+  }
+
   setNumberOfNotifications(num:number){
     this.numberOfNotifications = num===0?"":num;
+
+  }
+  setNumberOfMessages(num:number){
+    this.numberOfMessages = num===0?"":num;
 
   }
 

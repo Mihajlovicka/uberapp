@@ -1,4 +1,4 @@
-import {AfterViewChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {Role, Status, User} from "../model/user.model";
 import {Message} from "../model/message.model";
 import {AppService} from "../app.service";
@@ -15,6 +15,7 @@ export class MessagesClientComponent implements OnInit,AfterViewChecked {
 
   // @ts-ignore
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @Output() messagesNumber = new EventEmitter<number>();
 
   private stompClient: any;
   logged_user: User = {
@@ -96,7 +97,7 @@ export class MessagesClientComponent implements OnInit,AfterViewChecked {
     this.appService.getMessagesForUser(this.logged_user.email).subscribe((resp: Message[]) => {
       this.messages = resp;
       console.log(resp);
-
+      this.getNumberOfUnopenedMessages();
     });
   }
   initializeWebSocketConnection() {
@@ -136,5 +137,12 @@ export class MessagesClientComponent implements OnInit,AfterViewChecked {
       this.scrollToElement();
     }
     this.message='';
+  }
+  public getNumberOfUnopenedMessages(){
+    let number:number = 0
+    for (let message of this.messages) {
+      if(!message.read) number++;
+    }
+    this.messagesNumber.emit(number);
   }
 }

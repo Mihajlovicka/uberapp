@@ -155,6 +155,12 @@ import { Stop } from "./model/stop.model";
   public openNotification(id:bigint):Observable<any>{
     return this.http.post("http://localhost:8080/api/openNotification",id,this.httpOptions).pipe(catchError(this.handleError<any>()));
   }
+  public openMessages():Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessage",{},this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
+  public openMessagesForChat(chat:string):Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessageForChat",chat,this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
   public getMessagesForUser(email:string): Observable<Message[]>{
     return this.http.get<Message[]>(`http://localhost:8080/api/getMessages?email=`+email).pipe(catchError(this.handleError<Message[]>()));
   }

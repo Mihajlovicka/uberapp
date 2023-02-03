@@ -1,31 +1,42 @@
-<div class="container" style="max-height: 650px;">
+<div >
 
-  <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white"> <div class="d-flex align-items-center flex-shrink-0 p-3 Link-dark text-decoration-none border-bottom">
+  <div style="border-top-left-radius: 5px; border-top:2px solid; border-left: 2px solid;" class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white">
+    <div class="d-flex border-bottom align-items-center flex-shrink-0 p-3 Link-dark text-decoration-none">
+      <mat-card-title>Admin</mat-card-title>
+    </div>
 
-    <input name="usernameInput" class="fs-5 fw-semibold" [(ngModel)]="username">
+    <div class="list-group list-group-flush scrollbar overflow-auto" #scrollMe [scrollTop]="scrollMe.clientHeight" style="height: 100%">
+      <div class="list-group-item-action" *ngFor="let msg of messages" style="padding-bottom: 5px; padding-top: 5px;">
 
-  </div>
+        <div *ngIf="msg.sender.email!=logged_user.email" style="width:fit-content; max-width: 75%; min-width: 30%; padding-left: 10px;">
 
-    <div class="list-group list-group-flush border-bottom scrollbar overflow-auto" #scrollMe [scrollTop]="scrollMe.clientHeight" style="min-height: 492px;max-height: 492px;">
-      <div class="list-group-item list-group-item-action py-3 lh-tight" *ngFor="let msg of messages">
-
-        <div *ngIf="msg.sender.email!=logged_user.email" class="w-75">
-          <div class=" align-items-left float-left" >
-
+          <div class="d-block" style="background-color: #dddddd; border-radius: 9px; border-bottom-left-radius: 0px;  padding-bottom:0px;padding-top:5px;padding-right:10px;padding-left:10px;">
             <strong class="mb-1">Admin</strong>
 
+            <p style="margin-top: 7px;">{{msg.message}}</p>
+            <p style="text-align: right;" *ngIf="!msg.read">
+              <mat-icon  style="font-size: 20px; color: #888888">done_all</mat-icon>
+            </p>
+            <p style="text-align: right;" *ngIf="msg.read">
+            <mat-icon  style="font-size: 20px; color: #000000">done_all</mat-icon>
+          </p>
           </div>
-          <br>
-          <div class="mb-1 small float-left">{{msg.message}}</div>
+
         </div>
-        <div *ngIf="msg.sender.email==logged_user.email" style="text-align: right" class="w-75 float-right">
-          <div class=" align-items-right float-right" >
+        <div *ngIf="msg.sender.email==logged_user.email" style="text-align: right; width: fit-content; max-width: 75%; min-width: 30%; padding-right: 10px;" class="float-right">
+
+          <div class="d-block" style="background-color: #dddddd; border-radius: 9px; border-bottom-right-radius: 0px; padding-bottom:0px;padding-top:5px;padding-right:10px;padding-left:10px;">
 
             <strong class="mb-1">{{msg.sender.name + " " + msg.sender.surname}}</strong>
-
+            <p style="margin-top: 7px;">{{msg.message}}</p>
+            <p style="text-align: right;" *ngIf="!msg.read">
+              <mat-icon  style="font-size: 20px; color: #888888">done_all</mat-icon>
+            </p>
+            <p style="text-align: right;" *ngIf="msg.read">
+              <mat-icon  style="font-size: 20px; color: #000000">done_all</mat-icon>
+            </p>
           </div>
-          <br>
-          <div class="mb-1 small float-right">{{msg.message}}</div>
+
         </div>
       </div>
 
@@ -35,7 +46,7 @@
 
   <form (submit)="submit()">
 
-    <input name="messageInput" class="form-control" placeholder="Write a message" [(ngModel)]="message"/>
+    <input name="messageInput" class="form-control" placeholder="Napisite poruku i pritisnite Enter..." [(ngModel)]="message"/>
 
   </form>
 
