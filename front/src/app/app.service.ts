@@ -12,18 +12,14 @@ import {ErrorDialogComponent} from "./dialog-template/error-dialog/error-dialog.
 import {Image} from "./model/image.model";
 import {FavoriteRide} from "./model/favoriteRide.model";
 import {PasswordChange} from "./model/passwordChange.model";
-
 import {Message} from "./model/message.model";
 import {UsersChatDisplay} from "./model/usersChatDisplay.model";
 import {Notification} from "./model/notification.model";
-
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
 import { BankTransaction } from "./model/bankTransaction.model";
 import { BankAccount } from "./model/bankAccount.model";
-
 import {Grade} from "./model/grade.model";
-
 import {MapAddress} from "./model/mapAddress.model";
 import {Vehicle} from "./model/Vehicle";
 import { Stop } from "./model/stop.model";
@@ -58,6 +54,8 @@ import { Stop } from "./model/stop.model";
     private acceptPaymentUrl = "http://localhost:8080/bank/acceptTransaction/";
     private declinePaymentUrl = "http://localhost:8080/bank/declineTransaction/";
     private getClientsBankAccountUrl = "http://localhost:8080/api/getClientsBankAccount/";
+    private acceptDriveParticipationUrl = "http://localhost:8080/api/acceptDrive/";
+    private declineDriveParticipationUrl = "http://localhost:8080/api/declineDrive/";
 
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -89,10 +87,18 @@ import { Stop } from "./model/stop.model";
   currentData = this.dataSubject.asObservable();
 
 
-  constructor(private http: HttpClient,
-              public dialog: MatDialog) {
+  constructor(private http: HttpClient, public dialog: MatDialog) {}
 
+  acceptDriveParticipation(id: number){
+    return this.http.post<Drive>(`${this.acceptDriveParticipationUrl + id}`, this.httpOptions).pipe(
+      catchError(this.handleError<Drive>())
+    )
+  }
 
+  declineDriveParticipation(id: number){
+    return this.http.post<Drive>(`${this.declineDriveParticipationUrl + id}`, this.httpOptions).pipe(
+      catchError(this.handleError<Drive>())
+    )
   }
 
   getClientsBankAccount(email: string){
@@ -260,10 +266,6 @@ import { Stop } from "./model/stop.model";
        return this.http.get<User>(`${this.getLoggedUserUrl}`).pipe(
          catchError(this.handleError<User>()));
      }
-
-
-
-
 
   setData(data: DriverCarInfo) {
     this.dataSubject.next(data);

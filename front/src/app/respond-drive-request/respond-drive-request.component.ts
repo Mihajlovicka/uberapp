@@ -5,6 +5,7 @@ import { CarBodyType, Fuel } from '../model/car.model';
 import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
 import {Drive, DriveStatus, DriveType} from '../model/drive.model';
 import { DriverStatus } from '../model/driversAccount.model';
+import { DrivePassengerStatus } from '../model/passenger.model';
 import { Role, Status } from '../model/user.model';
 
 @Component({
@@ -15,6 +16,8 @@ import { Role, Status } from '../model/user.model';
 export class RespondDriveRequestComponent implements OnInit {
 
   driveId: number=0;
+
+  loggedPassengerParticipationStatus: DrivePassengerStatus = DrivePassengerStatus.WAITING;
 
   logged:ClientsAccount={
     user: {
@@ -47,7 +50,7 @@ export class RespondDriveRequestComponent implements OnInit {
   }
 
   drive: Drive={
-    id:0,
+    id: 0,
     stops: [],
     distance: 0,
     duration: 0,
@@ -113,14 +116,15 @@ export class RespondDriveRequestComponent implements OnInit {
         numOfSeats: 5
       },
       driverStatus: DriverStatus.AVAILABLE,
-      driversAvailability:true
+      driversAvailability: true
     },
     date: '',
     splitBill: false,
     ownerDebit: 0,
     driveType: DriveType.NOW,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    ownerTransactionId: -1
   }
 
   constructor(private route: ActivatedRoute, private service: AppService) { }
@@ -148,11 +152,40 @@ export class RespondDriveRequestComponent implements OnInit {
     )
   }
 
+  getLoggedParticipationStatus(){
+    this.drive.passengers.forEach(passenger => {
+      if(passenger.passengerEmail===this.logged.user.email)this.loggedPassengerParticipationStatus = passenger.contribution;
+    });
+  }
+
   getLoggedIn(){
     this.service.getLogged().subscribe((resp: ClientsAccount) =>{
         this.logged = resp;
         console.log(this.logged);
+        this.getLoggedParticipationStatus();
+        console.log(this.loggedPassengerParticipationStatus);
     }
+    )
+  }
+
+  //promeniti u html-u da moze da vidi samo ako mu je contribution na wait
+
+
+  acceptDriveParticipation(){
+    this.service.acceptDriveParticipation(this.driveId).subscribe(
+      (resp: Drive) => {
+        this.drive = resp;
+        console.log(this.drive);
+      })
+    
+  }
+
+  declineDriveParticipation(){
+    this.service.declineDriveParticipation(this.driveId).subscribe(
+      (resp: Drive) => {
+        this.drive = resp;
+        console.log(this.drive);
+      }
     )
   }
 

@@ -7,6 +7,8 @@ import com.example.demo.dto.DriveDTO;
 
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.exception.NotDrivePassengerException;
+import com.example.demo.exception.TransactionIdDoesNotExistException;
 import com.example.demo.model.*;
 import com.example.demo.service.DriveService;
 import com.example.demo.service.UserService;
@@ -40,9 +42,15 @@ public class DriveController {
     DriveConverter driveConverter;
 
 
+    @PostMapping(value="api/acceptDrive/{id}")
+    public ResponseEntity acceptDriveParticipation(@PathVariable Long id) throws EmailNotFoundException, DriveNotFoundException, NotDrivePassengerException, URISyntaxException, IOException, TransactionIdDoesNotExistException, InterruptedException {
+        return new ResponseEntity(driveConverter.toDTO(driveService.acceptDriveParticipation(id)), HttpStatus.OK);
+    }
 
-    //@PatchMapping(value="api/acceptDrive/{id}")
-    //public ResponseEntity acceptDriveParticipation(@PathVariable Long id){
+    @PostMapping(value="api/declineDrive/{id}")
+    public ResponseEntity declineDriveParticipation(@PathVariable Long id) throws DriveNotFoundException, NotDrivePassengerException, TransactionIdDoesNotExistException {
+        return new ResponseEntity(driveConverter.toDTO(driveService.declineDriveParticipation(id)), HttpStatus.OK);
+    }
 
 
     @GetMapping(value="api/getDrive/{id}")

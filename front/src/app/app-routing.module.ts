@@ -16,24 +16,21 @@ import {DriverProfileViewComponent} from "./driver-profile-view/driver-profile-v
 import {MapComponent} from "./map/map.component";
 import {AddClientsIntoDriveComponent} from "./add-clients-into-drive/add-clients-into-drive.component";
 import {MakeDriveReservationComponent} from "./make-drive-reservation/make-drive-reservation.component";
-
 import {MessagesAdminComponent} from "./messages-admin/messages-admin.component";
 import {MessagesClientComponent} from "./messages-client/messages-client.component";
-
 import {FavoriteRoutesComponent} from "./favorite-routes/favorite-routes.component";
 import { SelectedVehicleTypeComponent } from './selected-vehicle-type/selected-vehicle-type.component';
 import { PaymentComponent } from './payment/payment.component';
-
 import {DriveHistoryClientComponent} from "./drive-history-client/drive-history-client.component";
 import {DriveHistoryDriverComponent} from "./drive-history-driver/drive-history-driver.component";
 import {AddGradeComponent} from "./add-grade/add-grade.component";
-
 import {RidesDriverComponent} from "./rides-driver/rides-driver.component";
 import {RideClientComponent} from "./ride-client/ride-client.component";
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
 import { RespondToPaymentRequestComponent } from './respond-to-payment-request/respond-to-payment-request.component';
 import {DriveViewComponent} from "./drive-view/drive-view.component";
 import {ReportsComponent} from "./reports/reports.component";
+import { DriveChangedReviewComponent } from './drive-changed-review/drive-changed-review.component';
 
 
 const routes: Routes = [
@@ -59,16 +56,15 @@ const routes: Routes = [
   {path: 'messages-client',component:MessagesClientComponent},
   {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
   {path :"passenger/confirmPayment/:id", component: RespondToPaymentRequestComponent},
-
   {path: 'drive-history-client',component:DriveHistoryClientComponent},
   {path: 'drive-history-driver',component:DriveHistoryDriverComponent},
   {path: 'drive-rating',component:AddGradeComponent},
-
   {path: 'rides-dr',component:RidesDriverComponent,  canActivate:[AuthGuard], data:{role:'ROLE_DRIVER'}},
   {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
   {path: "drive/:id", component:DriveViewComponent},
-  {path: "reports", component:ReportsComponent}
+  {path: "reports", component:ReportsComponent},
+  {path: "driveChanged/:id", component: DriveChangedReviewComponent}
 
 ];
 

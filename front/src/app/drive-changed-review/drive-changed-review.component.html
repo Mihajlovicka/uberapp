@@ -1,9 +1,8 @@
-<div class="col-md-6" style="margin: 0 auto; margin-top:2%; margin-bottom:5%;">
-<mat-card class="example-card " >
+<mat-card class="example-card col-md-6" style="margin: 0 auto">
     <mat-card-header>
       <mat-card-title>Informacije o voznji</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content >
         <div style="margin: 0 auto;">
         <ul style="list-style: none;">
             <mat-card class="example-card">
@@ -475,14 +474,15 @@
             </li>
             
         </ul>
+
         <div  style="margin: 0 auto">
             <ul style="list-style: none; font-size:10px"> 
         
-                 <mat-card >
-                  
+                 <mat-card *ngIf="this.drive.passengers.length !== 0 && this.drive.ownerDebit !== this.drive.price">
+                   
                     <mat-card-content>
                         <li *ngFor="let participant of this.drive.passengers" style="font-size: 20px;">
-                            <div class="row" *ngIf="participant.passengerEmail!==this.logged.user.email">
+                            <div class="row" *ngIf="participant.contribution!=='REJECTED'">
                                 <div class="col-lg-1 col-md-1 col-sm-1" >
                         
                                     <div class="row" style="margin:0 auto">
@@ -495,9 +495,14 @@
                                     <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
                                 </div>
         
-                                
-                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
-                                    <label><small>zaduzenje: <strong>{{participant.debit}} RSD</strong></small></label>
+                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===false && participant.payingEnabled===true">
+                                   <label><small>zaduzenje: <strong>0 RSD</strong></small></label>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true && participant.payingEnabled===true">
+                                    <label><small>zaduzenje: <strong>{{participant.debit.toFixed(2)}} RSD</strong></small></label>
+                                 </div>
+                                 <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="participant.payingEnabled===false">
+                                    <label><small>zaduzenje: <strong>nema racun</strong></small></label>
                                  </div>
         
                                 <div class="col-lg-2 col-md-2 col-sm-2">
@@ -508,38 +513,13 @@
         
                             
                         </li>
-                        <li style="font-size: 20px;">
-                            <div class="row">
-                                <div class="col-lg-1 col-md-1 col-sm-1" >
-                        
-                                    <div class="row" style="margin:0 auto">
-                                        <span  class="material-icons" style="color:#673ab7; width: max-content;">person</span>
-                                        
-                                    </div>
-                                </div>
-            
-                                <div class="col-lg-4 col-md-4 col-sm-4">
-                                    <p><small><strong>{{drive.owner.user.name}} {{drive.owner.user.surname}}</strong></small></p>
-                                </div>
-        
-                                
-                                <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
-                                    <label><small>zaduzenje: <strong>{{drive.ownerDebit}} RSD</strong></small></label>
-                                 </div>
-        
-                                <div class="col-lg-2 col-md-2 col-sm-2">
-                                    <p><small>vlasnik</small></p>
-                                </div>
-                      
-                            </div>
-                        </li>
-
                     </mat-card-content>
                
             </mat-card>
             </ul>
         </div>
         
+     
         <br>
         <div style="margin:0 auto">
             <ul style="list-style: none;">
@@ -548,39 +528,35 @@
                         <div class="col-md-7 col-lg-7 col-sm-7">
                             <label >Vase zaduzenje: </label>
                         </div>
-                       
-                        <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === true">
-                            <label ><strong>{{drive.ownerDebit}} RSD</strong></label>
-                        </div>
+                           
                         <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === false">
-                            <label ><strong>0 RSD</strong></label>
+                            <label ><strong>{{this.drive.price}} RSD</strong></label>
+                        </div>
+                           
+                        <div class="col-md-5 col-lg-5 col-sm-5" *ngIf="this.drive.splitBill === true">
+                            <label ><strong>{{this.drive.ownerDebit}} RSD</strong></label>
                         </div>
         
                     </mat-card-header>
-                   
         
                 </mat-card>
         
             </ul>
-        </div>
-       
+        </div>       
 
     </div>
 
     </mat-card-content>
-  
 
-     <mat-card-actions>
-        
-           
-       
-        
+
+    <mat-card-footer></mat-card-footer>
+
+    
+
+    <mat-card-actions style="display: flex; justify-content: space-between;">
+      <button mat-raised-button type="button" color="primary">Nastavi voznju</button>
+      <button mat-raised-button type="button" color="secondary">Otkazi voznju</button>
+
     </mat-card-actions>
     
-    
 </mat-card>
-<br>
-<button style="float: right;" mat-raised-button type="button" color="primary" (click)="this.acceptDriveParticipation()">Prihvatam voznju</button>
-<button style="float: left;" mat-raised-button type="button" color="secondary" (click)="this.declineDriveParticipation()">Odbijam voznju</button>
-
-</div>

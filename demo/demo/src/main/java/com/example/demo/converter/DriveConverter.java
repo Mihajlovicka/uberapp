@@ -45,6 +45,7 @@ public class DriveConverter {
         if(drive.getEndDate()!=null)
             dto.setEndDate(dateFormat.format(drive.getEndDate()));
         dto.setDate(dateFormat.format(drive.getDate()));
+        dto.setOwnerTransactionId(drive.getOwnerTransactionId());
 
         return dto;
     }

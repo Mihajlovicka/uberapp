@@ -72,7 +72,13 @@ public class NotificationService {
     };
 
 
-    public void notifyAboutPayment(Set<Passenger> passengers, Long id){
+    //promeniti url jer se ovo koristi za ownera
+    //problem je jer ovde saljemo id drive
+    //a on transactional drive
+    //i onda kurcina
+    //tkd ownera ne diraj koancno radi
+    //ovo menjaj jbg
+    /**public void notifyAboutPayment(Set<Passenger> passengers, Long id){
         for (Passenger passenger: passengers){
             if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED) && !passenger.getPayment().equals(PaymentPassengerStatus.REJECTED) && !passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING) && passenger.isPayingEnabled()){
                 addNotification(new Notification(
@@ -82,9 +88,17 @@ public class NotificationService {
                         "/passenger/accept-payment/"+id));
             }
         }
+    }**/
+
+
+
+    public void notifyOwnerDriveChanged(Long driveId, User ownerUser){
+        addNotification(new Notification(
+                "Nova voznja",
+                "Cao!"+" Pojedini putnici su otkazali prisustvo. Kliknite da odobrite voznju.",
+                ownerUser,
+                "/driveChanged/"+driveId));
     }
-
-
 
     public void addNotificationMultiple(Notification notification, List<User> users){
         for(User user : users){

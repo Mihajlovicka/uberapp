@@ -43,11 +43,12 @@ public class DriveDTO {
 
     private DriveType driveType;
 
+    private Long ownerTransactionId;
     public DriveDTO(){
 
     }
 
-    public DriveDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String date, Double ownerDebit, String startDate, String endDate, DriveType driveType) {
+    public DriveDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String date, Double ownerDebit, String startDate, String endDate, DriveType driveType, Long ownerTransactionId) {
         this.stops = stops;
         this.distance = distance;
         this.duration = duration;
@@ -67,6 +68,7 @@ public class DriveDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.driveType = driveType;
+        this.ownerTransactionId = ownerTransactionId;
     }
 
     public DriveType getDriveType() {
@@ -219,5 +221,13 @@ public class DriveDTO {
 
     public void setOwnerDebit(Double ownerDebit) {
         this.ownerDebit = ownerDebit;
+    }
+
+    public Long getOwnerTransactionId() {
+        return ownerTransactionId;
+    }
+
+    public void setOwnerTransactionId(Long ownerTransactionId) {
+        this.ownerTransactionId = ownerTransactionId;
     }
 }

@@ -76,6 +76,7 @@ import { RideClientComponent } from './ride-client/ride-client.component';
 import { CancelDriveReasonDialogComponent } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
 import { DriveViewComponent } from './drive-view/drive-view.component';
 import { ReportsComponent } from './reports/reports.component';
+import { DriveChangedReviewComponent } from './drive-changed-review/drive-changed-review.component';
 
 
 @NgModule({
@@ -124,6 +125,7 @@ import { ReportsComponent } from './reports/reports.component';
     CancelDriveReasonDialogComponent,
     DriveViewComponent,
     ReportsComponent,
+    DriveChangedReviewComponent,
   ],
   imports: [
         BrowserModule,

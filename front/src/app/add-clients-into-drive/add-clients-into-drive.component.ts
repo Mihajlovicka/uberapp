@@ -93,7 +93,8 @@ export class AddClientsIntoDriveComponent implements OnInit {
         contribution: DrivePassengerStatus.WAITING,
         payment: PaymentPassengerStatus.NOT_PAYING,
         debit:0,
-        payingEnabled: false
+        payingEnabled: false,
+        transactionId: -1
       }
       if(client.bankStatus===BankStatus.ACTIVE){
         created.payingEnabled=true;
