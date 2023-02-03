@@ -87,17 +87,36 @@ public class DriveService {
     }
 
 
-    public List<Drive> getDrivesForUser(String email) throws EmailNotFoundException {
+
+    public List<Drive> getDrivesForUser(String email, boolean past) throws EmailNotFoundException {
         List<Drive> drives = new ArrayList<Drive>();
         User user = userService.getByEmail(email);
         for(Drive drive : driveRepository.findAll()){
             if(user.getRole().getName().equals("ROLE_CLIENT")) {
                 if (drive.getOwner().getUser().getEmail().equals(email)) {
-                    drives.add(drive);
+                    if(!past) {
+                        drives.add(drive);
+                    }
+                    else{
+                        if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                            drives.add(drive);
+                        }
+                    }
                 } else {
                     for (Passenger passenger : drive.getPassengers()) {
                         if (passenger.getPassengerEmail().equals(email)) {
-                            drives.add(drive);
+                            if(!past) {
+                                drives.add(drive);
+                            }
+                            else{
+                                if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                        drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                        drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                    drives.add(drive);
+                                }
+                            }
                         }
                     }
                 }
@@ -105,7 +124,16 @@ public class DriveService {
             else{
                 if(drive.getDriver() != null) {
                     if (drive.getDriver().getUser().getEmail().equals(email)) {
-                        drives.add(drive);
+                        if(!past) {
+                            drives.add(drive);
+                        }
+                        else{
+                            if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                    drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                    drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                drives.add(drive);
+                            }
+                        }
                     }
                 }
             }

@@ -1,3 +1,5 @@
+<h4 align="center" style="margin-top: 15px; margin-bottom: 15px;">Istorija voznji</h4>
+
 <table (matSortChange)="sortData($event)" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
   <ng-container
     *ngFor="let column of columns"
@@ -5,7 +7,7 @@
 
   >
     <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
-    <td mat-cell *matCellDef="let row" (click)="ispisi(row);">{{column.cell(row)}}</td>
+    <td mat-cell *matCellDef="let row" (click)="openDrive(row);">{{column.cell(row)}}</td>
   </ng-container>
 
 

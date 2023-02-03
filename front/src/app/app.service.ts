@@ -185,6 +185,9 @@ import { Stop } from "./model/stop.model";
   public getAllDrivesClient(email:string): Observable<Drive[]>{
     return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
   }
+  public getAllPastDrivesClient(email:string): Observable<Drive[]>{
+    return this.http.get<Drive[]>(`http://localhost:8080/api/getPastDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
+  }
 
 
   public addDriverCarAccount(addForm: DriverCarInfo): Observable<DriversAccount> {

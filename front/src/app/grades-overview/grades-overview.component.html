@@ -75,6 +75,7 @@
 </div>
 <div mat-dialog-actions style="margin: 0 auto;">
 
-    <button mat-raised-button color="primary" style="margin:0 auto" (click)="onNoClick();">Zatvori</button>
+  <button mat-raised-button color="primary" style="margin:0 auto" (click)="onNoClick();">Zatvori</button>
+  <button *ngIf="!isGraded();" mat-raised-button color="primary" style="margin:0 auto" (click)="addGrade();">Dodaj ocenu</button>
 
 </div>

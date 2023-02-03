@@ -30,6 +30,12 @@ export class HeaderComponent implements OnInit {
   public isAdmin(){
     return this.service.getRole() == "ROLE_ADMINISTRATOR";
   }
+  public isClient(){
+    return this.service.getRole() == "ROLE_CLIENT";
+  }
+  public isDriver(){
+    return this.service.getRole() == "ROLE_DRIVER";
+  }
 
   public logout(){
     this.service.clear();

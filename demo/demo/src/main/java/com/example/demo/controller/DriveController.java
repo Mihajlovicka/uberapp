@@ -76,7 +76,14 @@ public class DriveController {
     public ResponseEntity getDrives(@RequestParam String email) throws EmailNotFoundException {
 
 
-        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email,false)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/getPastDrivesClient")
+    public ResponseEntity getPastDrives(@RequestParam String email) throws EmailNotFoundException {
+
+
+        return new ResponseEntity(driveService.getDrivesForUser(email,true), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")

@@ -22,6 +22,38 @@
 
     <button mat-raised-button color="primary" style="margin-left:8px" routerLink="/register" *ngIf="! isLoggedIn()">Registracija</button>
 
-    <button mat-raised-button color="primary" *ngIf="isLoggedIn()" (click)="logout()">Odjava</button>
+    <button mat-button [matMenuTriggerFor]="clientMenu" *ngIf="isLoggedIn() && isClient()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #clientMenu="matMenu">
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/make-drive-reservation">Nova voznja</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-client">Istorija voznji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/clientProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="driverMenu" *ngIf="isLoggedIn() && isDriver()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #driverMenu="matMenu">
+
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-driver">Istorija voznji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/driversProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="adminMenu" *ngIf="isLoggedIn() && isAdmin()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #adminMenu="matMenu">
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/make-drive-reservation">Nova voznja</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-client">Istorija voznji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/clientProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
   </form>
 </nav>
