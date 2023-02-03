@@ -374,4 +374,8 @@ import { Stop } from "./model/stop.model";
   changeAvailability():Observable<any> {
     return this.http.post<any>(this.host + "/changeAvailability" , this.httpOptions).pipe()
   }
+
+  getAllDrives() {
+    return this.http.get<Drive[]>(this.host + "/getAllDrives").pipe(catchError(this.handleError<Drive[]>()));
+  }
 }

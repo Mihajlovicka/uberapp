@@ -106,6 +106,7 @@ export class AddGradeComponent implements OnInit {
           color: ''
         },
         driverStatus: DriverStatus.AVAILABLE,
+        driversAvailability:true
       },
       date: '',
       splitBill: false,

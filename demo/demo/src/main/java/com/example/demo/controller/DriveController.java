@@ -151,4 +151,10 @@ public class DriveController {
         return new ResponseEntity(driveService.getDrive(driveId), HttpStatus.OK);
 
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @GetMapping(value = "/getAllDrives")
+    public ResponseEntity getAllDrives() {
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getAllDrives()), HttpStatus.OK);
+    }
 }

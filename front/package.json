@@ -24,6 +24,7 @@
     "@here/maps-api-for-javascript": "^1.37.0",
     "@types/socket.io": "^3.0.2",
     "angular-material": "^0.8.0",
+    "angular2-chartjs": "^0.5.1",
     "bootstrap": "^4.6.2",
     "core-js": "2.5.1",
     "font-awesome": "^4.7.0",
