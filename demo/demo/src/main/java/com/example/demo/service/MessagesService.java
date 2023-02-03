@@ -47,30 +47,30 @@ public class MessagesService {
             notificationService.addNotificationMultiple(
                     new Notification(
                             "Nova poruka",
-                            "Imate novu poruku od admina",
+                            "Imate novu poruku od klijenta: "+message.getSender().getName() + " " + message.getSender().getSurname(),
                             reciever,
-                            "/messages-client"
+                            "/messages-admin"
                     ),userService.getAdmins()
             );
         }
         else {
             reciever = userService.getByEmail(message.getReciever().getEmail());
 
-            notificationService.addNotification(
+            /*notificationService.addNotification(
                     new Notification(
                             "Nova poruka",
                             "Imate novu poruku od admina",
                             reciever,
                             "/messages-client"
                     )
-            );
+            );*/
         }
         m.setReciever(reciever);
 
         User client = getUserByRole(m,"ROLE_CLIENT");
         Chat chat = getChat(client);
         m.setChat(chat);
-
+        readMessages(sender.getEmail());
         messagesRepository.save(m);
 
     }
@@ -122,8 +122,27 @@ public class MessagesService {
     public void readMessages(String senderEmail){
         for(Message message : getMessagesForUser(senderEmail)){
             if(message.getReciever().getEmail().equals(senderEmail)){
-
+                message.setOpened(true);
+                messagesRepository.save(message);
             }
         }
+    }
+    public void readMessages(String senderEmail, String chat){
+        for(Message message : getMessagesForUser(senderEmail)){
+            if(message.getReciever().getEmail().equals(senderEmail) && message.getChat().getClientUsername().equals(chat)){
+                message.setOpened(true);
+                messagesRepository.save(message);
+            }
+        }
+    }
+
+    public void seeMessages() {
+        User loggedUser = userService.getLoggedUser();
+        readMessages(loggedUser.getEmail());
+    }
+
+    public void seeMessages(String chat) {
+        User loggedUser = userService.getLoggedUser();
+        readMessages(loggedUser.getEmail(),chat);
     }
 }

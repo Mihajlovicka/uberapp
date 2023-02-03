@@ -52,10 +52,12 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Autowired
     private UserConverter userConverter;
     @Autowired@Lazy
     private DriveService driveService;
+
 
     public ClientsAccount saveClient(ClientsAccount clientsAccount) throws EmailExistException {
 
@@ -436,7 +438,19 @@ public class UserService {
 
     public User findByEmail(String email){return userRepository.findUserByEmail(email);}
 
-    public void changeDriverAvailabilityStatus(String email, boolean status) {
+
+    public boolean canAffordDrive(String clientsEmail, double price) throws EmailNotFoundException {
+        ClientsAccount clientsAccount = findClientsAccount(clientsEmail);
+        if(!clientsAccount.getBankStatus().equals(BankStatus.ACTIVE)) return false;
+        // do ovde dolazi samo ako je status aktivan..sto znaci i da ima bank account svakako
+        if(clientsAccount.getClientsBankAccount().getBalance()-price<0) return false;
+
+            return true;
+    }
+
+
+    public void changeDriverAvailabilityStatus(String email, boolean status) throws EmailNotFoundException {
+
         DriversAccount driver = getDriverByEmail(email);
         driver.setDriversAvailability(status);
         if(status){
@@ -445,7 +459,7 @@ public class UserService {
         driversRepository.save(driver);
     }
 
-    public String changeAvailability() {
+    public String changeAvailability() throws EmailNotFoundException {
         User u = getLoggedIn();
         DriversAccount driver = getDriverByEmail(u.getEmail());
         changeDriverAvailabilityStatus(u.getEmail(), !driver.getDriversAvailability());
@@ -455,4 +469,5 @@ public class UserService {
     public void saveDriverAvailabilityStatus(DriversAccount driver) {
         driversRepository.save(driver);
     }
+
 }

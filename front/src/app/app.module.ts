@@ -68,6 +68,8 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 import {DriveHistoryClientComponent} from './drive-history-client/drive-history-client.component';
+import {DriveBillComponent} from './drive-bill/drive-bill.component';
+import {RespondToPaymentRequestComponent} from './respond-to-payment-request/respond-to-payment-request.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {DriveHistoryDriverComponent} from './drive-history-driver/drive-history-driver.component';
@@ -76,15 +78,16 @@ import {NgxMaterialRatingModule} from "ngx-material-rating";
 
 import {RidesDriverComponent} from './rides-driver/rides-driver.component';
 import {RideClientComponent} from './ride-client/ride-client.component';
-import {DriveBillComponent} from './drive-bill/drive-bill.component';
 import {
   CancelDriveReasonDialogComponent
 } from './dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component';
 import {DriveViewComponent} from './drive-view/drive-view.component';
-
 import {ReportsComponent} from './reports/reports.component';
+import {GradesOverviewComponent} from './grades-overview/grades-overview.component';
+import {AllUsersViewAdminComponent} from './all-users-view-admin/all-users-view-admin.component';
+
 import {ChartModule} from 'angular2-chartjs';
-import { MatNativeDateModule } from '@angular/material/core';
+import {MatNativeDateModule} from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -128,9 +131,12 @@ import { MatNativeDateModule } from '@angular/material/core';
     RidesDriverComponent,
     RideClientComponent,
     DriveBillComponent,
+    RespondToPaymentRequestComponent,
     CancelDriveReasonDialogComponent,
     DriveViewComponent,
     ReportsComponent,
+    GradesOverviewComponent,
+    AllUsersViewAdminComponent,
   ],
   imports: [
     BrowserModule,

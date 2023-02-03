@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
 import com.example.demo.dto.DriveDTO;
+
+
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.*;
@@ -37,13 +39,22 @@ public class DriveController {
     @Autowired
     DriveConverter driveConverter;
 
+
+
+    //@PatchMapping(value="api/acceptDrive/{id}")
+    //public ResponseEntity acceptDriveParticipation(@PathVariable Long id){
+
+
     @GetMapping(value="api/getDrive/{id}")
     public ResponseEntity<DriveDTO> getDrive(@PathVariable Long id) throws DriveNotFoundException {
         return new ResponseEntity(driveConverter.toDTO(driveService.getDrive(id)), HttpStatus.OK);
     }
 
+
+
     @PostMapping(value = "/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, URISyntaxException, IOException, InterruptedException {
+
         Drive drive = new Drive();
         drive.setDistance(driveReservationDTO.getDistance());
         drive.setDuration(driveReservationDTO.getDuration());
@@ -76,7 +87,14 @@ public class DriveController {
     public ResponseEntity getDrives(@RequestParam String email) throws EmailNotFoundException {
 
 
-        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email,false)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/getPastDrivesClient")
+    public ResponseEntity getPastDrives(@RequestParam String email) throws EmailNotFoundException {
+
+
+        return new ResponseEntity(driveService.getDrivesForUser(email,true), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -130,7 +148,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/notifyPassengers")
-    public ResponseEntity notifyPassengers(){
+    public ResponseEntity notifyPassengers() throws EmailNotFoundException {
         driveService.notifyPassengers();
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -138,7 +156,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/cancelRide")
-    public ResponseEntity cancelRide(@RequestBody String reason){
+    public ResponseEntity cancelRide(@RequestBody String reason) throws EmailNotFoundException {
         driveService.cancelDrive(reason);
         return new ResponseEntity<>(null, HttpStatus.OK);
 

@@ -25,15 +25,18 @@ public class Message {
     @JoinColumn(name = "chat")
     private Chat chat;
 
+    @Column
+    private boolean opened;
     public Message() {
     }
 
-    public Message(Long id, User sender, User reciever, String message, Timestamp timeSent, Chat chat) {
+    public Message(Long id, User sender, User reciever, String message, Timestamp timeSent, Chat chat, boolean opened) {
         this.id = id;
         this.sender = sender;
         this.reciever = reciever;
         this.message = message;
         this.chat = chat;
+        this.opened = opened;
     }
 
 
@@ -75,5 +78,13 @@ public class Message {
 
     public void setChat(Chat chat) {
         this.chat = chat;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
     }
 }

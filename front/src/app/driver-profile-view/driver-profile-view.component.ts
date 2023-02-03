@@ -68,7 +68,6 @@ export class DriverProfileViewComponent implements OnInit {
               public dialog: MatDialog) {  }
 
   ngOnInit(): void {
-    this.loadDriver();
     this.getLoggedUser();
   }
   blockUser(){
@@ -110,15 +109,23 @@ export class DriverProfileViewComponent implements OnInit {
       if(this.logged_user.role==="ROLE_ADMINISTRATOR"){
         this.isAdmin=true;
       }
+      this.route.queryParams.subscribe(params => {
+
+        this.email = params['email']
+        console.log(this.email);
+      });
+      if (this.email) {
+        this.loadDriver();
+      } else {
+        this.email = this.logged_user.email;
+        this.loadDriver();
+      }
 
     });
   }
 
   loadDriver(){
-    this.route.queryParams.subscribe(params => {
 
-      this.email = params['email']
-     });
 
      this.appService.getDriver(this.email).subscribe((resp: DriversAccount) => {
       this.driversAccount = resp;

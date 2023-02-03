@@ -19,6 +19,8 @@ import {Notification} from "./model/notification.model";
 
 import { DriveReservationForm } from "./model/driveReservationForm.model";
 import { Drive } from "./model/drive.model";
+import { BankTransaction } from "./model/bankTransaction.model";
+import { BankAccount } from "./model/bankAccount.model";
 
 import {Grade} from "./model/grade.model";
 
@@ -46,12 +48,16 @@ import { Stop } from "./model/stop.model";
     private allActiveClients = 'http://localhost:8080/api/getAllActiveClients';
     private uploadImageUrl = 'http://localhost:8080/api/uploadIMG';
     private getLoggedUrl = 'http://localhost:8080/api/getLogged';
-    private host = 'http://localhost:8080'
+    private host = 'http://localhost:8080';
     private getLoggedUserUrl = 'http://localhost:8080/api/getLoggedUser';
     private blockUserUrl = 'http://localhost:8080/api/blockUser';
     private unblockUserUrl = 'http://localhost:8080/api/unblockUser';
     private changePasswordUrl = 'http://localhost:8080/api/changePassword';
-    private crateDriveReservationUrl="http://localhost:8080/api/createDriveReservation"
+    private crateDriveReservationUrl="http://localhost:8080/api/createDriveReservation";
+    private getBankTransactionUrl="http://localhost:8080/passenger/confirmPayment/";
+    private acceptPaymentUrl = "http://localhost:8080/bank/acceptTransaction/";
+    private declinePaymentUrl = "http://localhost:8080/bank/declineTransaction/";
+    private getClientsBankAccountUrl = "http://localhost:8080/api/getClientsBankAccount/";
 
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -87,6 +93,24 @@ import { Stop } from "./model/stop.model";
               public dialog: MatDialog) {
 
 
+  }
+
+  getClientsBankAccount(email: string){
+      return this.http.get<BankAccount>(`${this.getClientsBankAccountUrl + email}`).pipe(
+        catchError(this.handleError<BankAccount>())
+      )
+  }
+
+  acceptPayment(id: number): Observable<BankTransaction>{
+    return this.http.post<BankTransaction>(`${this.acceptPaymentUrl + id}`, this.httpOptions).pipe(
+      catchError(this.handleError<BankTransaction>())
+    )
+  }
+
+  declinePayment(id: number, bankAccount: BankAccount): Observable<BankTransaction>{
+      return this.http.post<BankTransaction>(`${this.declinePaymentUrl + id}`, bankAccount, this.httpOptions).pipe(
+        catchError(this.handleError<BankTransaction>())
+      )
   }
 
   declineBankAccountAccess(client: ClientsAccount): Observable<ClientsAccount> {
@@ -138,6 +162,14 @@ import { Stop } from "./model/stop.model";
     return this.http.get<Drive>(`${this.getDriveUrl + id}`).pipe(
       catchError(this.handleError<Drive>())
     );
+
+
+  }
+
+  public getTransictionInfo(id: number): Observable<BankTransaction>{
+    return this.http.get<BankTransaction>(`${this.getBankTransactionUrl +id}`).pipe(
+      catchError(this.handleError<BankTransaction>())
+    );
   }
 
 
@@ -155,6 +187,12 @@ import { Stop } from "./model/stop.model";
   public openNotification(id:bigint):Observable<any>{
     return this.http.post("http://localhost:8080/api/openNotification",id,this.httpOptions).pipe(catchError(this.handleError<any>()));
   }
+  public openMessages():Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessage",{},this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
+  public openMessagesForChat(chat:string):Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessageForChat",chat,this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
   public getMessagesForUser(email:string): Observable<Message[]>{
     return this.http.get<Message[]>(`http://localhost:8080/api/getMessages?email=`+email).pipe(catchError(this.handleError<Message[]>()));
   }
@@ -163,6 +201,9 @@ import { Stop } from "./model/stop.model";
   }
   public getUsersChatDisplay(): Observable<UsersChatDisplay[]>{
     return this.http.get<UsersChatDisplay[]>(`http://localhost:8080/api/getUsersChats`).pipe(catchError(this.handleError<UsersChatDisplay[]>()));
+  }
+  public getGradesForDrive(driveID: number): Observable<Grade[]>{
+    return this.http.get<Grade[]>(`http://localhost:8080/api/getGrades?driveID=` + driveID).pipe(catchError(this.handleError<Grade[]>()));
   }
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
@@ -175,6 +216,9 @@ import { Stop } from "./model/stop.model";
   }
   public getAllDrivesClient(email:string): Observable<Drive[]>{
     return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
+  }
+  public getAllPastDrivesClient(email:string): Observable<Drive[]>{
+    return this.http.get<Drive[]>(`http://localhost:8080/api/getPastDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
   }
 
 

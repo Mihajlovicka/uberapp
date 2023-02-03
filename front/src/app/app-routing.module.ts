@@ -31,8 +31,10 @@ import {AddGradeComponent} from "./add-grade/add-grade.component";
 import {RidesDriverComponent} from "./rides-driver/rides-driver.component";
 import {RideClientComponent} from "./ride-client/ride-client.component";
 import { RespondDriveRequestComponent } from './respond-drive-request/respond-drive-request.component';
+import { RespondToPaymentRequestComponent } from './respond-to-payment-request/respond-to-payment-request.component';
 import {DriveViewComponent} from "./drive-view/drive-view.component";
 import {ReportsComponent} from "./reports/reports.component";
+import {AllUsersViewAdminComponent} from "./all-users-view-admin/all-users-view-admin.component";
 
 
 const routes: Routes = [
@@ -56,6 +58,8 @@ const routes: Routes = [
   {path:'payment', component:PaymentComponent},
   {path: 'messages-admin',component:MessagesAdminComponent},
   {path: 'messages-client',component:MessagesClientComponent},
+  {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
+  {path :"passenger/confirmPayment/:id", component: RespondToPaymentRequestComponent},
 
   {path: 'drive-history-client',component:DriveHistoryClientComponent},
   {path: 'drive-history-driver',component:DriveHistoryDriverComponent},
@@ -65,7 +69,8 @@ const routes: Routes = [
   {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
   {path: "drive/:id", component:DriveViewComponent},
-  {path: "reports/:email", component:ReportsComponent}
+  {path: "reports/:email", component:ReportsComponent},
+  {path: "all-users", component:AllUsersViewAdminComponent},
 
 ];
 

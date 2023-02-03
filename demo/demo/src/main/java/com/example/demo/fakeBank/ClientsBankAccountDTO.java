@@ -2,7 +2,7 @@ package com.example.demo.fakeBank;
 
 
 public class ClientsBankAccountDTO {
-    private Long balance;
+    private Double balance;
     private String accountNumber;
 
     private String verificationEmail;
@@ -14,7 +14,7 @@ public class ClientsBankAccountDTO {
     public ClientsBankAccountDTO(){
     }
 
-    public ClientsBankAccountDTO(Long balance, String accountNumber, String verificationEmail, String ownerName, String ownerSurname){
+    public ClientsBankAccountDTO(Double balance, String accountNumber, String verificationEmail, String ownerName, String ownerSurname){
         this.balance = balance;
         this.accountNumber = accountNumber;
         this.verificationEmail = verificationEmail;
@@ -22,11 +22,11 @@ public class ClientsBankAccountDTO {
         this.ownerSurname = ownerSurname;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
 
-    public Long getBalance() {
+    public Double getBalance() {
         return balance;
     }
 

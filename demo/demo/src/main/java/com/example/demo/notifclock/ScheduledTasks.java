@@ -3,6 +3,7 @@ package com.example.demo.notifclock;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.Drive;
 import com.example.demo.model.DriveType;
 import com.example.demo.model.Notification;
@@ -27,7 +28,7 @@ public class ScheduledTasks {
     private NotificationService notificationService;
 
     @Scheduled(fixedRate = 1000*60)
-    public void reportCurrentTime() {
+    public void reportCurrentTime() throws EmailNotFoundException {
         log.info("The time is now {}", dateFormat.format(new Date()));
         //ako je 15 min pred salji vozacu i driveru
         //ako je 10 i 5 min pre a=salji klijentu

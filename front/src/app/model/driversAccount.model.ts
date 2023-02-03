@@ -13,7 +13,7 @@ interface DriversAccountInterface{
     picture: Image;
     phone: string;
     car: Car;
-    driverStatus: DriverStatus.AVAILABLE;
+    driverStatus: DriverStatus;
     driversAvailability:boolean
 }
 
@@ -22,7 +22,7 @@ export class DriversAccount implements DriversAccountInterface{
     public picture: Image;
     public phone: string;
     public car: Car;
-    public driverStatus: DriverStatus.AVAILABLE;
+    public driverStatus: DriverStatus;
     public driversAvailability:boolean;
 
     constructor(driversInt: DriversAccountInterface){
