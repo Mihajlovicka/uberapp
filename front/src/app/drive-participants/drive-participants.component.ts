@@ -36,6 +36,8 @@ export class DriveParticipantsComponent implements OnInit {
 
  @Output() setSplitEvent= new EventEmitter<boolean>();
 
+ @Input() numOfPartitions: number = 0;
+
  disableSelect = new FormControl(false);
 
  setSplit(e:any){

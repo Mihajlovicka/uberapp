@@ -25,11 +25,14 @@
                             <p><small><strong>{{participant.passengerName}} {{participant.passengerSurname}}</strong></small></p>
                         </div>
 
-                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===false">
+                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===false && participant.payingEnabled===true">
                            <label><small>zaduzenje: <strong>0 RSD</strong></small></label>
                         </div>
-                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true">
-                            <label><small>zaduzenje: <strong>{{((this.drive.price+this.starting_price)/(this.drive.passengers.length+1)).toFixed(2)}} RSD</strong></small></label>
+                        <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="this.drive.splitBill===true && participant.payingEnabled===true">
+                            <label><small>zaduzenje: <strong>{{((this.drive.price+this.starting_price)/(this.numOfPartitions+1)).toFixed(2)}} RSD</strong></small></label>
+                         </div>
+                         <div class="col-lg-5 col-md-5 col-sm-5" *ngIf="participant.payingEnabled===false">
+                            <label><small>zaduzenje: <strong>nema racun</strong></small></label>
                          </div>
 
                         <div class="col-lg-2 col-md-2 col-sm-2">

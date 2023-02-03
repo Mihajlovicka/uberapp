@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.email.EmailDetails;
+import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.NotificationNotFoundException;
 import com.example.demo.model.*;
@@ -45,16 +47,42 @@ public class NotificationService {
     }
 
 
+    public void paymentFailedDriveCanceledNotify(String email){
+        addNotification(new Notification(
+                "Voznja otkazana",
+                "Cao! Vasa voznja je nazalost otkazana, jer placanje nije izvrseno.",
+                userService.findByEmail(email),
+                ""
+
+        ));
+    }
+
 
     public void addedToDriveNotify(Set<Passenger> passengers, Long id) throws EmailNotFoundException {
         for(Passenger passenger: passengers){
-            addNotification(new Notification(
-                    "Nova voznja",
-                    "Cao " + passenger.getPassengerName()+"!"+"Dodati ste u voznju. Udjite na link kako bi ste videli vise o ovome.",
-                    userService.findByEmail(passenger.getPassengerEmail()),
-                    "/passenger/accept-drive/"+id));
+            if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED)){
+                addNotification(new Notification(
+                        "Nova voznja",
+                        "Cao " + passenger.getPassengerName()+"!"+"Dodati ste u voznju. Kliknite kako bi ste videli vise o ovome.",
+                        userService.findByEmail(passenger.getPassengerEmail()),
+                        "/passenger/accept-drive/"+id));
+            }
+
         }
     };
+
+
+    public void notifyAboutPayment(Set<Passenger> passengers, Long id){
+        for (Passenger passenger: passengers){
+            if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED) && !passenger.getPayment().equals(PaymentPassengerStatus.REJECTED) && !passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING) && passenger.isPayingEnabled()){
+                addNotification(new Notification(
+                        "Placanje",
+                        "Cao " + passenger.getPassengerName()+"!"+"Poslato Vam je vase zadusenje za prihvacenu voznju. Kliknite kako bi ste videli vise o ovome.",
+                        userService.findByEmail(passenger.getPassengerEmail()),
+                        "/passenger/accept-payment/"+id));
+            }
+        }
+    }
 
 
 
@@ -65,6 +93,7 @@ public class NotificationService {
             addNotification(newNotification);
         }
     }
+
 
 
 
@@ -84,5 +113,12 @@ public class NotificationService {
     public void notifyUser(String email){
         simpMessagingTemplate.convertAndSend("/notify/"+email,"New notification.");
     }
+
+
+
+
+
+
+
 
 }

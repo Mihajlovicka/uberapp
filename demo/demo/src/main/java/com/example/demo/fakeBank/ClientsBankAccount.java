@@ -11,7 +11,7 @@ public class ClientsBankAccount {
     private Long id;
 
     @Column(nullable = false)
-    private Long balance;
+    private Double balance;
 
     // prvih 3-->banka, 13-->broj racuna, kontrolni broj-->2
     //ukupno 18 cifara
@@ -29,7 +29,7 @@ public class ClientsBankAccount {
 
     public ClientsBankAccount(){}
 
-    public ClientsBankAccount(Long id,Long balance, String accountNumber, String verificationEmail, String ownerName, String ownerSurname){
+    public ClientsBankAccount(Long id,Double balance, String accountNumber, String verificationEmail, String ownerName, String ownerSurname){
         this.id = id;
         this.balance = balance;
         this.accountNumber = accountNumber;
@@ -46,11 +46,11 @@ public class ClientsBankAccount {
         this.id = id;
     }
 
-    public Long getBalance() {
+    public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
 

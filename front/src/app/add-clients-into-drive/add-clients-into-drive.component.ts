@@ -3,7 +3,8 @@ import { FormControl } from '@angular/forms';
 import { Observable  } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AppService } from '../app.service';
-import { ClientsAccount } from '../model/clientsAccount.model';
+import { BankAccount } from '../model/bankAccount.model';
+import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
 import { DriveReservationForm } from '../model/driveReservationForm.model';
 import { DrivePassengerStatus, Passenger, PaymentPassengerStatus } from '../model/passenger.model';
 
@@ -91,14 +92,15 @@ export class AddClientsIntoDriveComponent implements OnInit {
         passengerSurname: client.user.surname,
         contribution: DrivePassengerStatus.WAITING,
         payment: PaymentPassengerStatus.NOT_PAYING,
-        debit:0
+        debit:0,
+        payingEnabled: false
+      }
+      if(client.bankStatus===BankStatus.ACTIVE){
+        created.payingEnabled=true;
+        created.payment=PaymentPassengerStatus.WAITING;
       }
       passengers.push(created);
       
-      
-
-
-
     });
 
     return passengers;

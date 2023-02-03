@@ -3,16 +3,18 @@ import {DriversAccount} from "./driversAccount.model";
 import {Passenger} from "./passenger.model";
 import {Stop} from "./stop.model";
 
+export enum DriveStatus{
+    OWNER_PAYMENT_WAITING = 'OWNER_PAYMENT_WAITING',
+    PASSENGERS_WAITING = 'PASSENGERS_WAITING',
+    PAYMENT_WAITING = 'PAYMENT_WAITING',
+    DRIVER_WAITING = 'DRIVER_WAITING',
+    DRIVE_STARTED = 'DRIVE_STARTED',
+    DRIVE_ENDED = 'DRIVE_ENDED',
+    DRIVE_REJECTED = 'DRIVE_REJECTED',
+    DRIVE_FAILED = 'DRIVE_FAILED'
+  }
 
-export enum DriveStatus {
-  PASSENGERS_WAITING = 'PASSENGERS_WAITING',
-  PAYMENT_WAITING = 'PAYMENT_WAITING',
-  DRIVER_WAITING = 'DRIVER_WAITING',
-  DRIVE_STARTED = 'DRIVE_STARTED',
-  DRIVE_ENDED = 'DRIVE_ENDED',
-  DRIVE_REJECTED = 'DRIVE_REJECTED',
-  DRIVE_FAILED = 'DRIVE_FAILED'
-}
+
 
 export enum DriveType {
   PAST = 'PAST',

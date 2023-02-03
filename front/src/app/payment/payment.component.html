@@ -54,9 +54,9 @@
             
         </ul>
      
-        <app-drive-participants (setSplitEvent)="setSplitPayment($event)"  [starting_price]="this.starting_price" [drive]="this.drive"></app-drive-participants>
+        <app-drive-participants (setSplitEvent)="setSplitPayment($event)" [numOfPartitions]="this.numberOfPartition" [starting_price]="this.starting_price" [drive]="this.drive"></app-drive-participants>
         <br>
-        <app-drive-bill [drive]="this.drive" [starting_price]="this.starting_price"></app-drive-bill>
+        <app-drive-bill [drive]="this.drive" [numOfPartitions]="numberOfPartition" [starting_price]="this.starting_price"></app-drive-bill>
        
 
     </div>

@@ -20,6 +20,7 @@ export interface PassengerInterface{
     contribution: DrivePassengerStatus,
     payment: PaymentPassengerStatus
     debit: number;
+    payingEnabled: boolean;
     
 }
 
@@ -30,6 +31,7 @@ export class Passenger implements PassengerInterface{
     public contribution: DrivePassengerStatus;
     public payment: PaymentPassengerStatus;
     public debit: number;
+    public payingEnabled: boolean;
     constructor(passengerInt: PassengerInterface){
         this.passengerEmail = passengerInt.passengerEmail;
         this.passengerName = passengerInt.passengerName;
@@ -37,5 +39,6 @@ export class Passenger implements PassengerInterface{
         this.contribution = passengerInt.contribution;
         this.payment = passengerInt.payment;
         this.debit = passengerInt.debit;
+        this.payingEnabled = passengerInt.payingEnabled;
     }
 }

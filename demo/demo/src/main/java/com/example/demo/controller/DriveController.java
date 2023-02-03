@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
 import com.example.demo.dto.DriveDTO;
+
+
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.model.*;
@@ -37,13 +39,22 @@ public class DriveController {
     @Autowired
     DriveConverter driveConverter;
 
+
+
+    //@PatchMapping(value="api/acceptDrive/{id}")
+    //public ResponseEntity acceptDriveParticipation(@PathVariable Long id){
+
+
     @GetMapping(value="api/getDrive/{id}")
     public ResponseEntity<DriveDTO> getDrive(@PathVariable Long id) throws DriveNotFoundException {
         return new ResponseEntity(driveConverter.toDTO(driveService.getDrive(id)), HttpStatus.OK);
     }
 
+
+
     @PostMapping(value = "/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, URISyntaxException, IOException, InterruptedException {
+
         Drive drive = new Drive();
         drive.setDistance(driveReservationDTO.getDistance());
         drive.setDuration(driveReservationDTO.getDuration());

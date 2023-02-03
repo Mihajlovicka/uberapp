@@ -3,14 +3,14 @@ package com.example.demo.fakeBank;
 import com.example.demo.dto.ClientAccountDTO;
 import com.example.demo.exception.BankAccountNumberDoNotExistException;
 import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.exception.TransactionIdDoesNotExistException;
 import com.example.demo.model.ClientsAccount;
+import com.example.demo.service.NotificationService;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class BankController {
@@ -23,6 +23,10 @@ public class BankController {
 
     @Autowired
     BankConverter bankConverter;
+
+    @Autowired
+    NotificationService notificationService;
+
 
     // ne poziva se sa fronta..samo da se napuni baza
     @PostMapping(value = "bank/create")
@@ -48,6 +52,23 @@ public class BankController {
     }
 
 
+    //vrati transakciju
+    @GetMapping(value="passenger/confirmPayment/{id}")
+    public ResponseEntity getTransaction(@PathVariable Long id) throws TransactionIdDoesNotExistException {
+        return new ResponseEntity(bankConverter.toDTO(bankService.getById(id)), HttpStatus.OK);
+    }
+
+    @PostMapping(value="bank/acceptTransaction/{id}")
+    public ResponseEntity acceptTransaction(@PathVariable Long id) throws TransactionIdDoesNotExistException {
+        return new ResponseEntity(bankConverter.toDTO(bankService.acceptTransaction(id)), HttpStatus.OK);
+    }
+
+    @PostMapping(value="bank/declineTransaction/{id}")
+    public ResponseEntity declineTransaction(@PathVariable Long id, @RequestBody ClientsBankAccountDTO clientsBankAccount) throws TransactionIdDoesNotExistException {
+        BankTransaction bankTransaction = bankService.declineTransaction(id, clientsBankAccount.getAccountNumber());
+        notificationService.paymentFailedDriveCanceledNotify(bankTransaction.getSender());
+        return new ResponseEntity(bankConverter.toDTO(bankTransaction), HttpStatus.OK);
+    }
 
     }
 

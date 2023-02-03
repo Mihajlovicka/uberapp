@@ -16,4 +16,8 @@ public class BankConverter {
         ClientsBankAccount clientsBankAccount = bankService.findByAccountNumber(clientsBankAccountDTO.getAccountNumber());
         return clientsBankAccount;
     }
+
+    public BankTransactionDTO toDTO(BankTransaction bankTransaction){
+        return new BankTransactionDTO(bankTransaction.getTransactionType(), bankTransaction.getAmount(), bankTransaction.getTransactionStatus(), bankTransaction.getSender(), bankTransaction.getReceiver());
+    }
 }

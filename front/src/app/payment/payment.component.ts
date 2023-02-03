@@ -5,6 +5,7 @@ import { BankStatus } from '../model/clientsAccount.model';
 import {Drive, DriveStatus, DriveType} from '../model/drive.model';
 import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 import { DriverStatus } from '../model/driversAccount.model';
+import { PaymentPassengerStatus } from '../model/passenger.model';
 import { Role, Status } from '../model/user.model';
 
 @Component({
@@ -120,9 +121,25 @@ export class PaymentComponent implements OnInit{
     endDate: ''
   }
 
+  numberOfPartition: number = 0;
+
+
+  setNumOfPartition(){
+    this.numberOfPartition = 0;
+    this.drive.passengers.forEach(passenger => {
+      if(passenger.payingEnabled===true)this.numberOfPartition=this.numberOfPartition+1;
+    })
+  }
+  
+
 
   setSplitPayment(split: boolean){
     this.drive.splitBill=split;
+    //pozvati ovo
+    if(this.drive.splitBill===true)this.setNumOfPartition();
+  
+    //pogledati kpjim komponentama se vraca ovo 
+    //bil i ono za prikaz pass vljd
 
   }
 
@@ -136,9 +153,27 @@ export class PaymentComponent implements OnInit{
 
 
     if(this.drive.splitBill === true){
+      
       this.drive.passengers.forEach(passenger  => {
-        passenger.debit = Number((this.drive.price/(this.drive.passengers.length+1)).toFixed(2));
+        if(passenger.payingEnabled===true){
+        passenger.debit = Number((this.drive.price/(this.numberOfPartition+1)).toFixed(2));
+        this.drive.ownerDebit = passenger.debit;
+        }
+        if(passenger.payingEnabled===false){
+          passenger.debit = 0;
+        }
       });
+
+
+      
+    }
+
+    if(this.drive.splitBill===false){
+      this.drive.passengers.forEach(passenger => {
+        passenger.debit = 0;
+        passenger.payment = PaymentPassengerStatus.NOT_PAYING;
+      })
+      this.drive.ownerDebit = this.drive.price;
     }
 
     this.service.createDriveReservation(this.drive).subscribe(

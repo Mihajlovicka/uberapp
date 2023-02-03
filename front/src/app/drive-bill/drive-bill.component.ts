@@ -12,6 +12,7 @@ export class DriveBillComponent implements OnInit {
 
   @Input() starting_price: PriceStart = PriceStart.seats5;
 
+  @Input() numOfPartitions: number = 0;
 
   @Input() drive:DriveReservationForm = {
     stops: [],
