@@ -35,9 +35,14 @@
           <button mat-raised-button type="button" class="col-4" color="primary" (click)="showData()">Prikazi
           </button>
         </div>
-        <div class="row" style="margin-top:50px;"><h2>Ukupno voznji: {{drivesTotal}}</h2></div>
-        <div class="row"><h2>Ukupna cena: {{priceTotal}} RSD</h2></div>
-        <div class="row"><h2>Ukupno predjenih kilometara: {{kmTotal}}</h2></div>
+        <div *ngIf="drives.length !== 0">
+          <div class="row" style="margin-top:50px;"><h2>Ukupno voznji: {{drivesTotal}}</h2></div>
+          <div class="row"><h3>Prosecan broj: {{drivesTotal / dates_labels.length}}</h3></div>
+          <div class="row"><h2>Ukupna cena: {{priceTotal}} RSD</h2></div>
+          <div class="row"><h3>Prosecna cena: {{priceTotal / dates_labels.length}} RSD</h3></div>
+          <div class="row"><h2>Ukupno predjenih kilometara: {{kmTotal}}</h2></div>
+          <div class="row"><h3>Prosecno predjenih kilometara: {{kmTotal / dates_labels.length}}</h3></div>
+        </div>
       </div>
     </div>
     <div class="col ">

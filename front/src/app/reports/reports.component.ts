@@ -5,6 +5,7 @@ import { Drive } from '../model/drive.model';
 import {DatePipe} from "@angular/common";
 import {max} from "rxjs";
 import {UserAuthService} from "../service/user-auth.service";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-reports',
@@ -19,7 +20,7 @@ export class ReportsComponent implements OnInit{
   drivesTotal:number=0;
   priceTotal:number=0;
   kmTotal:number=0;
-  email:string ='';
+  email:string | null ='';
   drives:Drive[] = []
   data:any
   label:string='broj voznji'
@@ -47,7 +48,8 @@ export class ReportsComponent implements OnInit{
   };
 
   constructor(private appService:AppService,
-              private userService: UserAuthService) {
+              private userService: UserAuthService,
+              private route: ActivatedRoute) {
   }
 
   showData(){
@@ -122,20 +124,19 @@ export class ReportsComponent implements OnInit{
 
   ngOnInit() {
     this.chartType = this.chartTypes[0]
-    this.appService.getLoggedUser().subscribe((res)=>{
-      this.email = res.email
-      if(this.userService.getRole() !== "ROLE_ADMINISTRATOR")
-        this.appService.getAllDrivesClient(this.email).subscribe((res)=>{
-          this.drives = res
-          this.fillData()
-        })
-      else{
-        this.appService.getAllDrives().subscribe((res)=>{
-          this.drives = res
-          this.fillData()
-        })
-      }
-    })
+    this.email = this.route.snapshot.paramMap.get('email')
+    if(this.email === null && this.userService.getRole() !== "ROLE_ADMINISTRATOR")
+      this.appService.getAllDrives().subscribe((res)=>{
+        this.drives = res
+        this.fillData()
+      })
+    else{
+      if(this.email)
+      this.appService.getAllDrivesClient(this.email).subscribe((res)=>{
+        this.drives = res
+        this.fillData()
+      })
+    }
   }
 
 }

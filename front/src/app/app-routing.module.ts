@@ -65,7 +65,7 @@ const routes: Routes = [
   {path: 'rides-cl',component:RideClientComponent,  canActivate:[AuthGuard], data:{role:'ROLE_CLIENT'}},
   {path: "passenger/accept-drive/:id", component:RespondDriveRequestComponent},
   {path: "drive/:id", component:DriveViewComponent},
-  {path: "reports", component:ReportsComponent}
+  {path: "reports/:email", component:ReportsComponent}
 
 ];
 
