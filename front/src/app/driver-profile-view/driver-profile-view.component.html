@@ -60,7 +60,7 @@
                 <div class="row gx-3 mb-3">
                   <div class="col-md-12" style="align-content: center; text-align: center">
                     <label>Trenutan status {{driversAccount.driversAvailability?"Dostupan":"Nedostupan"}} </label>
-                    <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging" (click)="changeStatus();">Promeni svoj status</button>
+                    <button class="btn btn-secondary" type="button" *ngIf="!pictureChanging && !isAdmin" (click)="changeStatus();">Promeni svoj status</button>
                   </div>
                 </div>
               </form>
@@ -206,7 +206,7 @@
 
                         <!-- Save changes button-->
                         <div class="row">
-                            <div id="buttonsDiv">
+                            <div id="buttonsDiv" *ngIf="!isAdmin">
                                 <button class="btn btn-secondary" type="button" id="cancelProfileInfo" *ngIf="!disabled" (click)="cancelChange()">Cancel</button>
                                 <button class="btn btn-secondary" type="button" id="saveProfileInfo" (click)="change()">{{izmena}}</button>
 

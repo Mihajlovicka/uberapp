@@ -6,7 +6,7 @@ import { Drive } from '../model/drive.model';
 import {Role, Status, User} from "../model/user.model";
 import {AppService} from "../app.service";
 import {formatDate} from "@angular/common";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-drive-history-client',
@@ -50,7 +50,7 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
   ];
 
   drives :Drive[] = [];
-
+  email = "";
   logged_user: User = {
     username:'',
     name:'',
@@ -65,6 +65,7 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
   @ViewChild(MatSort) sort: MatSort;
   private sortedData: Drive[] = [];
   constructor(private _liveAnnouncer: LiveAnnouncer,
+              private route: ActivatedRoute,
               private appService: AppService,
               private router: Router) {}
 
@@ -99,7 +100,14 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
     });
   }
   loadDrives(){
-    this.appService.getAllPastDrivesClient(this.logged_user.email).subscribe((resp: any) => {
+    this.route.queryParams.subscribe(params => {
+
+      this.email = params['email']
+    });
+    if(this.logged_user.role!=="ROLE_ADMINISTRATOR"){
+      this.email=this.logged_user.email;
+    }
+    this.appService.getAllPastDrivesClient(this.email).subscribe((resp: any) => {
 
       console.log(resp);
       this.drives = resp;

@@ -49,9 +49,10 @@
 
     </button>
     <mat-menu #adminMenu="matMenu">
-      <button  style="font-size: 16px;" mat-menu-item routerLink="/make-drive-reservation">Nova voznja</button>
-      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-client">Istorija voznji</button>
-      <button  style="font-size: 16px;" mat-menu-item routerLink="/clientProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/all-users">Prikaz svih korisnika</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/reports/">Izvestaji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/driver-info">Kreiraj nalog vozaca</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/messages-admin">Otvori chat</button>
       <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
     </mat-menu>
 

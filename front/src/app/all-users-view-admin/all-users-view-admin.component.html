@@ -1,0 +1,39 @@
+<h4 align="center" style="margin-top: 15px; margin-bottom: 15px;">Korisnici u sistemu</h4>
+<table (matSortChange)="sortData($event)" mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" multiTemplateDataRows>
+  <ng-container
+    *ngFor="let column of columns"
+    [matColumnDef]="column.columnDef"
+
+  >
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>{{column.header}}</th>
+    <td mat-cell *matCellDef="let row" (click)="openDrive(row);">{{column.cell(row)}}</td>
+  </ng-container>
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-button [matMenuTriggerFor]="clientMenu">
+        <mat-icon style="color: #673ab7;">more_vert</mat-icon>
+
+      </button>
+      <mat-menu #clientMenu="matMenu">
+         <button  style="font-size: 16px;" mat-menu-item (click)="openProfile(element);">Prikazi profil korisnika</button>
+        <button  style="font-size: 16px;" mat-menu-item (click)="openReport(element)">Otvori izvestaj za korisnika</button>
+        <button  style="font-size: 16px;" mat-menu-item (click)="openDriveHistory(element)">Otvori istoriju voznji za korisnika</button>
+      </mat-menu>
+    </td>
+  </ng-container>
+
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let row; columns: columnsToDisplayWithExpand;"
+      class="example-element-row"
+
+      (click)="ispisi(row);"></tr>
+   <tr class="mat-row" *matNoDataRow>
+    <td class="mat-cell" colspan="5" style="text-align: center">
+      Trenutno nemate prethodnih voznji.
+    </td>
+  </tr>
+
+
+</table>

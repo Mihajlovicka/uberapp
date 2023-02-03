@@ -79,6 +79,7 @@ import { DriveViewComponent } from './drive-view/drive-view.component';
 
 import { ReportsComponent } from './reports/reports.component';
 import { GradesOverviewComponent } from './grades-overview/grades-overview.component';
+import { AllUsersViewAdminComponent } from './all-users-view-admin/all-users-view-admin.component';
 
 
 @NgModule({
@@ -127,6 +128,7 @@ import { GradesOverviewComponent } from './grades-overview/grades-overview.compo
     DriveViewComponent,
     ReportsComponent,
     GradesOverviewComponent,
+    AllUsersViewAdminComponent,
   ],
   imports: [
         BrowserModule,
