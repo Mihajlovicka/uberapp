@@ -23,6 +23,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +105,7 @@ public class DriveService {
 
     }
 
+    @Transactional
     public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
         String foundDriverEmail="";
         if(drive.getDriveType().equals(DriveType.NOW)){
@@ -479,6 +484,7 @@ public class DriveService {
         return drive;
     }
 
+    @Transactional(propagation=Propagation.REQUIRED)
     public String getNextDriverForFutureRide(Drive drive) {
         List<DriversAccount> drivers = this.userService.getDrivers();
         if (drivers.size() > 0) {
@@ -489,6 +495,7 @@ public class DriveService {
     }
 
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public String getNextDriverForCurrentRide(Drive drive) throws URISyntaxException, IOException, InterruptedException {
         List<DriversAccount> drivers = this.userService.getDriversByStatus(DriverStatus.AVAILABLE);
         drivers = getAvailableDrivers(drivers);
