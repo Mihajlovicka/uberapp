@@ -43,6 +43,7 @@ export interface DriveInterface {
   driveType: DriveType;
   startDate: string;
   endDate: string;
+  ownerTransactionId: number;
 }
 
 export class Drive implements DriveInterface {
@@ -66,7 +67,7 @@ export class Drive implements DriveInterface {
   public driveType: DriveType;
   public startDate: string;
   public endDate: string;
-
+  public ownerTransactionId: number;
   constructor(driveInt: DriveInterface) {
     this.id = driveInt.id;
     this.stops = driveInt.stops;
@@ -88,5 +89,6 @@ export class Drive implements DriveInterface {
     this.driveType = driveInt.driveType;
     this.startDate = driveInt.startDate;
     this.endDate = driveInt.endDate;
+    this.ownerTransactionId = driveInt.ownerTransactionId;
   }
 }

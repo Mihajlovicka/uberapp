@@ -15,11 +15,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Service
 public class UserService {
     @Autowired
     UserRepository userRepository;
@@ -51,6 +52,8 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired@Lazy
+    private NotificationService notificationService;
 
     @Autowired
     private UserConverter userConverter;
@@ -458,15 +461,20 @@ public class UserService {
         driversRepository.save(driver);
     }
 
-    public String changeAvailability() throws EmailNotFoundException {
+    public void changeAvailability() throws EmailNotFoundException {
         User u = getLoggedIn();
         DriversAccount driver = getDriverByEmail(u.getEmail());
         changeDriverAvailabilityStatus(u.getEmail(), !driver.getDriversAvailability());
-        return "";
     }
 
     public void saveDriverAvailabilityStatus(DriversAccount driver) {
         driversRepository.save(driver);
     }
 
+    public void reportDriver(String reason) {
+        Drive d = driveService.getClientCurrentDrive();
+        DriversAccount driver = d.getDriver();
+        notificationService.addNotification(new Notification("Vozac prijavljen!","Prijavljen je vozac " + driver.getUser().getName() + " "+
+                driver.getUser().getSurname() + ". Razlog: " +reason,getAdmin(),""));
+    }
 }

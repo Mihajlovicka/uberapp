@@ -2,52 +2,26 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
-import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
-import {Drive, DriveStatus, DriveType} from '../model/drive.model';
+import { BankStatus } from '../model/clientsAccount.model';
+import { Drive, DriveStatus, DriveType } from '../model/drive.model';
 import { DriverStatus } from '../model/driversAccount.model';
-import { DrivePassengerStatus } from '../model/passenger.model';
 import { Role, Status } from '../model/user.model';
 
 @Component({
-  selector: 'app-respond-drive-request',
-  templateUrl: './respond-drive-request.component.html',
-  styleUrls: ['./respond-drive-request.component.css']
+  selector: 'app-drive-changed-review',
+  templateUrl: './drive-changed-review.component.html',
+  styleUrls: ['./drive-changed-review.component.css']
 })
-export class RespondDriveRequestComponent implements OnInit {
+export class DriveChangedReviewComponent implements OnInit {
+
+  constructor(private route: ActivatedRoute, private service: AppService) { }
+
+  ngOnInit(): void {
+    this.getDriveId();
+    this.getDriveData(this.driveId);
+  }
 
   driveId: number=0;
-
-  loggedPassengerParticipationStatus: DrivePassengerStatus = DrivePassengerStatus.WAITING;
-
-  logged:ClientsAccount={
-    user: {
-      name: '',
-      surname: '',
-      email: '',
-      username: '',
-      role: Role.ROLE_CLIENT,
-      status: Status.ACTIVE
-    },
-    address: {
-      city: '',
-      street: '',
-      number: ''
-    },
-    picture: {
-      picByte: '',
-      name: '',
-      type: ''
-    },
-    phone: '',
-    clientsBankAccount: {
-      balance: 0,
-      bankAccountNumber: '',
-      verificationEmail: '',
-      ownerName: '',
-      ownerSurname: ''
-    },
-    bankStatus: BankStatus.ACTIVE
-  }
 
   drive: Drive={
     id: 0,
@@ -127,13 +101,6 @@ export class RespondDriveRequestComponent implements OnInit {
     ownerTransactionId: -1
   }
 
-  constructor(private route: ActivatedRoute, private service: AppService) { }
-
-  ngOnInit(): void {
-    this.getDriveId();
-    this.getDriveData(this.driveId);
-    this.getLoggedIn();
-  }
 
   getDriveId(){
     this.route.queryParams.subscribe(params => {
@@ -152,36 +119,17 @@ export class RespondDriveRequestComponent implements OnInit {
     )
   }
 
-  getLoggedParticipationStatus(){
-    this.drive.passengers.forEach(passenger => {
-      if(passenger.passengerEmail===this.logged.user.email)this.loggedPassengerParticipationStatus = passenger.contribution;
-    });
-  }
-
-  getLoggedIn(){
-    this.service.getLogged().subscribe((resp: ClientsAccount) =>{
-        this.logged = resp;
-        console.log(this.logged);
-        this.getLoggedParticipationStatus();
-        console.log(this.loggedPassengerParticipationStatus);
-    }
+  driveCanceled(){
+    this.service.cancelDrive(this.driveId).subscribe(
+      (resp:Drive) => {
+        this.drive=resp;
+        console.log(this.drive);
+      }
     )
   }
 
-  //promeniti u html-u da moze da vidi samo ako mu je contribution na wait
-
-
-  acceptDriveParticipation(){
-    this.service.acceptDriveParticipation(this.driveId).subscribe(
-      (resp: Drive) => {
-        this.drive = resp;
-        console.log(this.drive);
-      })
-    
-  }
-
-  declineDriveParticipation(){
-    this.service.declineDriveParticipation(this.driveId).subscribe(
+  continueDrive(){
+    this.service.continueDrive(this.driveId).subscribe(
       (resp: Drive) => {
         this.drive = resp;
         console.log(this.drive);

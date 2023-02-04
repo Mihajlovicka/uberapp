@@ -81,9 +81,12 @@ public class Drive {
     @Column
     private Double ownerDebit;
 
+    @Column
+    private Long ownerTransactionId;
+
     public Drive(){}
 
-    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date, DriveType driveTimeStatus, Double ownerDebit, Date startDate, Date endDate) {
+    public Drive(Long id, List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, ClientsAccount owner, String routeJSON, DriversAccount driver, DriveStatus driveStatus, boolean splitBill, Date date, DriveType driveTimeStatus, Double ownerDebit, Date startDate, Date endDate, Long ownerTransactionId) {
         this.id = id;
         this.stops = stops;
         this.distance = distance;
@@ -104,6 +107,7 @@ public class Drive {
         this.driveType = driveTimeStatus;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.ownerTransactionId = ownerTransactionId;
     }
 
     public Date getStartDate() {
@@ -265,5 +269,13 @@ public class Drive {
 
     public void setOwnerDebit(Double ownerDebit) {
         this.ownerDebit = ownerDebit;
+    }
+
+    public Long getOwnerTransactionId() {
+        return ownerTransactionId;
+    }
+
+    public void setOwnerTransactionId(Long ownerTransactionId) {
+        this.ownerTransactionId = ownerTransactionId;
     }
 }

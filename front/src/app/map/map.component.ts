@@ -128,7 +128,23 @@ export class MapComponent implements AfterViewInit, OnInit {
   }
 
   ngOnInit(): void {
-    // this.initializeWebSocketConnection();
+    this.appService.getAllCars().subscribe((res:Vehicle[])=>{
+      let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
+      for(let v of res){
+        let markerLayer = L.marker([v.latitude,v.longitude], {
+          icon: L.icon({
+            iconUrl: 'assets/red.png',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+          }),
+        })
+        markerLayer.addTo(geoLayerRouteGroup);
+        this.vehicles[v.id] = markerLayer;
+      }
+      this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
+
+    })
+    this.initializeWebSocketConnection();
   }
 
   initializeWebSocketConnection() {
@@ -152,6 +168,11 @@ export class MapComponent implements AfterViewInit, OnInit {
       let ride: Ride = JSON.parse(message.body);
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
+      if(this.vehicles[ride.vehicle.id]!==undefined){
+        let existingVehicle = this.vehicles[ride.vehicle.id];
+        existingVehicle.setLatLng([ride.vehicle.latitude, ride.vehicle.longitude]);
+        existingVehicle.update();
+      }else{
       let markerLayer = L.marker([ride.vehicle.latitude, ride.vehicle.longitude], {
         icon: L.icon({
           iconUrl: 'assets/green.png',
@@ -160,13 +181,18 @@ export class MapComponent implements AfterViewInit, OnInit {
         }),
       }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
       markerLayer.addTo(geoLayerRouteGroup);
-      this.vehicles[ride.vehicle.id] = markerLayer;
+      this.vehicles[ride.vehicle.id] = markerLayer;}
       this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
     });
     this.stompClient.subscribe('/map-updates/new-existing-ride', (message: { body: string }) => {
       let ride: Ride = JSON.parse(message.body);
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       this.rides[ride.id] = geoLayerRouteGroup;
+      if(this.vehicles[ride.vehicle.id]!==undefined){
+        let existingVehicle = this.vehicles[ride.vehicle.id];
+        existingVehicle.setLatLng([ride.vehicle.latitude, ride.vehicle.longitude]);
+        existingVehicle.update();
+      }else{
       let markerLayer = L.marker([ride.vehicle.latitude, ride.vehicle.longitude], {
         icon: L.icon({
           iconUrl: 'assets/red.png',
@@ -175,7 +201,7 @@ export class MapComponent implements AfterViewInit, OnInit {
         }),
       }).bindPopup('Vozilo ' + ride.vehicle.licensePlateNumber);
       markerLayer.addTo(geoLayerRouteGroup);
-      this.vehicles[ride.vehicle.id] = markerLayer;
+      this.vehicles[ride.vehicle.id] = markerLayer;}
       this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
     });
     this.stompClient.subscribe('/map-updates/ended-ride', (message: { body: string }) => {

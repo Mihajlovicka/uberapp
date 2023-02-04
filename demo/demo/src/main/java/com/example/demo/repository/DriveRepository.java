@@ -12,4 +12,6 @@ public interface DriveRepository extends JpaRepository<Drive, Long> {
     List<Drive> findByDriver(DriversAccount driver);
 
     List<Drive> findByDriveType(DriveType driveType);
+
+    Drive findByOwner_User_EmailAndOwnerTransactionId(String email, Long ownerTransactionId);
 }

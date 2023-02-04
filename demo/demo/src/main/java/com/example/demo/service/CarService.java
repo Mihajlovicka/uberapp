@@ -96,6 +96,10 @@ public class CarService {
     }
 
     public Car getClientCurrentCar() {
-        return driveService.getClientCurrentCar();
+        return driveService.getClientCurrentDrive().getDriver().getCar();
+    }
+
+    public List<Car> getAllCars() {
+        return this.carRepository.findAll();
     }
 }

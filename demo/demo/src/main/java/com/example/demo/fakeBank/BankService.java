@@ -4,6 +4,7 @@ import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.exception.TransactionIdDoesNotExistException;
 import com.example.demo.model.*;
 import com.example.demo.service.NotificationService;
@@ -47,7 +48,7 @@ public class BankService {
     public ClientsBankAccount reserveMoney(Double amount, ClientsBankAccount clientsBankAccount){
         clientsBankAccount.setBalance(clientsBankAccount.getBalance()-amount);
         return bankRepository.save(clientsBankAccount);
-        //dodati neke rezervacije mozda? bilo bi ispravnije :/
+
     }
 
     public ClientsBankAccount closeReservation(Double amount, ClientsBankAccount clientsBankAccount){
@@ -74,6 +75,42 @@ public class BankService {
 
     }
 
+    public BankTransaction transactionFinalized(Long id){
+        BankTransaction transaction = bankTransactionRepository.findById(id).get();
+        if(transaction==null) throw new NotFoundException("Transaction does not exist");
+        transaction.setTransactionStatus(TransactionStatus.FINALIZED);
+        return bankTransactionRepository.save(transaction);
+    }
+    public Double findPassengersDebit(Drive drive, String passengersEmail){
+        Double amount = 0.0;
+        for (Passenger passenger:
+             drive.getPassengers()) {
+            if(passenger.getPassengerEmail().equals(passengersEmail)) amount = passenger.getDebit();
+        }
+
+        return amount;
+    }
+
+    //kreiranje transakcije za passengera
+    public BankTransaction requestPassengerPayment(Drive drive, ClientsAccount passengerClientsAccount){
+        BankTransaction transaction = new BankTransaction();
+
+        transaction.setAmount(findPassengersDebit(drive, passengerClientsAccount.getUser().getEmail()));
+        transaction.setTransactionStatus(TransactionStatus.WAITING_VERIFICATION);
+        transaction.setSender(passengerClientsAccount.getUser().getEmail());
+        transaction.setReceiver("UBER");
+        transaction.setTransactionType(TransactionType.OUTFLOW);
+
+        reserveMoney(transaction.getAmount(), passengerClientsAccount.getClientsBankAccount());
+
+        BankTransaction saved =  bankTransactionRepository.save(transaction);
+
+        requestPaymentEmail(passengerClientsAccount, saved.getId());
+
+        return saved;
+    }
+
+    //od ownera trazi
     public void requestPaymentEmail(ClientsAccount clientsAccount, Long transactionId){
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setSubject("Placanje");
@@ -82,6 +119,9 @@ public class BankService {
                 "http://localhost:4200/passenger/confirmPayment/"+transactionId);
         emailService.send(emailDetails);
     }
+
+
+
 
 
     public void sendVerificationEmail(ClientsAccount clientsAccount){
@@ -107,11 +147,11 @@ public class BankService {
 
         bankTransaction.setTransactionStatus(TransactionStatus.FAILED);
 
-
-
-
         return bankTransactionRepository.save(bankTransaction);
     }
+
+
+
 
 
 

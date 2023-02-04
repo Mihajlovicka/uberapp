@@ -114,7 +114,8 @@ export class AddGradeComponent implements OnInit {
       ownerDebit: 0,
       driveType: DriveType.NOW,
       startDate: '',
-      endDate: ''
+      endDate: '',
+      ownerTransactionId:-1
     }
   }
 

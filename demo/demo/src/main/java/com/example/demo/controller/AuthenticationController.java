@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.JwtAuthenticationRequest;
 import com.example.demo.dto.UserTokenState;
+import com.example.demo.model.DriverStatus;
 import com.example.demo.model.DriversAccount;
 import com.example.demo.model.Status;
 import com.example.demo.model.User;
@@ -56,7 +57,8 @@ public class AuthenticationController {
 		}
 		if(user.getRole().getName().equals("ROLE_DRIVER")){
 			DriversAccount driver = userService.getDriverByEmail(user.getEmail());
-			driver.setDriversAvailability(false);
+			driver.setDriversAvailability(true);
+			driver.setDriverStatus(DriverStatus.AVAILABLE);
 			userService.saveDriverAvailabilityStatus(driver);
 		}
 		String jwt = tokenUtils.generateToken(user.getUsername());

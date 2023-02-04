@@ -118,7 +118,8 @@ export class PaymentComponent implements OnInit{
     ownerDebit: 0,
     driveType: DriveType.NOW,
     startDate: '',
-    endDate: ''
+    endDate: '',
+    ownerTransactionId:-1
   }
 
   numberOfPartition: number = 0;

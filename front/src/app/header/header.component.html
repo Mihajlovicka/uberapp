@@ -28,6 +28,7 @@
     </button>
     <mat-menu #clientMenu="matMenu">
       <button  style="font-size: 16px;" mat-menu-item routerLink="/make-drive-reservation">Nova voznja</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/rides-cl">Trenutna voznja</button>
       <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-client">Istorija voznji</button>
       <button  style="font-size: 16px;" mat-menu-item routerLink="/clientProfile">Prikaz profila</button>
       <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
@@ -39,6 +40,7 @@
     </button>
     <mat-menu #driverMenu="matMenu">
 
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/rides-dr">Pracenje voznje</button>
       <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-driver">Istorija voznji</button>
       <button  style="font-size: 16px;" mat-menu-item routerLink="/driversProfile">Prikaz profila</button>
       <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>

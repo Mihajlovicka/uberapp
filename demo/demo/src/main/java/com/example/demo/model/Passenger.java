@@ -34,9 +34,13 @@ public class Passenger {
     @Column
     private boolean payingEnabled;
 
+
+    @Column
+    private Long transactionId;
+
     public Passenger(){}
 
-    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment, Double debit, boolean payingEnabled) {
+    public Passenger(Long id, String passengerEmail, String passengerName, String passengerSurname,DrivePassengerStatus contribution, PaymentPassengerStatus payment, Double debit, boolean payingEnabled, Long transactionId) {
         this.id = id;
         this.passengerEmail = passengerEmail;
         this.passengerName = passengerName;
@@ -45,6 +49,7 @@ public class Passenger {
         this.payment = payment;
         this.debit = debit;
         this.payingEnabled = payingEnabled;
+        this.transactionId = transactionId;
     }
 
     public Long getId() {
@@ -110,5 +115,13 @@ public class Passenger {
 
     public void setPayingEnabled(boolean payingEnabled) {
         this.payingEnabled = payingEnabled;
+    }
+
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 }
