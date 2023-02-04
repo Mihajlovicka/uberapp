@@ -79,8 +79,7 @@ public class DriveService {
 
 
         drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
-        //ovo front menja
-        drive.setDriveType(DriveType.NOW);
+
         Drive saved = driveRepository.save(drive);
 
         //napravi transakciju
@@ -103,11 +102,19 @@ public class DriveService {
     }
 
     public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
-        //za now voznju?????????????????????:)
-        drive.setDriveType(DriveType.FUTURE);
-        drive=driveRepository.save(drive);
-        String foundDriverEmail = getNextDriverForCurrentRide(drive);
-        //Long foundDriverId = getNextDriverForFutureRide(drive);
+        String foundDriverEmail="";
+        if(drive.getDriveType().equals(DriveType.NOW)){
+            drive.setDriveType(DriveType.FUTURE);
+            drive = driveRepository.save(drive);
+            foundDriverEmail = getNextDriverForCurrentRide(drive);
+        }
+
+        if(drive.getDriveType().equals(DriveType.FUTURE)){
+            foundDriverEmail = getNextDriverForFutureRide(drive);
+        }
+
+
+
         if (foundDriverEmail.equals("")) {
             notificationService.addNotificationMultiple(new Notification("Voznja odbijena", "Cao! Nazalost, vaza voznja je odbijena. Trenutno nema slobodnih vozila.",null,""), makeUsersFromPassengersForNotification(drive));
             //vratiti pare na racun
@@ -668,13 +675,23 @@ public class DriveService {
         return resp;
     }
 
-    public String endDrive() {
+    public String endDrive() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             drive.setDriveType(DriveType.PAST);
             userService.updateDriverStatus(DriverStatus.AVAILABLE);
             drive.setDriveStatus(DriveStatus.DRIVE_ENDED);
             drive.setEndDate(new Date());
+
+            //promeniti owneru da je u voznji
+            //sacuvati ovoga u userrepo
+            drive.getOwner().setInDrive(false);
+            userService.saveCurrent(drive.getOwner());
+
+            //pasengeri u voznji
+            passengerNotInDriveStatus(drive.getPassengers());
+
+
             driveRepository.save(drive);
             return "Voznja zavrsena";
         }
@@ -707,10 +724,22 @@ public class DriveService {
                 passengers) {
             // i sacuvati ovo u user repo
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
+            clientsAccount.setInDrive(true);
             userService.saveCurrent(clientsAccount);
 
         }
 
+    }
+
+    public void passengerNotInDriveStatus(Set<Passenger> passengers) throws EmailNotFoundException {
+        for (Passenger passenger:
+                passengers) {
+            // i sacuvati ovo u user repo
+            ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
+            clientsAccount.setInDrive(false);
+            userService.saveCurrent(clientsAccount);
+
+        }
     }
 
     public String startDrive() throws EmailNotFoundException {

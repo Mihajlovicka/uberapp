@@ -64,10 +64,10 @@
     </mat-card-content>
 
     <mat-card-content *ngIf="this.drive.stops.length===0">
-        <label>        jeiga druze nisi popnio stanice to ti jedino obavezno toliko si lenj
+        <label>        Nisi popnio stanice.
         </label>
         <br>
-        <label> sad se lepo vrati na tacku jedan i popuni</label>
+        <label> Vrati se na tacku 1</label>
     </mat-card-content>
 
 
@@ -78,7 +78,7 @@
 
     
 
-    <mat-card-actions style="float: right;" *ngIf="this.drive.stops.length>1">
+    <mat-card-actions style="float: right;" *ngIf="this.drive.stops.length>1 && this.clientAcc.inDrive===false">
       <button mat-raised-button type="button" color="primary" (click)="create()">Potvrdi placanje</button>
     </mat-card-actions>
     

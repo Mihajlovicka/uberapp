@@ -241,7 +241,8 @@ export class RidesDriverComponent implements OnInit {
 
   notifyPassengers() {
     this.appService.notifyPassengers().subscribe((res:any) => {
-      this.arrived = !this.arrived
+      this.arrived = !this.arrived;
+      this.hideStartButton=true;
     })
   }
 

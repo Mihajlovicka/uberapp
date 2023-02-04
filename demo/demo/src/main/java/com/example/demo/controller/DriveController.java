@@ -25,6 +25,7 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +79,18 @@ public class DriveController {
         //passengeri
         drive.setPassengers(driveReservationDTO.getPassengers());
         drive.setOwnerDebit(driveReservationDTO.getOwnerDebit());
-        drive.setDriveType(DriveType.FUTURE);
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-        drive.setDate(format.parse(driveReservationDTO.getDate()));
+
+        if(driveReservationDTO.getDate().equals("")){
+            drive.setDriveType(DriveType.NOW);
+            drive.setDate(new Date());
+        }
+
+        else{
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            drive.setDate(format.parse(driveReservationDTO.getDate()));
+
+            drive.setDriveType(DriveType.FUTURE);
+        }
 
         final Drive saved = driveService.saveDrive(drive);
 
@@ -118,7 +128,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/endRide")
-    public ResponseEntity<String> endRide(){
+    public ResponseEntity<String> endRide() throws EmailNotFoundException {
         return new ResponseEntity(driveService.endDrive(), HttpStatus.OK);
     }
 

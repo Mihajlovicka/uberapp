@@ -73,7 +73,7 @@
     <div class="list-group list-group-flush scrollbar overflow-auto" #scrollMe [scrollTop]="scrollMe.clientHeight" style="height: 100%">
       <div class="list-group-item-action" *ngFor="let msg of messages" style="padding-bottom: 5px; padding-top: 5px;">
 
-        <div *ngIf="msg.sender.email!=logged_user.email" style="width:fit-content; max-width: 75%; min-width30%; padding-left: 10px;">
+        <div *ngIf="msg.sender.email!=logged_user.email" style="width:fit-content; max-width: 75%; min-width:30%; padding-left: 10px;">
 
           <div class="d-block" style="background-color: #dddddd; border-radius: 9px; border-bottom-left-radius: 0px;  padding-bottom:0px;padding-top:5px;padding-right:10px;padding-left:10px;">
               <strong class="mb-1">{{msg.sender.name + " " + msg.sender.surname}}</strong><i style="color: #aaaaaa">{{" - " + getRole(msg.sender.role)}}</i>
@@ -101,7 +101,7 @@
               <mat-icon  style="font-size: 20px; color: #000000">done_all</mat-icon>
             </p>
           </div>
-          <i><small><p>{{msg.read?"Seen":"notSeen"}}</p></small></i>
+         
 
         </div>
       </div>

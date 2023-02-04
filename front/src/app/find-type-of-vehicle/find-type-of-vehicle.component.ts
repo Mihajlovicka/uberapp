@@ -1,6 +1,7 @@
 import { formatDate } from '@angular/common';
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
+import { AppService } from '../app.service';
 
 
 import { DriveReservationForm, PriceStart} from '../model/driveReservationForm.model';
@@ -13,7 +14,7 @@ import { DriveReservationForm, PriceStart} from '../model/driveReservationForm.m
 })
 export class FindTypeOfVehicleComponent implements OnInit {
 
-  constructor() {}
+  constructor(private appService: AppService) {}
 
   selectedDate: any;
 
@@ -194,6 +195,7 @@ export class FindTypeOfVehicleComponent implements OnInit {
     }
     else{
       this.drive.date = "";
+      this.appService.openErrorDialog("Ne meze.")
 
     }
   console.log(this.drive.date);

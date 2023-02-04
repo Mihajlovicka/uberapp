@@ -1,12 +1,12 @@
 import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AppService } from '../app.service';
 import { CarBodyType, Fuel } from '../model/car.model';
-import { BankStatus } from '../model/clientsAccount.model';
+import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
 import {Drive, DriveStatus, DriveType} from '../model/drive.model';
 import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
 import { DriverStatus } from '../model/driversAccount.model';
 import { PaymentPassengerStatus } from '../model/passenger.model';
-import { Role, Status } from '../model/user.model';
+import { Role, Status, User } from '../model/user.model';
 
 @Component({
   selector: 'app-payment',
@@ -19,10 +19,71 @@ export class PaymentComponent implements OnInit{
 
 
 
-
+  ngOnInit(){
+    this.getLoggedUser();
+  }
 
 
   @Input() starting_price: PriceStart = PriceStart.seats5;
+
+  loggedUser: User = {
+    username: '',
+    name: '',
+    surname: '',
+    email: '',
+    status: Status.ACTIVE,
+    role: Role.ROLE_DRIVER
+  }
+
+  clientAcc: ClientsAccount={
+    user: {
+      username: '',
+    name: '',
+    surname: '',
+    email: '',
+    status: Status.ACTIVE,
+    role: Role.ROLE_DRIVER
+    },
+    address: {
+      city:'',
+      street:'',
+      number:''
+    },
+    picture: {
+      picByte:null,
+      name:'',
+      type:''
+    },
+    phone: '',
+    clientsBankAccount: {
+      verificationEmail:'',
+      balance:0,
+      bankAccountNumber:'',
+      ownerName:'',
+      ownerSurname:''
+    },
+    bankStatus: BankStatus.ACTIVE,
+    inDrive: false
+  }
+
+  getLoggedUser(){
+    this.service.getLoggedUser().subscribe(
+      (resp: User)=>{
+        this.loggedUser = resp;
+        console.log(this.loggedUser);
+        this.getClientAccount(this.loggedUser.email)
+      }
+    )
+  }
+
+  getClientAccount(email: string){
+    this.service.getClient(email).subscribe(
+      (resp: ClientsAccount)=>{
+        this.clientAcc = resp;
+        console.log(this.clientAcc);
+      }
+    )
+  }
 
 
   @Input() drive:DriveReservationForm = {
@@ -148,7 +209,7 @@ export class PaymentComponent implements OnInit{
 
 
 
-  ngOnInit(){}
+
 
   create(){
     this.drive.price = this.drive.price+this.starting_price;
