@@ -99,27 +99,27 @@ export class RegisterComponent implements OnInit {
   }
 
   register(){
-    if(this.registerForm.name==='')alert("Unesite ime!")
-    else if(!this.validateChars(this.registerForm.name))alert("Ime nije validno")
+    if(this.registerForm.name==='')this.appService.openErrorDialog("Unesite ime!")
+    else if(!this.validateChars(this.registerForm.name))this.appService.openErrorDialog("Ime nije validno!");
 
-    else if(this.registerForm.surname==='')alert("Unesite prezime!")
-    else if(!this.validateChars(this.registerForm.surname))alert("Prezime nije validno")
+    else if(this.registerForm.surname==='')this.appService.openErrorDialog("Unesite prezime!");
+    else if(!this.validateChars(this.registerForm.surname))this.appService.openErrorDialog("Prezime nije validno!");
 
-    else if(this.registerForm.email==='')alert("Unesite email!")
-    else if(!this.validateEmail(this.registerForm.email))alert("Email nije validan!.")
+    else if(this.registerForm.email==='')this.appService.openErrorDialog("Unesite email");
+    else if(!this.validateEmail(this.registerForm.email))this.appService.openErrorDialog("Email nije validan!");
 
-    else if(this.registerForm.phone==='')alert("Unesite telefon!")
-    else if(!this.validateNums(this.registerForm.phone))alert("Telefon nije validan!")
+    else if(this.registerForm.phone==='')this.appService.openErrorDialog("Unesite telefon");
+    else if(!this.validateNums(this.registerForm.phone))this.appService.openErrorDialog("Telefon nije validan!");
 
-    else if(this.registerForm.address.city==='')alert("Unesite grad!")
-    else if(this.registerForm.address.street==='')alert("Unesite ulicu!")
-    else if(this.registerForm.address.number==='')alert("Unesite broj!")
-    else if(!this.validateChars(this.registerForm.address.city) || !this.validateChars(this.registerForm.address.street))alert("Adresa nije validna!")
+    else if(this.registerForm.address.city==='')this.appService.openErrorDialog("Unesite grad!");
+    else if(this.registerForm.address.street==='')this.appService.openErrorDialog("Unesite ulicu!");
+    else if(this.registerForm.address.number==='')this.appService.openErrorDialog("Unesite broj!");
+    else if(!this.validateChars(this.registerForm.address.city) || !this.validateChars(this.registerForm.address.street))this.appService.openErrorDialog("Adresa nije validna!");
 
-    else if(this.registerForm.password==='')alert("Unesite lozinku!")
-    else if(this.registerForm.checkPassword==='')alert("Potvrdite lozinku")
-    else if(!this.matchingPasswords(this.registerForm.password, this.registerForm.checkPassword))alert("Lozinke se ne poklapaju!")
-    else if(this.registerForm.bankAccountNumber != "" && !this.validateBankAccountNumber(this.registerForm.bankAccountNumber))alert("Broj racuna nije u validnom formatu.")
+    else if(this.registerForm.password==='')this.appService.openErrorDialog("Unesite lozinku!");
+    else if(this.registerForm.checkPassword==='')this.appService.openErrorDialog("Potvrdite lozinku!");
+    else if(!this.matchingPasswords(this.registerForm.password, this.registerForm.checkPassword))this.appService.openErrorDialog("Lozinke se ne poklapaju!");
+    else if(this.registerForm.bankAccountNumber != "" && !this.validateBankAccountNumber(this.registerForm.bankAccountNumber))this.appService.openErrorDialog("Broj racuna nije u validnom formatu.");
     else{
 
     this.capitalizeForm();
