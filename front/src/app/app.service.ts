@@ -269,8 +269,7 @@ import { Stop } from "./model/stop.model";
   }
 
      public getLoggedUser():Observable<User>{
-       return this.http.get<User>(`${this.getLoggedUserUrl}`).pipe(
-         catchError(this.handleError<User>()));
+       return this.http.get<User>(`${this.getLoggedUserUrl}`)
      }
 
 
@@ -379,8 +378,8 @@ import { Stop } from "./model/stop.model";
     )
   }
 
-  getCurrentRide() :Observable<Stop[]>{
-    return this.http.get<Stop[]>(this.host + "/ride/getCurrent" , this.httpOptions)
+  getCurrentRide() :Observable<any>{
+    return this.http.get<any>(this.host + "/ride/getCurrentDriveDriver" , this.httpOptions)
   }
 
   getFirstFutureRide() :Observable<any>{
@@ -403,8 +402,8 @@ import { Stop } from "./model/stop.model";
     return this.http.get<Vehicle>(this.host + "/api/car/getClientCurrentCar" , this.httpOptions)
   }
 
-  getClientCurrentDrive():Observable<Stop[]> {
-    return this.http.get<Stop[]>(this.host + "/getClientCurrentDriveStops" , this.httpOptions)
+  getClientCurrentDrive():Observable<any> {
+    return this.http.get<any>(this.host + "/getClientCurrentDrive" , this.httpOptions)
   }
 
   notifyPassengers() {
@@ -421,5 +420,13 @@ import { Stop } from "./model/stop.model";
 
   getAllDrives() {
     return this.http.get<Drive[]>(this.host + "/getAllDrives").pipe(catchError(this.handleError<Drive[]>()));
+  }
+
+  reportDriver(result: any) {
+    return this.http.post<any>(this.host + "/reportDriver", result , this.httpOptions)
+  }
+
+  getAllCars() {
+    return this.http.get<Vehicle[]>(this.host + "/api/car/getAllCars", this.httpOptions);
   }
 }

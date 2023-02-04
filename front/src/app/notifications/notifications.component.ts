@@ -109,6 +109,7 @@ export class NotificationsComponent implements OnInit {
 
   public getNumberOfUnopenedNotifications() {
     let number: number = 0
+    if(this.notifications === undefined ) return
     for (let notification of this.notifications) {
       if (!notification.opened) number++;
     }

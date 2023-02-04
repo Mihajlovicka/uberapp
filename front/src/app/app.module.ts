@@ -88,6 +88,7 @@ import {AllUsersViewAdminComponent} from './all-users-view-admin/all-users-view-
 
 import {ChartModule} from 'angular2-chartjs';
 import {MatNativeDateModule} from '@angular/material/core';
+import { ReportDriverDialogComponent } from './dialog-template/report-driver-dialog/report-driver-dialog.component';
 
 @NgModule({
   declarations: [
@@ -137,6 +138,7 @@ import {MatNativeDateModule} from '@angular/material/core';
     ReportsComponent,
     GradesOverviewComponent,
     AllUsersViewAdminComponent,
+    ReportDriverDialogComponent,
   ],
   imports: [
     BrowserModule,

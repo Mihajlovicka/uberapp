@@ -1,52 +1,54 @@
+<button class="float-right" matSuffix mat-icon-button aria-label="Clear" (click)="openAllNotifications();">
+  <mat-icon>close</mat-icon>
+</button>
+<br><br>
+<b>
+  <h4 align="center">Obavestenja</h4>
+</b>
 
-  <button class="float-right" matSuffix mat-icon-button aria-label="Clear" (click)="openAllNotifications();">
-    <mat-icon>close</mat-icon>
-  </button>
-  <br><br>
-  <b>
-    <h4 align="center">Obavestenja</h4>
-  </b>
+<div class="list-group list-group-flush border-bottom  overflow-auto" *ngIf="notifications!==undefined">
 
-   <div class="list-group list-group-flush border-bottom  overflow-auto">
+  <div *ngFor="let notification of notifications">
+    <mat-card (click)="openNotification(notification);"
+              style="background-color: rgba(103, 58, 183,0.7); padding-left: 0px; margin-bottom: 5px;"
+              class="list-group-item-action">
+      <mat-card-header>
 
-    <div *ngFor="let notification of notifications">
-      <mat-card  (click)="openNotification(notification);" style="background-color: rgba(103, 58, 183,0.7); padding-left: 0px; margin-bottom: 5px;" class="list-group-item-action">
-        <mat-card-header>
+        <div style="padding-left: 15px;">
+          <mat-card-title>{{notification.title}}
 
-          <div style="padding-left: 15px;">
-            <mat-card-title>{{notification.title}}
-
-              <div *ngIf="!notification.opened" class="rounded-circle" style="background-color: #FF9D00; height: 10px; width: 10px; display: inline-block"></div>
-            </mat-card-title>
-            <mat-card-subtitle>
-              {{notification.message}}
-            </mat-card-subtitle>
-
-
-          </div>
-
+            <div *ngIf="!notification.opened" class="rounded-circle"
+                 style="background-color: #FF9D00; height: 10px; width: 10px; display: inline-block"></div>
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{notification.message}}
+          </mat-card-subtitle>
 
 
-
-        </mat-card-header>
-        <mat-card-content>
-
-        </mat-card-content>
+        </div>
 
 
-      </mat-card>
-    </div>
-     <mat-card *ngIf="notifications.length===0" style="background-color: rgba(103, 58, 183,0.7); padding-left: 0px; margin-bottom: 5px;" class="list-group-item-action">
-       <mat-card-header>
-         <div style="padding-left: 15px;">
-           <mat-card-title>Trenutno nemate obavestenja!
-             </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
 
-         </div>
-       </mat-card-header>
-       <mat-card-content>
-       </mat-card-content>
+      </mat-card-content>
 
-     </mat-card>
+
+    </mat-card>
   </div>
+  <mat-card *ngIf="notifications.length===0"
+            style="background-color: rgba(103, 58, 183,0.7); padding-left: 0px; margin-bottom: 5px;"
+            class="list-group-item-action">
+    <mat-card-header>
+      <div style="padding-left: 15px;">
+        <mat-card-title>Trenutno nemate obavestenja!
+        </mat-card-title>
+
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+    </mat-card-content>
+
+  </mat-card>
+</div>
 

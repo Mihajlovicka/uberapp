@@ -98,9 +98,9 @@ public class DriveController {
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    @GetMapping(path = "/ride/getCurrent")
-    public ResponseEntity<List<RealAddress>> getCurrent(){
-        return new ResponseEntity(driveService.getCurrentDriveStops(), HttpStatus.OK);
+    @GetMapping(path = "/ride/getCurrentDriveDriver")
+    public ResponseEntity<Drive> getCurrent(){
+        return new ResponseEntity(driveService.getCurrentDrive(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -139,11 +139,11 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @GetMapping(
-            path = "/getClientCurrentDriveStops",
+            path = "/getClientCurrentDrive",
             produces = "application/json"
     )
-    public ResponseEntity<List<RealAddress>> getClientCurrentDriveStops() {
-        return new ResponseEntity(driveService.getClientCurrentDriveStops(), HttpStatus.OK);
+    public ResponseEntity<Drive> getClientCurrentDrive() {
+        return new ResponseEntity(driveService.getClientCurrentDrive(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")

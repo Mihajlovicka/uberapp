@@ -75,12 +75,12 @@
                 (click)="endRide()">Zavrsi voznju
         </button>
       </div>
-      <div *ngIf="status === 'GOING_TO_LOCATION' && !arrived" class="row justify-content-end">
+      <div *ngIf="status === 'GOING_TO_LOCATION' && arrived" class="row justify-content-end">
         <button mat-raised-button type="button" class="col-6" color="primary"
                 (click)="notifyPassengers()">Stigao na odrediste
         </button>
       </div>
-      <div *ngIf="status === 'GOING_TO_LOCATION' && arrived" class="row justify-content-end">
+      <div *ngIf="status === 'GOING_TO_LOCATION' && !arrived && hideStartButton" class="row justify-content-end">
         <button mat-raised-button type="button" class="col-6" color="primary"
                 (click)="startRide()">Pocni voznju
         </button>

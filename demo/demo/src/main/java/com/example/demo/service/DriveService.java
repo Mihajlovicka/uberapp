@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 
-import com.example.demo.exception.DoesNotHaveEnoughMoneyException;
 import com.example.demo.exception.NotDrivePassengerException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.model.*;
@@ -11,7 +10,6 @@ import com.example.demo.model.*;
 import com.example.demo.converter.UserConverter;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.NotFoundException;
-import com.example.demo.model.*;
 import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.model.help.ResponseTableHelp;
 import com.example.demo.exception.DriveNotFoundException;
@@ -25,7 +23,6 @@ import com.example.demo.repository.DriveRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 
@@ -380,13 +377,7 @@ public class DriveService {
                 "annotations=distance,duration";
     }
 
-    public List<RealAddress> getCurrentDriveStops() {
-        Drive drive = getCurrentDrive();
-        if(drive != null) return drive.getStops();
-        return new ArrayList<>();
-    }
-
-    private Drive getCurrentDrive(){
+    public Drive getCurrentDrive(){
         DriversAccount driver = userService.getLoggedDriver();
         for (Drive d : driveRepository.findByDriver(driver)) {
             if(d.getDriveType().equals(DriveType.NOW))
@@ -481,30 +472,18 @@ public class DriveService {
         throw new NotFoundException("Car current location not found. No current drive.");
     }
 
-    public Car getClientCurrentCar(){
+
+    public Drive getClientCurrentDrive(){
         User user = userService.getLoggedIn();
         for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
-                return d.getDriver().getCar();
+                return d;
             for(Passenger passenger:d.getPassengers()){
                 if(passenger.getPassengerEmail().equals(user.getEmail()))
-                    return d.getDriver().getCar();
+                    return d;
             }
         }
         throw new NotFoundException("No client current ride.");
-    }
-
-    public List<RealAddress> getClientCurrentDriveStops() {
-        User user = userService.getLoggedIn();
-        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
-            if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
-                return d.getStops();
-            for(Passenger passenger:d.getPassengers()){
-                if(passenger.getPassengerEmail().equals(user.getEmail()))
-                    return d.getStops();
-            }
-        }
-        return new ArrayList<>();
     }
 
     public List<User> makeUsersFromPassengersForNotification(Drive drive) throws EmailNotFoundException {
