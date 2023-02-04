@@ -112,6 +112,7 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(notDrivePassengerBean, HttpStatus.CONFLICT);
     }
 
+
     @ExceptionHandler(value={TransactionIdDoesNotExistException.class})
     public ResponseEntity<Object> handlerDoesNotHaveEnoughMoney(TransactionIdDoesNotExistException e){
         TransactionIdDoesNotExistBean transactionIdDoesNotExistBean = new TransactionIdDoesNotExistBean(

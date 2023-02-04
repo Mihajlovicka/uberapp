@@ -7,7 +7,7 @@
     <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" >
       <mat-expansion-panel-header style="justify-content: space-between; display:flex">
         <mat-panel-title class="col-md-4">
-          <span class="material-icons" style="color:#673ab7;">directions_car</span>Odabran tip:  <strong> {{this.vehicleTypeTitle}} </strong> 
+          <span class="material-icons" style="color:#673ab7;">directions_car</span>Odabran tip:  <strong> {{this.vehicleTypeTitle}} </strong>
         </mat-panel-title>
         <mat-panel-description>
           {{this.vehicleTypeDescription}}
@@ -138,7 +138,7 @@
                   <span class="material-icons" style="color:#673ab7;">luggage</span>
                   <label><strong>4</strong> kofera</label>
                 </div>
-                  </mat-card-content> 
+                  </mat-card-content>
               </mat-card>
         </div>
         <div class="col-md-2" *ngIf="this.vehicleTypeTitle==='Minivan(7)'">
@@ -156,7 +156,7 @@
                 <span class="material-icons" style="color:#673ab7;">luggage</span>
                 <label><strong>4</strong> kofera</label>
               </div>
-                </mat-card-content> 
+                </mat-card-content>
             </mat-card>
       </div>
         <div class="col-md-2" *ngIf="this.vehicleTypeTitle!=='Minivan(8)'">
@@ -236,10 +236,35 @@
     </mat-action-row>
     </mat-expansion-panel>
     <br>
-     <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" >
+
+    <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          <span class="material-icons" style="color: #673ab7; margin-left: 10px;">child_friendly</span>Deca mladja od 5 godina: 
+          <span class="material-icons" style="color:#673ab7; margin-left: 10px;">calendar_month</span>Datum voznje
+          </mat-panel-title>
+        <mat-panel-description>
+           Buduca voznja?
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-card-content>
+
+        <div name="pets"   style="border:1px solid rgba(0,0,0,.12); margin-top: 2%; margin-bottom: 1%;border-radius: 6px;" class="col-md-2">
+
+          <mat-form-field style="width: fit-content">
+            <input matInput type="datetime-local" placeholder="start date" [(ngModel)]="selectedDate" (change)="ispisi();">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-action-row>
+        <button mat-button color="primary" (click)="goToNextParentStep()">Sledeci korak</button>
+      </mat-action-row>
+    </mat-expansion-panel>
+
+    <br>
+     <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" >
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <span class="material-icons" style="color: #673ab7; margin-left: 10px;">child_friendly</span>Deca mladja od 5 godina:
           <span class="material-icons" style="color:#673ab7">{{this.kids}}</span>
         </mat-panel-title>
         <mat-panel-description>
@@ -269,7 +294,7 @@
       </mat-action-row>
     </mat-expansion-panel>
     <br>
-    <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)">
+    <mat-expansion-panel [expanded]="step === 3" (opened)="setStep(3)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           <span class="material-icons" style="color:#673ab7; margin-left: 10px;">pets</span>Kucni ljubimci
@@ -289,7 +314,7 @@
             <input matInput type="number" style="margin-bottom: 4%" min="0" max="{{this.drive.seats-2-this.drive.baby-this.drive.passengers.length}}" name="petsNum" [(ngModel)]="this.drive.pets"
             (change)="this.checkPetsNum()">
           </div>
-          
+
         </div>
        </mat-card-content>
        <mat-action-row>

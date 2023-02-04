@@ -1,3 +1,4 @@
+import { formatDate } from '@angular/common';
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild } from '@angular/core';
 import { MatAccordion } from '@angular/material/expansion';
 
@@ -14,7 +15,7 @@ export class FindTypeOfVehicleComponent implements OnInit {
 
   constructor() {}
 
-  
+  selectedDate: any;
 
   @Input() drive:DriveReservationForm={
     stops: [],
@@ -64,12 +65,13 @@ export class FindTypeOfVehicleComponent implements OnInit {
     this.setDrive.emit(this.drive)
   }
 
+
   //lista zivotinja
   checkPetsNum(){
     if(this.drive.pets===0){
       this.pets = 'clear';
       this.petsDescription = 'Kucni ljubimci ne ucestvuju u voznji.';
-      
+
     }
     if(this.drive.pets>0){
       this.pets = 'check';
@@ -96,7 +98,7 @@ export class FindTypeOfVehicleComponent implements OnInit {
 
   nextStep() {
     this.step++;
-    
+
   }
 
   goToNextParentStep(){
@@ -109,22 +111,22 @@ export class FindTypeOfVehicleComponent implements OnInit {
 
   setVehicleTypeName(){
     if(this.drive.seats===4){
-      this.vehicleTypeTitle='Coupe(4)'; 
+      this.vehicleTypeTitle='Coupe(4)';
       this.vehicleTypeDescription='3 sedista za putnike + 1 kofer'}
     if(this.drive.seats===5){
-      this.vehicleTypeTitle='Hatchback(5)'; 
+      this.vehicleTypeTitle='Hatchback(5)';
       this.vehicleTypeDescription='4 sedista za putnike + 2 kofera'}
     if(this.drive.seats===6){
-      this.vehicleTypeTitle='Minivan(6)'; 
+      this.vehicleTypeTitle='Minivan(6)';
       this.vehicleTypeDescription='5 sedista za putnike + 4 kofera'}
     if(this.drive.seats===7){
-      this.vehicleTypeTitle='Minivan(7)'; 
+      this.vehicleTypeTitle='Minivan(7)';
       this.vehicleTypeDescription='6 sedista za putnike + 4 kofera'}
     if(this.drive.seats===8){
-      this.vehicleTypeTitle='Minivan(8)'; 
+      this.vehicleTypeTitle='Minivan(8)';
       this.vehicleTypeDescription='7 sedista za putnike + 6 kofera'}
     if(this.drive.seats===9){
-      this.vehicleTypeTitle='Kombi(9)'; 
+      this.vehicleTypeTitle='Kombi(9)';
       this.vehicleTypeDescription='8 sedista za putnike + 8 kofera'}
   }
 
@@ -133,9 +135,9 @@ export class FindTypeOfVehicleComponent implements OnInit {
   }
 
   setNumberOfSeats(num: number){
-    
+
     this.drive.seats = num;
-   
+
     this.setVehicleTypeName();
 
     if(this.drive.seats<this.drive.baby+this.drive.pets+2){
@@ -146,7 +148,7 @@ export class FindTypeOfVehicleComponent implements OnInit {
     }
 
     this.setDrive.emit(this.drive);
-    
+
   }
 
   setBaby(e: any){
@@ -157,8 +159,8 @@ export class FindTypeOfVehicleComponent implements OnInit {
       this.kidsDescription = "Deca ne ucestvuju u voznji.";
       this.kids='clear';
     }
-    
-  
+
+
     this.setDrive.emit(this.drive);
   }
 
@@ -170,4 +172,30 @@ export class FindTypeOfVehicleComponent implements OnInit {
     this.setDrive.emit(this.drive);
   }
 
+  calculateDiff(dateSent : any){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
+
+    return Math.floor((Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate(), dateSent.getHours(), dateSent.getMinutes(), dateSent.getSeconds()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()) ) /(1000 * 60 * 60));
+  }
+
+  calculateDiffMins(dateSent : any){
+    let currentDate = new Date();
+    dateSent = new Date(dateSent);
+
+    return Math.floor((Date.UTC(dateSent.getFullYear(), dateSent.getMonth(), dateSent.getDate(), dateSent.getHours(), dateSent.getMinutes(), dateSent.getSeconds()) - Date.UTC(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds()) ) /(1000 * 60));
+  }
+
+  ispisi() {
+    console.log(this.selectedDate);
+    console.log(this.calculateDiff(this.selectedDate)<5&& this.calculateDiffMins(this.selectedDate)>=20?"Moze":"Ne meze");
+    if(this.calculateDiff(this.selectedDate)<5 && this.calculateDiffMins(this.selectedDate)>20){
+      this.drive.date = formatDate(new Date(this.selectedDate),"dd-MM-yyyy HH:mm", "en");
+    }
+    else{
+      this.drive.date = "";
+
+    }
+  console.log(this.drive.date);
+  }
 }

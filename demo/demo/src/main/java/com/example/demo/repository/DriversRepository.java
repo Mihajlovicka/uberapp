@@ -11,5 +11,6 @@ import java.util.List;
 public interface DriversRepository extends JpaRepository<DriversAccount, Long> {
     public DriversAccount findDriversAccountByUserEmail(String email);
 
+
     List<DriversAccount> findByDriverStatus(DriverStatus driverStatus);
 }

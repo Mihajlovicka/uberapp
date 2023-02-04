@@ -64,13 +64,6 @@ export class MakeDriveReservationComponent implements OnInit {
   constructor(private _formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    var pipe = new DatePipe('sr-RS');
-    // var d1 = new Date (),
-    //   d2 = new Date ( d1 );
-    // d2.setMinutes ( d1.getMinutes() + 15 );
-    var myFormattedDate = pipe.transform(Date.now(), 'dd-MM-yyyy HH:mm');
-    if(myFormattedDate)
-      this.currentDrive.date = myFormattedDate;
 
   }
 
