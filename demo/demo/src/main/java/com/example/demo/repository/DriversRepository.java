@@ -1,6 +1,5 @@
 package com.example.demo.repository;
 
-import com.example.demo.model.ClientsAccount;
 import com.example.demo.model.DriverStatus;
 import com.example.demo.model.DriversAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +12,5 @@ public interface DriversRepository extends JpaRepository<DriversAccount, Long> {
     @Query("select u from User u where u.status = 'AVAILABLE'")
     List<DriversAccount> findAvailable();
 
-    List<DriversAccount> getByDriverStatus(DriverStatus driverStatus);
+    List<DriversAccount> findByDriverStatus(DriverStatus driverStatus);
 }

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.converter.UserConverter;
-import com.example.demo.dto.UsersChatDisplayDTO;
 import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.*;
@@ -396,7 +395,7 @@ public class UserService {
     }
 
     public List<DriversAccount> getDriversByStatus(DriverStatus status){
-        return this.driversRepository.getByDriverStatus(status);
+        return this.driversRepository.findByDriverStatus(status);
     }
 
     public DriversAccount getDriver(Long id) {
