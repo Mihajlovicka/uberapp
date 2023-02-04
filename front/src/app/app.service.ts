@@ -56,6 +56,7 @@ import { Stop } from "./model/stop.model";
     private getClientsBankAccountUrl = "http://localhost:8080/api/getClientsBankAccount/";
     private acceptDriveParticipationUrl = "http://localhost:8080/api/acceptDrive/";
     private declineDriveParticipationUrl = "http://localhost:8080/api/declineDrive/";
+    private cancelDriveUrl = "http://localhost:8080/api/ownerCancelDrive/";
 
     httpOptions = {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -91,6 +92,12 @@ import { Stop } from "./model/stop.model";
 
   acceptDriveParticipation(id: number){
     return this.http.post<Drive>(`${this.acceptDriveParticipationUrl + id}`, this.httpOptions).pipe(
+      catchError(this.handleError<Drive>())
+    )
+  }
+
+  cancelDrive(id: number): Observable<Drive>{
+    return this.http.post<Drive>(`${this.cancelDriveUrl + id}`, this.httpOptions).pipe(
       catchError(this.handleError<Drive>())
     )
   }

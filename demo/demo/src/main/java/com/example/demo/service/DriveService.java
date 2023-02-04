@@ -874,6 +874,18 @@ public class DriveService {
 
     }
 
+
+
+
+    public Drive cancelDrive(Drive drive){
+        drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
+
+        notificationService.notifyCanceledDrive(drive);
+
+
+        return driveRepository.save(drive);
+    }
+
     public Drive calculateNewPriceForDrive(Drive drive){
         int partitions = 0;
         //pronaci prvo koliko njih placa

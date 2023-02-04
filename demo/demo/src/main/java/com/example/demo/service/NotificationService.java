@@ -46,6 +46,30 @@ public class NotificationService {
         return notification;
     }
 
+    public void notifyCanceledDrive(Drive drive){
+        for (Passenger passenger:
+                drive.getPassengers()) {
+            if(passenger.getContribution().equals(DrivePassengerStatus.WAITING) || passenger.getContribution().equals(DrivePassengerStatus.ACCEPTED)){
+                addNotification(new Notification(
+                        "Voznja otkazana",
+                        "Voznja je otkazana od strane vlasnika voznja.",
+                        userService.findByEmail(passenger.getPassengerEmail()),
+                        ""
+                ));
+            }
+        }
+
+        addNotification(
+                new Notification(
+                        "Voznja otkazana",
+                        "Otkazali ste voznju.",
+                        drive.getOwner().getUser(),
+                        ""
+
+                )
+        );
+    }
+
 
     public void paymentFailedDriveCanceledNotify(String email){
         addNotification(new Notification(

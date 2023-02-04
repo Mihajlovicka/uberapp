@@ -119,4 +119,13 @@ export class DriveChangedReviewComponent implements OnInit {
     )
   }
 
+  driveCanceled(){
+    this.service.cancelDrive(this.driveId).subscribe(
+      (resp:Drive) => {
+        this.drive=resp;
+        console.log(this.drive);
+      }
+    )
+  }
+
 }

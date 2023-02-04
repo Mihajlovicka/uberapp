@@ -170,4 +170,10 @@ public class DriveController {
         return new ResponseEntity(driveService.getDrive(driveId), HttpStatus.OK);
 
     }
+
+    @PostMapping(value="/api/ownerCancelDrive/{id}")
+    public ResponseEntity cancelDrive(@PathVariable Long id) throws DriveNotFoundException {
+        Drive drive = driveService.getDrive(id);
+        return new ResponseEntity(driveConverter.toDTO(driveService.cancelDrive(drive)), HttpStatus.OK);
+    }
 }
