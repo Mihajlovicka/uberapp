@@ -68,17 +68,18 @@ public class BankController {
     @PostMapping(value="bank/acceptTransaction/{id}")
     public ResponseEntity acceptTransaction(@PathVariable Long id) throws TransactionIdDoesNotExistException, EmailNotFoundException, URISyntaxException, IOException, InterruptedException {
         BankTransaction transaction = bankService.acceptTransaction(id);
-        //trebam namestiti status voznje
-        driveService.ownerPaymentAccepted(transaction);
+
+        driveService.paymentAccepted(transaction);
 
         return new ResponseEntity(bankConverter.toDTO(transaction), HttpStatus.OK);
     }
 
     @PostMapping(value="bank/declineTransaction/{id}")
-    public ResponseEntity declineTransaction(@PathVariable Long id, @RequestBody ClientsBankAccountDTO clientsBankAccount) throws TransactionIdDoesNotExistException {
+    public ResponseEntity declineTransaction(@PathVariable Long id, @RequestBody ClientsBankAccountDTO clientsBankAccount) throws TransactionIdDoesNotExistException, EmailNotFoundException {
         BankTransaction bankTransaction = bankService.declineTransaction(id, clientsBankAccount.getAccountNumber());
-        //postaviti status voznje na failed
-        driveService.driveFailedMoneyTransactionRejected(bankTransaction);
+
+
+        driveService.paymentDeclined(bankTransaction);
 
 
         return new ResponseEntity(bankConverter.toDTO(bankTransaction), HttpStatus.OK);

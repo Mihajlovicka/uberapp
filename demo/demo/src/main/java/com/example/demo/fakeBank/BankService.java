@@ -4,6 +4,7 @@ import com.example.demo.email.EmailDetails;
 import com.example.demo.email.EmailService;
 import com.example.demo.exception.EmailExistException;
 import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.exception.TransactionIdDoesNotExistException;
 import com.example.demo.model.*;
 import com.example.demo.service.NotificationService;
@@ -74,6 +75,12 @@ public class BankService {
 
     }
 
+    public BankTransaction transactionFinalized(Long id){
+        BankTransaction transaction = bankTransactionRepository.findById(id).get();
+        if(transaction==null) throw new NotFoundException("Transaction does not exist");
+        transaction.setTransactionStatus(TransactionStatus.FINALIZED);
+        return bankTransactionRepository.save(transaction);
+    }
     public Double findPassengersDebit(Drive drive, String passengersEmail){
         Double amount = 0.0;
         for (Passenger passenger:
