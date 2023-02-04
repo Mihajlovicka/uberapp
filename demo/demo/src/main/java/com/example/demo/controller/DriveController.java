@@ -41,12 +41,13 @@ public class DriveController {
     @Autowired
     DriveConverter driveConverter;
 
-
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @PostMapping(value="api/acceptDrive/{id}")
     public ResponseEntity acceptDriveParticipation(@PathVariable Long id) throws EmailNotFoundException, DriveNotFoundException, NotDrivePassengerException, URISyntaxException, IOException, TransactionIdDoesNotExistException, InterruptedException {
         return new ResponseEntity(driveConverter.toDTO(driveService.acceptDriveParticipation(id)), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @PostMapping(value="api/declineDrive/{id}")
     public ResponseEntity declineDriveParticipation(@PathVariable Long id) throws DriveNotFoundException, NotDrivePassengerException, TransactionIdDoesNotExistException {
         return new ResponseEntity(driveConverter.toDTO(driveService.declineDriveParticipation(id)), HttpStatus.OK);
@@ -59,7 +60,7 @@ public class DriveController {
     }
 
 
-
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @PostMapping(value = "/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, URISyntaxException, IOException, InterruptedException {
 
@@ -187,13 +188,15 @@ public class DriveController {
 
     }
 
-
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @PostMapping(value="/api/ownerCancelDrive/{id}")
     public ResponseEntity cancelDrive(@PathVariable Long id) throws DriveNotFoundException {
         Drive drive = driveService.getDrive(id);
         return new ResponseEntity(driveConverter.toDTO(driveService.cancelDrive(drive)), HttpStatus.OK);
     }
 
+
+    @PreAuthorize("hasRole('ROLE_CLIENT')")
     @PostMapping(value="/api/continueWithDrive/{id}")
     public ResponseEntity continueWithDrive(@PathVariable Long id) throws DriveNotFoundException, EmailNotFoundException {
         Drive drive = driveService.getDrive(id);

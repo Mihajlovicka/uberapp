@@ -187,7 +187,7 @@ public class UserController {
 
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
         @PostMapping(value = "api/add-driver")
     public ResponseEntity addDriver(@RequestBody AddDriverCarFormDTO addDriverCarFormDTO) throws EmailExistException, PlateNumberExistException {
         User user = new User();
@@ -229,6 +229,7 @@ public class UserController {
         return new ResponseEntity(email, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping(value="api/blockUser")
     public ResponseEntity blockUser(@RequestBody String email) {
         userService.block(email);
@@ -243,6 +244,8 @@ public class UserController {
             return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping(value="api/unblockUser")
     public ResponseEntity unblockUser(@RequestBody String email) {
         userService.unblock(email);
