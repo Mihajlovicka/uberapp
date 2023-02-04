@@ -6,6 +6,7 @@ import { Drive } from '../model/drive.model';
 import {Role, Status, User} from "../model/user.model";
 import {AppService} from "../app.service";
 import {formatDate} from "@angular/common";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-drive-history-client',
@@ -13,7 +14,7 @@ import {formatDate} from "@angular/common";
   styleUrls: ['./drive-history-client.component.css']
 })
 export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
-  displayedColumns: string[] = ['firstStop', 'lastStop', 'price', 'startDate', 'endDate'];
+  displayedColumns: string[] = ['firstStop', 'lastStop', 'price', 'startDate', 'endDate', 'status'];
 
   columns = [
     {
@@ -29,22 +30,27 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
     {
       columnDef: 'price',
       header: 'Cena',
-      cell: (element: Drive) => `${element.price}`,
+      cell: (element: Drive) => `${element.price.toFixed(2)}`,
     },
     {
       columnDef: 'startDate',
       header: 'Datum pocetka voznje',
-      cell: (element: Drive) => `${formatDate((new Date(element.date)), 'dd/MM/yyyy hh:mm', 'en')}`,
+      cell: (element: Drive) => `${formatDate((new Date(element.startDate)), 'dd/MM/yyyy hh:mm', 'en')}`,
     },
     {
       columnDef: 'endDate',
       header: 'Datum kraja voznje',
-      cell: (element: Drive) => `${formatDate(new Date(element.date), 'dd/MM/yyyy hh:mm', 'en')}`,
+      cell: (element: Drive) => `${formatDate(new Date(element.endDate), 'dd/MM/yyyy hh:mm', 'en')}`,
+    },
+    {
+      columnDef: 'status',
+      header: 'Status voznje',
+      cell: (element: Drive) => `${element.driveStatus=="DRIVE_ENDED"?"Uspesna voznja":(element.driveStatus==="DRIVE_REJECTED"?"Odbijena voznja":"Neuspesna voznja")}`,
     },
   ];
 
   drives :Drive[] = [];
-
+  email = "";
   logged_user: User = {
     username:'',
     name:'',
@@ -59,7 +65,9 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
   @ViewChild(MatSort) sort: MatSort;
   private sortedData: Drive[] = [];
   constructor(private _liveAnnouncer: LiveAnnouncer,
-              private appService: AppService) {}
+              private route: ActivatedRoute,
+              private appService: AppService,
+              private router: Router) {}
 
 
   ngOnInit(): void {
@@ -92,7 +100,14 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
     });
   }
   loadDrives(){
-    this.appService.getAllDrivesClient(this.logged_user.email).subscribe((resp: any) => {
+    this.route.queryParams.subscribe(params => {
+
+      this.email = params['email']
+    });
+    if(this.logged_user.role!=="ROLE_ADMINISTRATOR"){
+      this.email=this.logged_user.email;
+    }
+    this.appService.getAllPastDrivesClient(this.email).subscribe((resp: any) => {
 
       console.log(resp);
       this.drives = resp;
@@ -114,10 +129,11 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case 'firstStop': return this.compare(a.stops[0].name, b.stops[0].name, isAsc);
-        case 'lastStop': return this.compare(a.stops[b.stops.length-1].name, b.stops[b.stops.length-1].name, isAsc);
+        case 'lastStop': return this.compare(a.stops[a.stops.length-1].name, b.stops[b.stops.length-1].name, isAsc);
         case 'price': return this.compare(a.price, b.price, isAsc);
         case 'startDate': return this.compare(a.date, b.date, isAsc);
         case 'endDate': return this.compare(a.date, b.date, isAsc);
+        case 'status': return this.compare(a.driveStatus, b.driveStatus, isAsc);
         default: return 0;
       }
     });
@@ -136,4 +152,7 @@ export class DriveHistoryClientComponent implements AfterViewInit, OnInit  {
   }
   /** Announce the change in sort state for assistive technology. */
 
+  openDrive(drive:Drive){
+    this.router.navigate(['/drive/'+drive.id]);
+  }
 }

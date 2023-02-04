@@ -1,0 +1,32 @@
+.date{
+  width:100%;
+  font-size: 20px;
+  height: 50px;
+}
+.data{
+  margin-right: 20px;
+  padding-top: 20px;
+  width: 100%;
+  height: 70vh;
+}
+.container{
+  margin: 0 auto;
+  max-width: 80%!important;
+  padding: 40px;
+  max-height: 80%;
+}
+
+.example-radio-group {
+  display: flex;
+  flex-direction: column;
+  margin: 15px 0;
+  align-items: flex-start;
+}
+
+.example-radio-button {
+  margin: 5px;
+}
+.radio{
+  font-size: 20px;
+}
+

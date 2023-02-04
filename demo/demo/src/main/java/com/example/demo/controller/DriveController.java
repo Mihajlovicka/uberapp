@@ -94,13 +94,20 @@ public class DriveController {
     public ResponseEntity getDrives(@RequestParam String email) throws EmailNotFoundException {
 
 
-        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email)), HttpStatus.OK);
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getDrivesForUser(email,false)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/getPastDrivesClient")
+    public ResponseEntity getPastDrives(@RequestParam String email) throws EmailNotFoundException {
+
+
+        return new ResponseEntity(driveService.getDrivesForUser(email,true), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
-    @GetMapping(path = "/ride/getCurrent")
-    public ResponseEntity<List<RealAddress>> getCurrent(){
-        return new ResponseEntity(driveService.getCurrentDriveStops(), HttpStatus.OK);
+    @GetMapping(path = "/ride/getCurrentDriveDriver")
+    public ResponseEntity<Drive> getCurrent(){
+        return new ResponseEntity(driveService.getCurrentDrive(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -139,16 +146,16 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     @GetMapping(
-            path = "/getClientCurrentDriveStops",
+            path = "/getClientCurrentDrive",
             produces = "application/json"
     )
-    public ResponseEntity<List<RealAddress>> getClientCurrentDriveStops() {
-        return new ResponseEntity(driveService.getClientCurrentDriveStops(), HttpStatus.OK);
+    public ResponseEntity<Drive> getClientCurrentDrive() {
+        return new ResponseEntity(driveService.getClientCurrentDrive(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/notifyPassengers")
-    public ResponseEntity notifyPassengers(){
+    public ResponseEntity notifyPassengers() throws EmailNotFoundException {
         driveService.notifyPassengers();
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
@@ -156,7 +163,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/cancelRide")
-    public ResponseEntity cancelRide(@RequestBody String reason){
+    public ResponseEntity cancelRide(@RequestBody String reason) throws EmailNotFoundException {
         driveService.cancelDrive(reason);
         return new ResponseEntity<>(null, HttpStatus.OK);
 
@@ -170,6 +177,7 @@ public class DriveController {
 
     }
 
+
     @PostMapping(value="/api/ownerCancelDrive/{id}")
     public ResponseEntity cancelDrive(@PathVariable Long id) throws DriveNotFoundException {
         Drive drive = driveService.getDrive(id);
@@ -180,5 +188,12 @@ public class DriveController {
     public ResponseEntity continueWithDrive(@PathVariable Long id) throws DriveNotFoundException, EmailNotFoundException {
         Drive drive = driveService.getDrive(id);
         return new ResponseEntity(driveConverter.toDTO(driveService.continueWithDrive(drive)), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
+    @GetMapping(value = "/getAllDrives")
+    public ResponseEntity getAllDrives() {
+        return new ResponseEntity(driveConverter.toDTOs(driveService.getAllDrives()), HttpStatus.OK);
+
     }
 }

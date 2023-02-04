@@ -28,6 +28,20 @@ public class MessageController {
         messagesService.notifySupport();
         return new ResponseEntity(HttpStatus.OK);
     }
+    @PostMapping(value="api/openMessage")
+    public ResponseEntity openMessage() throws EmailNotFoundException {
+
+        messagesService.seeMessages();
+        messagesService.notifySupport();
+        return new ResponseEntity("",HttpStatus.OK);
+    }
+    @PostMapping(value="api/openMessageForChat")
+    public ResponseEntity openMessage(@RequestBody String chat) throws EmailNotFoundException {
+
+        messagesService.seeMessages(chat);
+        messagesService.notifySupport();
+        return new ResponseEntity("",HttpStatus.OK);
+    }
     @GetMapping(value = "/api/getMessages")
     public ResponseEntity getDriver(@RequestParam String email) {
 

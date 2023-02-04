@@ -13,8 +13,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/car")
@@ -99,6 +101,19 @@ public class CarController {
         Car car = carService.getClientCurrentCar();
         DriverStatus status = carService.getCarStatus(car);
         return new ResponseEntity<>(new CarSimulationDTO(car,status), HttpStatus.OK);
+    }
+    @GetMapping(
+            path = "/getAllCars",
+            produces = "application/json"
+    )
+    public ResponseEntity<List<CarSimulationDTO>> getAllCars() {
+        List<Car> cars = carService.getAllCars();
+        List<CarSimulationDTO> carSimulationDTOS = new ArrayList<>();
+        for(Car car:cars){
+            DriverStatus status = carService.getCarStatus(car);
+            carSimulationDTOS.add(new CarSimulationDTO(car, status));
+        }
+        return new ResponseEntity<>(carSimulationDTOS, HttpStatus.OK);
     }
 
 }

@@ -16,7 +16,7 @@ export class MessagesAdminComponent implements OnInit,AfterViewChecked {
 
   // @ts-ignore
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
-
+  disable:boolean = true;
   showClients:boolean = true;
   showDrivers:boolean = true;
   notRead:boolean = false;
@@ -155,6 +155,12 @@ export class MessagesAdminComponent implements OnInit,AfterViewChecked {
       console.log(this.logged_user.role)
       this.reloadMessages();
     });
+    this.appService.openMessagesForChat(email).subscribe((resp: any) => {
+       console.log(resp);
+
+      this.reloadMessages();
+    });
+    this.disable=false;
 
   }
   initializeWebSocketConnection() {

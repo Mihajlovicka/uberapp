@@ -1,11 +1,20 @@
-<app-header #header (openNotifications)="funkcija($event)"></app-header>
-
+<div  class="header">
+  <app-header #header (openNotifications)="funkcija($event)"
+                        (openSupportChat)="openChat($event)"></app-header>
+</div>
 <mat-drawer-container class="example-container" autosize>
   <mat-drawer #NotificationsDrawer class="example-sidenav" mode="over" style="padding:20px; max-width: 30%;">
     <app-notifications (openNotifications)="funkcija($event)"
-                       *ngIf="notifikacije"
-                       (notificationsNumber)="newNotifications($event);"></app-notifications>
+
+                       *ngIf="isLoggedIn()"
+                       (notificationsNumber)="newNotifications($event);"
+                       (openSupportChat)="openChat($event)"></app-notifications>
 
   </mat-drawer>
+
   <router-outlet></router-outlet>
+  <div class="position-fixed w-50 float-right" style="height:70vh;" *ngIf="isLoggedIn()" [hidden]="showSupport">
+    <app-messages-client (messagesNumber)="newMessage($event);"></app-messages-client>
+  </div>
+
 </mat-drawer-container>

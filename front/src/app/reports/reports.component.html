@@ -1,1 +1,57 @@
+<div class="container">
+  <div class="row">
+    <div class="col-4 data">
+      <div class="row"><h1><strong>Izvestaj voznji</strong></h1></div>
+      <div class="radio">
+        <label id="example-radio-group-label">Odaberite koje podatke zelite:</label>
+        <mat-radio-group
+          aria-labelledby="example-radio-group-label"
+          class="example-radio-group"
+          [(ngModel)]="chartType">
+          <mat-radio-button class="example-radio-button" *ngFor="let season of chartTypes" [value]="season">
+            {{season}}
+          </mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="fill" class="date">
+          <mat-label>Odaberite vremenski period</mat-label>
+          <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
+            <input matStartDate formControlName="start" placeholder="Pocetni datum">
+            <input matEndDate formControlName="end" placeholder="Krajnji datum">
+          </mat-date-range-input>
+          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
 
+          <mat-error *ngIf="range.controls['start'].hasError('matStartDateInvalid')">Pocetni datum nije ispravan
+          </mat-error>
+          <mat-error *ngIf="range.controls['end'].hasError('matEndDateInvalid')">Krajnji datum nije ispravan
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div style="margin-top:100px;">
+        <div class="row justify-content-end">
+          <button mat-raised-button type="button" class="col-4" color="primary" (click)="showData()">Prikazi
+          </button>
+        </div>
+        <div *ngIf="drives.length !== 0">
+          <div class="row" style="margin-top:50px;"><h2>Ukupno voznji: {{drivesTotal}}</h2></div>
+          <div class="row"><h3>Prosecan broj: {{drivesTotal / dates_labels.length}}</h3></div>
+          <div class="row"><h2>Ukupna cena: {{priceTotal}} RSD</h2></div>
+          <div class="row"><h3>Prosecna cena: {{priceTotal / dates_labels.length}} RSD</h3></div>
+          <div class="row"><h2>Ukupno predjenih kilometara: {{kmTotal}}</h2></div>
+          <div class="row"><h3>Prosecno predjenih kilometara: {{kmTotal / dates_labels.length}}</h3></div>
+        </div>
+      </div>
+    </div>
+    <div class="col ">
+      <chart class="row chart"
+             [type]="type"
+             [data]="data"
+             [options]="options"
+      ></chart>
+
+    </div>
+  </div>
+</div>

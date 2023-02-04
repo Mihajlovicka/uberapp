@@ -19,7 +19,7 @@ public class MessageConverter {
         messageDTO.setMessage(message.getMessage());
         messageDTO.setSender(userConverter.toDTO(message.getSender()));
         messageDTO.setReciever(userConverter.toDTO(message.getReciever()));
-
+        messageDTO.setRead(message.isOpened());
         return messageDTO;
     }
     public List<MessageDTO> toDTOs(List<Message> messages){

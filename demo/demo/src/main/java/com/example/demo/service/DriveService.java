@@ -1,10 +1,17 @@
 package com.example.demo.service;
+
 import com.example.demo.exception.*;
+
+
+
+import com.example.demo.exception.NotDrivePassengerException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.BankTransaction;
 import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
 import com.example.demo.converter.UserConverter;
+import com.example.demo.exception.EmailNotFoundException;
+import com.example.demo.exception.NotFoundException;
 import com.example.demo.model.help.ResponseRouteHelp;
 import com.example.demo.model.help.ResponseTableHelp;
 import com.example.demo.model.Drive;
@@ -95,7 +102,7 @@ public class DriveService {
 
     }
 
-    public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
+    public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
         //za now voznju?????????????????????:)
         drive.setDriveType(DriveType.FUTURE);
         drive=driveRepository.save(drive);
@@ -398,17 +405,36 @@ public class DriveService {
     }**/
 
 
-    public List<Drive> getDrivesForUser(String email) throws EmailNotFoundException {
+
+    public List<Drive> getDrivesForUser(String email, boolean past) throws EmailNotFoundException {
         List<Drive> drives = new ArrayList<Drive>();
         User user = userService.getByEmail(email);
         for(Drive drive : driveRepository.findAll()){
             if(user.getRole().getName().equals("ROLE_CLIENT")) {
                 if (drive.getOwner().getUser().getEmail().equals(email)) {
-                    drives.add(drive);
+                    if(!past) {
+                        drives.add(drive);
+                    }
+                    else{
+                        if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                            drives.add(drive);
+                        }
+                    }
                 } else {
                     for (Passenger passenger : drive.getPassengers()) {
                         if (passenger.getPassengerEmail().equals(email)) {
-                            drives.add(drive);
+                            if(!past) {
+                                drives.add(drive);
+                            }
+                            else{
+                                if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                        drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                        drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                    drives.add(drive);
+                                }
+                            }
                         }
                     }
                 }
@@ -416,7 +442,16 @@ public class DriveService {
             else{
                 if(drive.getDriver() != null) {
                     if (drive.getDriver().getUser().getEmail().equals(email)) {
-                        drives.add(drive);
+                        if(!past) {
+                            drives.add(drive);
+                        }
+                        else{
+                            if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                                    drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
+                                    drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                drives.add(drive);
+                            }
+                        }
                     }
                 }
             }
@@ -595,13 +630,7 @@ public class DriveService {
                 "annotations=distance,duration";
     }
 
-    public List<RealAddress> getCurrentDriveStops() {
-        Drive drive = getCurrentDrive();
-        if(drive != null) return drive.getStops();
-        return new ArrayList<>();
-    }
-
-    private Drive getCurrentDrive(){
+    public Drive getCurrentDrive(){
         DriversAccount driver = userService.getLoggedDriver();
         for (Drive d : driveRepository.findByDriver(driver)) {
             if(d.getDriveType().equals(DriveType.NOW))
@@ -709,37 +738,27 @@ public class DriveService {
         throw new NotFoundException("Car current location not found. No current drive.");
     }
 
-    public Car getClientCurrentCar(){
+
+    public Drive getClientCurrentDrive(){
         User user = userService.getLoggedIn();
         for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
             if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
-                return d.getDriver().getCar();
+                return d;
             for(Passenger passenger:d.getPassengers()){
                 if(passenger.getPassengerEmail().equals(user.getEmail()))
-                    return d.getDriver().getCar();
+                    return d;
             }
         }
         throw new NotFoundException("No client current ride.");
     }
 
-    public List<RealAddress> getClientCurrentDriveStops() {
-        User user = userService.getLoggedIn();
-        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
-            if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
-                return d.getStops();
-            for(Passenger passenger:d.getPassengers()){
-                if(passenger.getPassengerEmail().equals(user.getEmail()))
-                    return d.getStops();
-            }
-        }
-        return new ArrayList<>();
-    }
-
-    public List<User> makeUsersFromPassengersForNotification(Drive drive){
+    public List<User> makeUsersFromPassengersForNotification(Drive drive) throws EmailNotFoundException {
         List<User> users = new ArrayList<>();
         users.add(drive.getOwner().getUser());
         for(Passenger p: drive.getPassengers()){
+
             users.add(userService.findByEmail(p.getPassengerEmail()));
+
         }
         return users;
     }
@@ -755,14 +774,14 @@ public class DriveService {
     }
 
 
-    public void notifyPassengers() {
+    public void notifyPassengers() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             notificationService.addNotificationMultiple(new Notification("Vozilo je stiglo", "Vase vozilo ceka.", null,""), makeUsersFromPassengersForNotification(drive));
         }
     }
 
-    public void cancelDrive(String reason) {
+    public void cancelDrive(String reason) throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
@@ -789,7 +808,7 @@ public class DriveService {
         return driveRepository.findAll();
     }
 
-    public void cancelFutureDrives(DriversAccount driver) {
+    public void cancelFutureDrives(DriversAccount driver) throws EmailNotFoundException {
         for(Drive drive:driveRepository.findByDriver(driver)){
             if(drive.getDriveType().equals(DriveType.FUTURE)){
                 notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));

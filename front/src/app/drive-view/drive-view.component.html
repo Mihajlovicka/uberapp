@@ -9,61 +9,121 @@
              [leafletLayers]="mainGroup"
         ></div>
       </div>
+      <div class="row " style="margin: 15px;" *ngIf="drive!==undefined">
+        <div class="row">
+          <h5 class="col">Stanice</h5>
+        </div>
+        <div class="row">
+          <mat-card-content style="margin-left: 0px; margin-right: 15px; margin-top: 5px; margin-bottom: 10px;">
+            <div style="margin: 0 auto;">
+              <ul style="list-style: none;">
+                <mat-card class="example-card">
+                  <mat-card-content style="padding: 0px; max-height: 180px; overflow-y: auto; overflow-x: hidden">
+                    <li *ngFor="let stop of drive.stops; let i = index" style="font-size: 16px; padding: 0px">
+                      <div *ngIf="i===0" class="row">
+                        <div class="col-md-1 col-sm-1">
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+                          </div>
+                        </div>
+                        <div class="col-md-11 col-sm-11">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div *ngIf="i===drive.stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1">
+                          <div class="row" style="margin:0 auto">
+                            <span class="material-icons" style="color:#673ab7;">flag</span>
+
+                          </div>
+
+                        </div>
+                        <div class="col-md-11 col-sm-11">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                      <div *ngIf="i!== 0 && i!== drive.stops.length-1" class="row">
+                        <div class="col-md-1 col-sm-1">
+                          <div class="row" style="margin:0 auto">
+                            <p style="color:white">aa</p>
+                          </div>
+
+                        </div>
+                        <div class="col-md-11 col-sm-11">
+                          <p><small><strong>{{stop.name}}</strong></small></p>
+                        </div>
+                      </div>
+                    </li>
+                  </mat-card-content>
+                </mat-card>
+              </ul>
+            </div>
+          </mat-card-content>
+        </div>
+      </div>
     </div>
     <div class="data col" *ngIf="drive!==undefined">
+
       <div class="row">
-        <h3 class="col">Voznja</h3>
-      </div>
-      <div class="row">
-        <h5 class="col">Stanice</h5>
+        <h5 class="col">Informacije o voznji</h5>
       </div>
       <div class="row">
         <mat-card-content>
           <div style="margin: 0 auto;">
-            <ul style="list-style: none;">
+            <ul style="list-style: none; margin:0 auto">
               <mat-card class="example-card">
-                <mat-card-content>
-                  <li *ngFor="let stop of drive.stops; let i = index" style="font-size: 16px;">
-                    <div *ngIf="i===0" class="row">
-                      <div class="col-md-1 col-sm-1">
-                        <div class="row" style="margin:0 auto">
-                          <span class="material-icons" style="color:#673ab7;">flag</span>
-                        </div>
-                      </div>
-                      <div class="col-md-8 col-sm-8">
-                        <p><small><strong>{{stop.name}}</strong></small></p>
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">calendar_month</span>
                       </div>
                     </div>
-                    <div *ngIf="i===drive.stops.length-1" class="row">
-                      <div class="col-md-1 col-sm-1">
-                        <div class="row" style="margin:0 auto">
-                          <span class="material-icons" style="color:#673ab7;">flag</span>
-
-                        </div>
-
-                      </div>
-                      <div class="col-md-8 col-sm-8">
-                        <p><small><strong>{{stop.name}}</strong></small></p>
+                    <div class="col-md-11 col-sm-11">
+                      <p><small><strong>Datum voznje: {{drive.endDate?drive.endDate.slice(0,11):""}}</strong></small></p>
+                    </div>
+                  </div>
+                </li>
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">schedule</span>
                       </div>
                     </div>
-                    <div *ngIf="i!== 0 && i!== drive.stops.length-1" class="row">
-                      <div class="col-md-1 col-sm-1">
-                        <div class="row" style="margin:0 auto">
-                          <p style="color:white">aa</p>
-                        </div>
-
-                      </div>
-                      <div class="col-md-8 col-sm-8">
-                        <p><small><strong>{{stop.name}}</strong></small></p>
+                    <div class="col-md-5 col-sm-5">
+                      <p><small><strong>Pocetak voznje: {{drive.startDate?drive.startDate.slice(11):""}}</strong></small></p>
+                    </div>
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">schedule</span>
                       </div>
                     </div>
-                  </li>
-                </mat-card-content>
+                    <div class="col-md-5 col-sm-5">
+                      <p><small><strong>Pocetak voznje: {{drive.endDate?drive.endDate.slice(11):""}}</strong></small></p>
+                    </div>
+                  </div>
+                </li>
+
+                <li style="list-style: none;font-size: 16px;">
+                  <div class="row">
+                    <div class="col-md-1 col-sm-1">
+                      <div class="row" style="margin:0 auto">
+                        <span class="material-icons" style="color:#673ab7;">payments</span>
+                      </div>
+                    </div>
+                    <div class="col-md-8 col-sm-8">
+                      <p><small><strong>Cena voznje: {{drive.price.toFixed(2)}} RSD</strong></small></p>
+                    </div>
+                  </div>
+                </li>
               </mat-card>
             </ul>
           </div>
+
         </mat-card-content>
       </div>
+
       <div class="row">
         <h5 class="col">Vozac</h5>
       </div>
@@ -99,7 +159,7 @@
         <mat-card-content>
           <div style="margin: 0 auto;">
             <ul style="list-style: none; margin:0 auto">
-              <mat-card class="example-card">
+              <mat-card class="example-card" style="max-height: 180px; overflow-y: auto; overflow-x: hidden">
                 <mat-card-content>
                   <li style="font-size: 15px;">
                     <div class="row">
@@ -154,33 +214,87 @@
 
         </mat-card-content>
       </div>
+
       <div class="row">
-        <h5 class="col">Informacije</h5>
+        <h5 class="col">Ocene</h5>
       </div>
       <div class="row">
         <mat-card-content>
           <div style="margin: 0 auto;">
             <ul style="list-style: none; margin:0 auto">
-              <mat-card class="example-card">
-              <li style="list-style: none;font-size: 16px;">
-                <div class="row">
-                  <div class="col-md-1 col-sm-1">
-                    <div class="row" style="margin:0 auto">
-                      <span class="material-icons" style="color:#673ab7;">credit_card</span>
-                      <span class="material-icons" style="color:#673ab7;">payments</span>
-                      <span class="material-icons" style="color:#673ab7;">paid</span>
+              <mat-card class="example-card" style="max-height: 180px; overflow-y: auto; overflow-x: hidden">
+                <mat-card-content>
+
+
+                  <li style="font-size: 15px; margin-top: 5px;">
+                    <div class="row" style=" margin: 0 auto; width: fit-content">
+                      <div class="col-lg-2 col-md-2 col-sm-2">
+
+                        <div class="row" style="margin:0 auto">
+                          <span class="material-icons" style="color:#673ab7; width: max-content;">person</span>
+
+                        </div>
+                      </div>
+
+                      <div class="col-lg-8 col-md-8 col-sm-8">
+                        <p>
+                          <small><strong>Prosecna ocena vozaca {{avgGradeDriver.toFixed(2)}}</strong></small>
+                        </p>
+
+                      </div>
+                      <div class="col-lg-1 col-md-1 col-sm-1">
+                        <span class="material-icons" style="color:#673ab7; display: inline">star</span>
+
+
+                      </div>
+
+
                     </div>
-                  </div>
-                  <div class="col-md-8 col-sm-8">
-                    <p><small><strong>Cena voznje: {{drive.price}} RSD</strong></small></p>
-                  </div>
-                </div>
-            </mat-card>
+
+
+                  </li>
+
+                  <li style="font-size: 15px; margin-top: 5px;">
+                    <div class="row" style=" margin: 0 auto; width: fit-content">
+                      <div class="col-lg-2 col-md-2 col-sm-2">
+
+                        <div class="row" style="margin:0 auto">
+                          <span class="material-icons" style="color:#673ab7; width: max-content;">directions_car</span>
+
+                        </div>
+                      </div>
+
+                      <div class="col-lg-8 col-md-8 col-sm-8">
+                        <p>
+                          <small><strong>Prosecna ocena vozila {{avgGradeCar.toFixed(2)}}</strong></small>
+                        </p>
+
+                      </div>
+                      <div class="col-lg-1 col-md-1 col-sm-1">
+                        <span class="material-icons" style="color:#673ab7; display: inline">star</span>
+
+
+                      </div>
+
+
+                    </div>
+
+
+                  </li>
+                  <li style=" margin-top: 5px;">
+                    <div class="row">
+                      <button mat-raised-button color="primary" style="margin:0 auto" (click)="openGrades();">Prikazi sve ocene</button>
+
+                    </div>
+                    </li>
+                </mat-card-content>
+              </mat-card>
             </ul>
           </div>
 
         </mat-card-content>
       </div>
+
     </div>
 
   </div>

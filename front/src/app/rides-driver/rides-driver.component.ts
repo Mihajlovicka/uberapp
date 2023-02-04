@@ -12,6 +12,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {
   CancelDriveReasonDialogComponent
 } from "../dialog-template/cancel-drive-reason-dialog/cancel-drive-reason-dialog.component";
+import {Drive} from "../model/drive.model";
 
 L.Icon.Default.imagePath = 'assets/';
 
@@ -46,6 +47,8 @@ export class RidesDriverComponent implements OnInit {
   nextDate: string = ''
   stops: Stop[] = []
   arrived:boolean=true
+  drive: Drive | undefined
+  hideStartButton: boolean = false;
 
   constructor(private appService: AppService,
               public dialog: MatDialog) {
@@ -56,8 +59,29 @@ export class RidesDriverComponent implements OnInit {
       this.status = res.driverStatus
     })
 
-    this.appService.getCurrentRide().subscribe((res: Stop[]) => {
-      this.stops = res;
+    this.appService.getCurrentRide().subscribe((res: any) => {
+      this.drive = res;
+      this.stops = res.stops
+      let json: any = JSON.parse(res.routeJSON)
+      this.appService.getDriverCar().subscribe((car: any) => {
+        let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
+        let color = Math.floor(Math.random() * 16777215).toString(16);
+        let routeLayer = L.geoJSON(json['features'][0]['geometry']);
+        routeLayer.setStyle({color: `#${color}`});
+        routeLayer.addTo(geoLayerRouteGroup);
+        this.ride[res.id] = geoLayerRouteGroup;
+        let markerLayer = L.marker([car.latitude,car.longitude], {
+          icon: L.icon({
+            iconUrl: 'assets/red.png',
+            iconSize: [20, 20],
+            iconAnchor: [10, 10],
+          }),
+        })
+        markerLayer.addTo(geoLayerRouteGroup);
+        this.vehicle[res.driver.car.id] = markerLayer;
+        this.mainGroup = [...this.mainGroup, geoLayerRouteGroup];
+      })
+      //sve ovde
     })
     this.appService.getFirstFutureRide().subscribe((res: any) => {
       if (res.stops == undefined) return
@@ -102,6 +126,7 @@ export class RidesDriverComponent implements OnInit {
     this.stompClient.subscribe('/map-updates/new-ride', (message: { body: string }) => {
       let ride: Ride = JSON.parse(message.body);
       if (ride.vehicle.id != this.id) return;
+      this.mainGroup = []
       let geoLayerRouteGroup: L.LayerGroup = new L.LayerGroup();
       let color = Math.floor(Math.random() * 16777215).toString(16);
       for (let step of JSON.parse(ride.routeJSON)['routes'][0]['legs'][0]['steps']) {
@@ -170,6 +195,7 @@ export class RidesDriverComponent implements OnInit {
     this.appService.startRide().subscribe((res: any) => {
       this.status = 'BUSY'
       this.appService.openErrorDialog(res);
+      this.hideStartButton = true;
     })
   }
 
@@ -214,9 +240,9 @@ export class RidesDriverComponent implements OnInit {
   }
 
   notifyPassengers() {
-    // this.appService.notifyPassengers().subscribe((res:any) => {
-    //   this.arrived = true
-    // })
+    this.appService.notifyPassengers().subscribe((res:any) => {
+      this.arrived = !this.arrived
+    })
   }
 
 }

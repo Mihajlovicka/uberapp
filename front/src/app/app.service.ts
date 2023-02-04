@@ -207,6 +207,12 @@ import { Stop } from "./model/stop.model";
   public openNotification(id:bigint):Observable<any>{
     return this.http.post("http://localhost:8080/api/openNotification",id,this.httpOptions).pipe(catchError(this.handleError<any>()));
   }
+  public openMessages():Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessage",{},this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
+  public openMessagesForChat(chat:string):Observable<any>{
+    return this.http.post("http://localhost:8080/api/openMessageForChat",chat,this.httpOptions).pipe(catchError(this.handleError<any>()));
+  }
   public getMessagesForUser(email:string): Observable<Message[]>{
     return this.http.get<Message[]>(`http://localhost:8080/api/getMessages?email=`+email).pipe(catchError(this.handleError<Message[]>()));
   }
@@ -215,6 +221,9 @@ import { Stop } from "./model/stop.model";
   }
   public getUsersChatDisplay(): Observable<UsersChatDisplay[]>{
     return this.http.get<UsersChatDisplay[]>(`http://localhost:8080/api/getUsersChats`).pipe(catchError(this.handleError<UsersChatDisplay[]>()));
+  }
+  public getGradesForDrive(driveID: number): Observable<Grade[]>{
+    return this.http.get<Grade[]>(`http://localhost:8080/api/getGrades?driveID=` + driveID).pipe(catchError(this.handleError<Grade[]>()));
   }
   public getUser(email:string): Observable<User>{
     return this.http.get<User>(`http://localhost:8080/api/getUser?email=`+email).pipe(catchError(this.handleError<User>()));
@@ -227,6 +236,9 @@ import { Stop } from "./model/stop.model";
   }
   public getAllDrivesClient(email:string): Observable<Drive[]>{
     return this.http.get<Drive[]>(`http://localhost:8080/api/getDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
+  }
+  public getAllPastDrivesClient(email:string): Observable<Drive[]>{
+    return this.http.get<Drive[]>(`http://localhost:8080/api/getPastDrivesClient?email=`+email).pipe(catchError(this.handleError<Drive[]>()));
   }
 
 
@@ -277,8 +289,7 @@ import { Stop } from "./model/stop.model";
   }
 
      public getLoggedUser():Observable<User>{
-       return this.http.get<User>(`${this.getLoggedUserUrl}`).pipe(
-         catchError(this.handleError<User>()));
+       return this.http.get<User>(`${this.getLoggedUserUrl}`)
      }
 
   setData(data: DriverCarInfo) {
@@ -383,8 +394,8 @@ import { Stop } from "./model/stop.model";
     )
   }
 
-  getCurrentRide() :Observable<Stop[]>{
-    return this.http.get<Stop[]>(this.host + "/ride/getCurrent" , this.httpOptions)
+  getCurrentRide() :Observable<any>{
+    return this.http.get<any>(this.host + "/ride/getCurrentDriveDriver" , this.httpOptions)
   }
 
   getFirstFutureRide() :Observable<any>{
@@ -407,8 +418,8 @@ import { Stop } from "./model/stop.model";
     return this.http.get<Vehicle>(this.host + "/api/car/getClientCurrentCar" , this.httpOptions)
   }
 
-  getClientCurrentDrive():Observable<Stop[]> {
-    return this.http.get<Stop[]>(this.host + "/getClientCurrentDriveStops" , this.httpOptions)
+  getClientCurrentDrive():Observable<any> {
+    return this.http.get<any>(this.host + "/getClientCurrentDrive" , this.httpOptions)
   }
 
   notifyPassengers() {
@@ -421,5 +432,18 @@ import { Stop } from "./model/stop.model";
 
   changeAvailability():Observable<any> {
     return this.http.post<any>(this.host + "/changeAvailability" , this.httpOptions).pipe()
+  }
+
+
+  getAllDrives() {
+    return this.http.get<Drive[]>(this.host + "/getAllDrives").pipe(catchError(this.handleError<Drive[]>()));
+  }
+
+  reportDriver(result: any) {
+    return this.http.post<any>(this.host + "/reportDriver", result , this.httpOptions)
+  }
+
+  getAllCars() {
+    return this.http.get<Vehicle[]>(this.host + "/api/car/getAllCars", this.httpOptions);
   }
 }

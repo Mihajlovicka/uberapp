@@ -1,4 +1,4 @@
-<nav class="navbar navbar-dark bg-dark justify-content-between">
+<nav class="h-100 navbar navbar-dark bg-dark justify-content-between">
   <a class="navbar-brand">Hajd da vas vozamo</a>
   <div>
     <ul class="navbar-nav">
@@ -15,10 +15,48 @@
     <div *ngIf="isLoggedIn()" style="display: inline-block;" class="hover" (click)="openAllNotifications()">
       <mat-icon matBadge="{{numberOfNotifications}}" matBadgeColor="warn" style="color: #673ab7;">notifications</mat-icon>
     </div>
+    <div *ngIf="isLoggedIn() && !isAdmin()" style="display: inline-block;" class="hover" (click)="openSupport();">
+      <mat-icon matBadge="{{numberOfMessages}}" matBadgeColor="warn" style="color: #673ab7;">support_agent</mat-icon>
+    </div>
     <button mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
 
     <button mat-raised-button color="primary" style="margin-left:8px" routerLink="/register" *ngIf="! isLoggedIn()">Registracija</button>
 
-    <button mat-raised-button color="primary" *ngIf="isLoggedIn()" (click)="logout()">Odjava</button>
+    <button mat-button [matMenuTriggerFor]="clientMenu" *ngIf="isLoggedIn() && isClient()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #clientMenu="matMenu">
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/make-drive-reservation">Nova voznja</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/rides-cl">Trenutna voznja</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-client">Istorija voznji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/clientProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="driverMenu" *ngIf="isLoggedIn() && isDriver()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #driverMenu="matMenu">
+
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/rides-dr">Pracenje voznje</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/drive-history-driver">Istorija voznji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/driversProfile">Prikaz profila</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
+    <button mat-button [matMenuTriggerFor]="adminMenu" *ngIf="isLoggedIn() && isAdmin()">
+      <mat-icon style="color: #673ab7;">menu</mat-icon>
+
+    </button>
+    <mat-menu #adminMenu="matMenu">
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/all-users">Prikaz svih korisnika</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/reports/">Izvestaji</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/driver-info">Kreiraj nalog vozaca</button>
+      <button  style="font-size: 16px;" mat-menu-item routerLink="/messages-admin">Otvori chat</button>
+      <button  style="font-size: 16px;" mat-menu-item (click)="logout()">Odjava</button>
+    </mat-menu>
+
   </form>
 </nav>
