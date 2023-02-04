@@ -128,4 +128,13 @@ export class DriveChangedReviewComponent implements OnInit {
     )
   }
 
+  continueDrive(){
+    this.service.continueDrive(this.driveId).subscribe(
+      (resp: Drive) => {
+        this.drive = resp;
+        console.log(this.drive);
+      }
+    )
+  }
+
 }

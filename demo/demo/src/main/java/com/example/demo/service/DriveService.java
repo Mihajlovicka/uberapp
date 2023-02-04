@@ -123,11 +123,10 @@ public class DriveService {
 
     }
 
-    public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
+    public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
         drive.setDriveStatus(DriveStatus.DRIVER_WAITING);
         Drive saved = driveRepository.save(drive);
 
-        //i treba se trigerovati trazenje vozaca
 
         return findAvailableDriver(saved);
 
@@ -881,6 +880,25 @@ public class DriveService {
         drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
 
         notificationService.notifyCanceledDrive(drive);
+
+
+        return driveRepository.save(drive);
+    }
+
+    public Drive continueWithDrive(Drive drive) throws EmailNotFoundException {
+        drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
+        //trigerovati mejl za placanje
+
+        //ako nema para jadnik
+        if (!userService.canAffordDrive(drive.getOwner().getUser().getEmail(), drive.getOwnerDebit())) {
+            notificationService.paymentFailedDriveCanceledNotify(drive.getOwner().getUser().getEmail());
+            return driveFailed(drive);
+        }
+
+        //i treba se trigerovati trazenje vozaca
+        BankTransaction bt = bankService.requestOwnerPayment(drive);
+        drive.setOwnerTransactionId(bt.getId());
+
 
 
         return driveRepository.save(drive);

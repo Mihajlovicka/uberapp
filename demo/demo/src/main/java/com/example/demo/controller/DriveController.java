@@ -4,7 +4,6 @@ import com.example.demo.converter.DriveConverter;
 import com.example.demo.dto.CreateDriveReservationDTO;
 import com.example.demo.dto.DriveDTO;
 
-
 import com.example.demo.exception.DriveNotFoundException;
 import com.example.demo.exception.EmailNotFoundException;
 import com.example.demo.exception.NotDrivePassengerException;
@@ -175,5 +174,11 @@ public class DriveController {
     public ResponseEntity cancelDrive(@PathVariable Long id) throws DriveNotFoundException {
         Drive drive = driveService.getDrive(id);
         return new ResponseEntity(driveConverter.toDTO(driveService.cancelDrive(drive)), HttpStatus.OK);
+    }
+
+    @PostMapping(value="/api/continueWithDrive/{id}")
+    public ResponseEntity continueWithDrive(@PathVariable Long id) throws DriveNotFoundException, EmailNotFoundException {
+        Drive drive = driveService.getDrive(id);
+        return new ResponseEntity(driveConverter.toDTO(driveService.continueWithDrive(drive)), HttpStatus.OK);
     }
 }
