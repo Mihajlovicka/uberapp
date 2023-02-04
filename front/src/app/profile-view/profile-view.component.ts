@@ -61,7 +61,8 @@ export class ProfileViewComponent implements OnInit {
       ownerName: '',
       ownerSurname: ''
     },
-    bankStatus: BankStatus.EMPTY
+    bankStatus: BankStatus.EMPTY,
+    inDrive: false
   }
   private selectedFile: File | undefined;
 

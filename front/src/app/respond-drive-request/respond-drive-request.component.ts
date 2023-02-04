@@ -46,7 +46,8 @@ export class RespondDriveRequestComponent implements OnInit {
       ownerName: '',
       ownerSurname: ''
     },
-    bankStatus: BankStatus.ACTIVE
+    bankStatus: BankStatus.ACTIVE,
+    inDrive:false
   }
 
   drive: Drive={
@@ -87,7 +88,8 @@ export class RespondDriveRequestComponent implements OnInit {
         verificationEmail: '',
         ownerName: '',
         ownerSurname: ''
-      }
+      },
+      inDrive:false
     },
     routeJSON: {},
     seats: 0,

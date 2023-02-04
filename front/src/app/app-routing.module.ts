@@ -68,6 +68,7 @@ const routes: Routes = [
   {path: "driveChanged/:id", component: DriveChangedReviewComponent},
   {path: "reports/:email", component:ReportsComponent},
   {path: "all-users", component:AllUsersViewAdminComponent},
+  {path: "", component:MapComponent}
 
 ];
 

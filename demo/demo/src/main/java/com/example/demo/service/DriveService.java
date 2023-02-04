@@ -701,11 +701,32 @@ public class DriveService {
             bankService.transactionFinalized(passenger.getTransactionId());
         }
     }
-    public String startDrive() {
+
+    public void passengerInDriveStatus(Set<Passenger> passengers) throws EmailNotFoundException {
+        for (Passenger passenger:
+                passengers) {
+            // i sacuvati ovo u user repo
+            ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
+            userService.saveCurrent(clientsAccount);
+
+        }
+
+    }
+
+    public String startDrive() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
         if(drive != null){
             drive.setDriveStatus(DriveStatus.DRIVE_STARTED);
             drive.setStartDate(new Date());
+
+            //promeniti owneru da je u voznji
+            //sacuvati ovoga u userrepo
+            drive.getOwner().setInDrive(true);
+            userService.saveCurrent(drive.getOwner());
+
+            //pasengeri u voznji
+            passengerInDriveStatus(drive.getPassengers());
+
             drive = driveRepository.save(drive);
 
             //ovde promeniti status transakcije ownera

@@ -11,14 +11,14 @@
         ></div>
       </div>
     </div>
-    <form class="data col">
+    <form class="data col" *ngIf="this.service.getRole()!=='ROLE_ADMINISTRATOR'">
       <div class="row">
         <h4 class="col">Unos adresa</h4>
-        <div>
+        <div *ngIf="this.service.isLoggedIn()">
           <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon>more_vert</mat-icon>
           </button>
-          <mat-menu #menu="matMenu">
+          <mat-menu #menu="matMenu" >
             <button mat-menu-item (click)="addToFavorites()">
               <mat-icon [ngStyle]="{'color':'red'}" >favorite</mat-icon>
               <span>Dodaj rutu u omiljene</span>

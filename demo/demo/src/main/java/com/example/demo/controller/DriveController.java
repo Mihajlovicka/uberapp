@@ -130,7 +130,7 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/startRide")
-    public ResponseEntity<List<RealAddress>> startDrive(){
+    public ResponseEntity<List<RealAddress>> startDrive() throws EmailNotFoundException {
         return new ResponseEntity(driveService.startDrive(), HttpStatus.OK);
     }
 

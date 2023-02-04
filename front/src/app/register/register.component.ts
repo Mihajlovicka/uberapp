@@ -31,33 +31,34 @@ export class RegisterComponent implements OnInit {
 
 
   clientsAccount: ClientsAccount = {
-    user:{
-      username:'',
-      name:'',
-      surname:'',
-      email:'',
+    user: {
+      username: '',
+      name: '',
+      surname: '',
+      email: '',
       status: Status.ACTIVE,
       role: Role.ROLE_CLIENT
     },
-    address:{
-      city:'',
-      street:'',
-      number:''
+    address: {
+      city: '',
+      street: '',
+      number: ''
     },
-    picture:{
-      name:'',
-      type:'',
-      picByte:null
+    picture: {
+      name: '',
+      type: '',
+      picByte: null
     },
-    phone:'',
-    clientsBankAccount:{
-      balance:0,
-      bankAccountNumber:'',
-      verificationEmail:'',
-      ownerName:'',
-      ownerSurname:''
+    phone: '',
+    clientsBankAccount: {
+      balance: 0,
+      bankAccountNumber: '',
+      verificationEmail: '',
+      ownerName: '',
+      ownerSurname: ''
     },
-    bankStatus: BankStatus.EMPTY
+    bankStatus: BankStatus.EMPTY,
+    inDrive: false
   }
 
   constructor(private appService: AppService) { }

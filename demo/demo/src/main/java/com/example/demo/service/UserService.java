@@ -85,6 +85,10 @@ public class UserService {
         return clientsRepository.save(clientsAccount);
     }
 
+    public ClientsAccount saveCurrent(ClientsAccount clientsAccount){
+        return clientsRepository.save(clientsAccount);
+    }
+
     public DriversAccount saveDriver(DriversAccount driversAccount) throws EmailExistException, PlateNumberExistException {
         if(userRepository.findUserByEmail(driversAccount.getUser().getEmail()) != null){
             throw new EmailExistException("Email in use.");

@@ -33,9 +33,12 @@ public class ClientsAccount {
     @Column(nullable = false)
     private BankStatus bankStatus;
 
+    @Column
+    private boolean inDrive;
+
     public ClientsAccount(){}
 
-    public ClientsAccount(Long id, User user, Address address, Image picture, String phone, ClientsBankAccount clientsBankAccount, BankStatus bankStatus){
+    public ClientsAccount(Long id, User user, Address address, Image picture, String phone, ClientsBankAccount clientsBankAccount, BankStatus bankStatus, boolean inDrive){
         this.id = id;
         this.user = user;
         this.address = address;
@@ -43,6 +46,7 @@ public class ClientsAccount {
         this.phone = phone;
         this.clientsBankAccount = clientsBankAccount;
         this.bankStatus = bankStatus;
+        this.inDrive = inDrive;
     }
 
     public Long getId(){return id;}
@@ -79,5 +83,13 @@ public class ClientsAccount {
 
     public void setBankStatus(BankStatus bankStatus) {
         this.bankStatus = bankStatus;
+    }
+
+    public boolean isInDrive() {
+        return inDrive;
+    }
+
+    public void setInDrive(boolean inDrive) {
+        this.inDrive = inDrive;
     }
 }

@@ -61,7 +61,8 @@ export class DriveChangedReviewComponent implements OnInit {
         verificationEmail: '',
         ownerName: '',
         ownerSurname: ''
-      }
+      },
+      inDrive:false
     },
     routeJSON: {},
     seats: 0,

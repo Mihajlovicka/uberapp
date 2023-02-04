@@ -16,16 +16,19 @@ public class ClientAccountDTO {
 
     private BankStatus bankStatus;
 
+    private boolean inDrive;
+
     public ClientAccountDTO(){}
 
 
-   public ClientAccountDTO(UserDTO user, AddressDTO address, ImageDTO picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus){
+   public ClientAccountDTO(UserDTO user, AddressDTO address, ImageDTO picture, String phone, ClientsBankAccountDTO clientsBankAccount, BankStatus bankStatus, boolean inDrive){
        this.user = user;
        this.address = address;
        this.picture = picture;
        this.phone = phone;
        this.clientsBankAccount = clientsBankAccount;
        this.bankStatus = bankStatus;
+       this.inDrive = inDrive;
    }
 
     public UserDTO getUser() {
@@ -74,5 +77,13 @@ public class ClientAccountDTO {
 
     public void setBankStatus(BankStatus bankStatus) {
         this.bankStatus = bankStatus;
+    }
+
+    public boolean isInDrive() {
+        return inDrive;
+    }
+
+    public void setInDrive(boolean inDrive) {
+        this.inDrive = inDrive;
     }
 }

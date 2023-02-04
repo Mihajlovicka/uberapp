@@ -82,7 +82,8 @@ export class PaymentComponent implements OnInit{
         ownerName: '',
         ownerSurname: '',
         verificationEmail: ''
-      }
+      },
+      inDrive:false
     },
     routeJSON: {},
     seats: 0,

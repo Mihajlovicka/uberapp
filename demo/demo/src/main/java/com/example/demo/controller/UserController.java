@@ -72,6 +72,7 @@ public class UserController {
         clientsAccount.setAddress(address);
         clientsAccount.setPicture(null);
         clientsAccount.setPhone(registerFormDTO.getPhone());
+        clientsAccount.setInDrive(false);
 
         if(registerFormDTO.getBankAccountNumber() != ""){
             clientsAccount = userService.connectBankAccount(registerFormDTO.getBankAccountNumber(), clientsAccount);

@@ -35,10 +35,10 @@ public class UserConverter {
 
     public ClientAccountDTO toDTO(ClientsAccount clientsAccount){
         if(clientsAccount.getClientsBankAccount() == null){
-            return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), null, clientsAccount.getBankStatus());
+            return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), null, clientsAccount.getBankStatus(), clientsAccount.isInDrive());
 
         }
-        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), bankConverter.toDto(clientsAccount.getClientsBankAccount()), clientsAccount.getBankStatus());
+        return new ClientAccountDTO(this.toDTO(clientsAccount.getUser()), addressConverter.toDTO(clientsAccount.getAddress()), this.toDTO(clientsAccount.getPicture()), clientsAccount.getPhone(), bankConverter.toDto(clientsAccount.getClientsBankAccount()), clientsAccount.getBankStatus(), clientsAccount.isInDrive());
     }
 
     public DriverAccountDTO toDTO(DriversAccount driversAccount){

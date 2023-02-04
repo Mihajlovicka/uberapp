@@ -7,6 +7,7 @@ import {MapService} from "../service/map.service";
 import {MatDialog} from "@angular/material/dialog";
 import {ErrorDialogComponent} from "../dialog-template/error-dialog/error-dialog.component";
 import {AppService} from "../app.service";
+import { UserAuthService } from '../service/user-auth.service';
 
 @Component({
   selector: 'app-address-item',
@@ -35,13 +36,14 @@ export class AddressItemComponent implements OnInit {
 
   constructor(private mapService:MapService,
               public dialog: MatDialog,
-              private appService:AppService ) { }
+              private appService:AppService, private authService: UserAuthService) { }
 
   ngOnInit(): void {
     if(this.isRequired){
       this.myControl.setValidators([Validators.required]);
       this.myControl.updateValueAndValidity();
     }
+    if(this.authService.isLoggedIn())
     this.appService.getFrequentAddresses().subscribe((res:MapAddress[]) => {
       this.options = res;
       this.frequent  = res

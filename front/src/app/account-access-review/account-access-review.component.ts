@@ -14,33 +14,34 @@ export class AccountAccessReviewComponent implements OnInit {
   email : string = '';
 
   clientsAccount: ClientsAccount={
-    user:{
-      username:'',
-      email:'',
-      role:Role.ROLE_CLIENT,
-      name:'',
-      surname:'',
-      status:Status.ACTIVE
+    user: {
+      username: '',
+      email: '',
+      role: Role.ROLE_CLIENT,
+      name: '',
+      surname: '',
+      status: Status.ACTIVE
     },
-    address:{
-      city:'',
-      street:'',
-      number:''
+    address: {
+      city: '',
+      street: '',
+      number: ''
     },
-    phone:'',
-    picture:{
-      name:'',
-      type:'',
-      picByte:null
+    phone: '',
+    picture: {
+      name: '',
+      type: '',
+      picByte: null
     },
-    clientsBankAccount:{
-      balance:0,
-      ownerName:'',
-      ownerSurname:'',
-      bankAccountNumber:'',
-      verificationEmail:''
+    clientsBankAccount: {
+      balance: 0,
+      ownerName: '',
+      ownerSurname: '',
+      bankAccountNumber: '',
+      verificationEmail: ''
     },
-    bankStatus:BankStatus.NOTCONFIRMED
+    bankStatus: BankStatus.NOTCONFIRMED,
+    inDrive: false
   }
 
 

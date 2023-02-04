@@ -16,6 +16,7 @@ interface ClientsAccountInterface{
     phone: string;
     clientsBankAccount: BankAccount;
     bankStatus: BankStatus;
+    inDrive: boolean;
 }
 
 export class ClientsAccount implements ClientsAccountInterface{
@@ -25,6 +26,7 @@ export class ClientsAccount implements ClientsAccountInterface{
     public phone: string;
     public clientsBankAccount: BankAccount;
     public bankStatus: BankStatus;
+    public inDrive: boolean;
 
     constructor(clientsInt: ClientsAccountInterface){
         this.user = clientsInt.user;
@@ -33,5 +35,6 @@ export class ClientsAccount implements ClientsAccountInterface{
         this.phone = clientsInt.phone;
         this.clientsBankAccount = clientsInt.clientsBankAccount;
         this.bankStatus = clientsInt.bankStatus;
+        this.inDrive = clientsInt.inDrive;
     }
 }
