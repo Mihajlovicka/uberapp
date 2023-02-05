@@ -76,7 +76,7 @@ public class BankService {
     }
 
     public BankTransaction transactionFinalized(Long id){
-        BankTransaction transaction = bankTransactionRepository.findById(id).get();
+        BankTransaction transaction = bankTransactionRepository.findById(id).orElse(null);
         if(transaction==null) throw new NotFoundException("Transaction does not exist");
         transaction.setTransactionStatus(TransactionStatus.FINALIZED);
         return bankTransactionRepository.save(transaction);

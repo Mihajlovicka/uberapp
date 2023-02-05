@@ -733,7 +733,6 @@ public class DriveService {
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
             clientsAccount.setInDrive(true);
             userService.saveCurrent(clientsAccount);
-
         }
 
     }
