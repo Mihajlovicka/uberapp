@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -87,6 +86,10 @@ public class UserService {
 
     public ClientsAccount saveCurrent(ClientsAccount clientsAccount){
         return clientsRepository.save(clientsAccount);
+    }
+
+    public List<DriversAccount> getDriversByStatusAndAvailability(boolean status, DriverStatus driverStatus){
+        return driversRepository.findByDriversAvailability_AndDriverStatus(status, driverStatus);
     }
 
     public DriversAccount saveDriver(DriversAccount driversAccount) throws EmailExistException, PlateNumberExistException {

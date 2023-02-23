@@ -244,7 +244,7 @@ public class UserController {
             return new ResponseEntity("", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @PreAuthorize("hasRole('ROLE_ADMINISTRATOR')")
     @PostMapping(value="api/unblockUser")
     public ResponseEntity unblockUser(@RequestBody String email) {
