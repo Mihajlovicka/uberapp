@@ -1003,4 +1003,8 @@ public class DriveService {
         notificationService.paymentFailedDriveCanceledNotify(transaction.getSender());
     }
 
+    public void save(Drive d){
+        driveRepository.save(d);
+    }
+
 }

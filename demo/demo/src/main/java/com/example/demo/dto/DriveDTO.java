@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 public class DriveDTO {
+    private Long id;
 
     private List<RealAddress> stops;
 
@@ -48,7 +49,8 @@ public class DriveDTO {
 
     }
 
-    public DriveDTO(List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String date, Double ownerDebit, String startDate, String endDate, DriveType driveType, Long ownerTransactionId) {
+    public DriveDTO(Long id,List<RealAddress> stops, Double distance, Double duration, Double price, Set<Passenger> passengers, int seats, int baby, int babySeats, int pets, DriveStatus driveStatus, ClientAccountDTO owner, String routeJSON, DriverAccountDTO driver, boolean splitBill, String date, Double ownerDebit, String startDate, String endDate, DriveType driveType, Long ownerTransactionId) {
+        this.id = id;
         this.stops = stops;
         this.distance = distance;
         this.duration = duration;
@@ -205,6 +207,14 @@ public class DriveDTO {
 
     public void setSplitBill(boolean splitBill) {
         this.splitBill = splitBill;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDate() {

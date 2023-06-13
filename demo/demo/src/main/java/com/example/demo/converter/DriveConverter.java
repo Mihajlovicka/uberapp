@@ -18,6 +18,7 @@ public class DriveConverter {
 
     public DriveDTO toDTO(Drive drive){
         DriveDTO dto = new DriveDTO();
+        dto.setId(drive.getId());
         dto.setBaby(drive.getBaby());
         dto.setBabySeats(drive.getBabySeats());
         dto.setDistance(drive.getDistance());
