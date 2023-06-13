@@ -76,6 +76,7 @@ public class DriveReservationTest extends TestBase{
         //assert(home.isReserved());
         assert(home.getTransactionID()==false);
         assert(home.checkNotificationsForNotEnoughMoney());
+        Thread.sleep(3000);
     }
 
     @Test
@@ -124,6 +125,7 @@ public class DriveReservationTest extends TestBase{
         System.out.println(res);
         home.openNovaVoznjaNotification();
         home.acceptRide();
+        Thread.sleep(3000);
     }
 
 

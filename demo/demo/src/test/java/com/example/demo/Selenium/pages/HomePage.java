@@ -187,14 +187,17 @@ public class HomePage {
 
     public boolean getTransactionID(){
         WebElement message = page.findElement(By.xpath("//app-error-dialog//p"));
-        if(message.getText().contains("neuspesno")) return false;
-        WebElement okBtn = page.findElement(By.xpath("//button//span[contains(text(), 'Ok')]"));
+        if(message.getText().contains("neuspesno")) {
+            WebElement okBtn = page.findElement(By.xpath("//button//span[contains(text(), 'Ok')]"));
+
         (new WebDriverWait(driver, Duration.ofSeconds(30)))
-                .until(ExpectedConditions.visibilityOf(message)).click();
+                .until(ExpectedConditions.visibilityOf(okBtn)).click();
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+            return false;
         }
         this.transactionID = message.getText().split(":")[1].strip();
         return true;

@@ -289,6 +289,99 @@ public class DrivesControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("Driver tests")
+    class Group1Driver {
+        @BeforeEach
+        public void login() {
+            ResponseEntity<UserTokenState> responseEntity =
+                    restTemplate.postForEntity("/auth/login",
+                            new JwtAuthenticationRequest("driver@com", "nekasifra123"),
+                            UserTokenState.class);
+            // preuzmemo token jer ce nam trebati za testiranje REST kontrolera
+            UserTokenState resp = responseEntity.getBody();
+            accessToken = resp.getAccessToken();
+            headers.add("Authorization","Bearer " + accessToken);
+        }
 
+        @Test
+        public void shouldCancelDrive() throws DriveNotFoundException, EmailNotFoundException {
+            String reason = "zato sto";
+            HttpEntity<String> httpEntity = new HttpEntity(reason, headers);
+
+            ResponseEntity responseEntity = restTemplate.exchange("/cancelRide",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<Object>() {});
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            Drive d = driveService.getDrive(2L);
+
+            assertEquals(DriveStatus.DRIVE_REJECTED, d.getDriveStatus());
+            assertEquals(DriveType.PAST, d.getDriveType());
+            assertEquals(DriverStatus.AVAILABLE, d.getDriver().getDriverStatus());
+        }
+
+        @Test
+        public void shouldNotCancelDrive() throws DriveNotFoundException {
+            Drive d = driveService.getDrive(2L);
+            d.setDriveType(DriveType.FUTURE);
+            driveService.save(d);
+
+            String reason = "zato sto";
+            HttpEntity<String> httpEntity = new HttpEntity(reason, headers);
+
+            ResponseEntity responseEntity = restTemplate.exchange("/cancelRide",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<Object>() {});
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+
+            d = driveService.getDrive(2L);
+
+            assertNotEquals(d.getDriveType(), DriveType.PAST);
+
+        }
+
+        @Test
+        public void shouldStartDrive() throws DriveNotFoundException, EmailNotFoundException {
+            Drive d = driveService.getDrive(2L);
+            d.setSplitBill(true);
+
+            HttpEntity<String> httpEntity = new HttpEntity(null, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/ride/startRide",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {});
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            d = driveService.getDrive(2L);
+            assertEquals(DriveStatus.DRIVE_STARTED, d.getDriveStatus());
+            assertEquals(DriverStatus.BUSY, d.getDriver().getDriverStatus());
+        }
+
+        @Test
+        public void shouldNotStartDrive() throws DriveNotFoundException {
+            Drive d = driveService.getDrive(2L);
+            d.setDriveType(DriveType.FUTURE);
+            driveService.save(d);
+
+            HttpEntity<String> httpEntity = new HttpEntity(null, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/ride/startRide",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {});
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            d = driveService.getDrive(2L);
+            assertNotEquals(DriveStatus.DRIVE_STARTED, d.getDriveStatus());
+            assertNotEquals(DriverStatus.BUSY, d.getDriver().getDriverStatus());
+
+        }
+    }
 
 }
