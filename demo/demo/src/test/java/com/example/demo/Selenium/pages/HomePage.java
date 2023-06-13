@@ -179,6 +179,12 @@ public class HomePage {
         clickButtonByXPath("//button//span[contains(text(),'Potvrdi placanje')]");
 
     }
+
+
+    public void splitPayment(){
+        clickButtonByXPath("//mat-checkbox",0);
+    }
+
     public boolean getTransactionID(){
         WebElement message = page.findElement(By.xpath("//app-error-dialog//p"));
         if(message.getText().contains("neuspesno")) return false;
@@ -244,6 +250,22 @@ public class HomePage {
     }
     public void acceptRide(){
         clickButtonByXPath("//button//span[contains(text(),'Prihvatam voznju')]");
+    }
+
+
+    public void declineRide() { clickButtonByXPath("//button//span[contains(text(),'Odbijam voznju')]");
+    }
+
+    public void openPutnikOdustaoNotification() throws InterruptedException {
+        openAllNotifications();
+        Thread.sleep(1000);
+        clickButtonByXPath("//mat-card-subtitle[contains(text(),'Pojedini putnici su otkazali prisustvo')]");
+    }
+
+    public void continueRide() throws InterruptedException {
+        clickButtonByXPath("//button//span[contains(text(),'Nastavi voznju')]");
+        Thread.sleep(700);
+        acceptPayment(false);
     }
 
 }
