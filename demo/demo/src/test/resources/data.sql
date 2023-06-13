@@ -54,8 +54,8 @@ VALUES (3, 0, '1234567890', 1, 3, 4, null, false);
 -- drive
 
 INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, seats, split_bill, date, distance,
-                  duration, price, owner_debit, owner_transaction_id)
-VALUES (1, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1);
+                  duration, price, owner_debit, owner_transaction_id,drive_status)
+VALUES (1, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1,1);
 
 INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, seats, split_bill, date, distance,
                   duration, price, owner_debit, owner_transaction_id)
