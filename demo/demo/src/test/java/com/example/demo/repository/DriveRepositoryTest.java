@@ -27,21 +27,18 @@ public class DriveRepositoryTest {
 
 
     @Test
-    @Sql("classpath:test-data-2.sql")
     public void shouldFindDriveByType() {
-        List<Drive> test = driveRepository.findByDriveType(DriveType.NOW);
+        List<Drive> test = driveRepository.findByDriveType(DriveType.PAST);
         assertThat(test).isNotEmpty();
     }
 
     @Test
-    @Sql("classpath:test-data-2.sql")
     public void shouldReturnEmptyListDriveByType() {
         List<Drive> test = driveRepository.findByDriveType(DriveType.FUTURE);
         assertThat(test).isEmpty();
     }
 
     @Test
-    @Sql("classpath:test-data-2.sql")
     public void shouldFindDriveByDriver() {
         DriversAccount driver = driversRepository.findById(Long.valueOf(1)).orElse(null);
         List<Drive> test = driveRepository.findByDriver(driver);
@@ -49,7 +46,6 @@ public class DriveRepositoryTest {
     }
 
     @Test
-    @Sql("classpath:test-data-2.sql")
     public void shouldReturnEmptyListFindDriveByDriver() {
         DriversAccount driver = driversRepository.findById(Long.valueOf(9)).orElse(null);
         List<Drive> test = driveRepository.findByDriver(driver);
@@ -58,29 +54,28 @@ public class DriveRepositoryTest {
 
     
     @Test
-    @Sql("classpath:test-data-3.sql")
+    @Sql("classpath:test-data-2.sql")
     public void shouldFindDriveByItsOwnerUserEmailAndOwnerTransactionalId(){
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId("jelenamanojlovic27062000@gmail.com", Long.valueOf(1));
-
         assertThat(drive).isNotNull();
     }
 
     @Test
-    @Sql("classpath:test-data-3.sql")
+    @Sql("classpath:test-data-2.sql")
     public void driveNotFoundEmailCorrectOwnerTransactionIdWrong(){
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId("jelenamanojlovic27062000@gmail.com", Long.valueOf(3));
         assertThat(drive).isNull();
     }
 
     @Test
-    @Sql("classpath:test-data-3.sql")
+    @Sql("classpath:test-data-2.sql")
     public void driveNotFoundEmailWrongOwnerTransactionIdCorrect(){
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId("nepostojeciEmail@gmail.com", Long.valueOf(1));
         assertThat(drive).isNull();
     }
 
     @Test
-    @Sql("classpath:test-data-3.sql")
+    @Sql("classpath:test-data-2.sql")
     public void driveNotFoundEmailWrongOwnerTransactionIdWrong(){
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId("nepostojeciEmail@gmail.com", Long.valueOf(3));
         assertThat(drive).isNull();

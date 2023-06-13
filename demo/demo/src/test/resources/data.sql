@@ -1,14 +1,3 @@
-INSERT INTO roles(id,name) VALUES (1,'ROLE_DRIVER');
-
-INSERT INTO address(id, city, number,street)
-VALUES (1,'novi sad',5,'ulica');
-
-INSERT INTO user (id,email,enabled,last_password_reset_date,name,password,status,surname,username,role_id)
-VALUES (1 ,'test@gmail.com' ,true,null,'mika','nekasifra123',0,'mikic','test@gmail.com',1);
-
-INSERT INTO user (id,email,enabled,last_password_reset_date,name,password,status,surname,username,role_id)
-VALUES (2 ,'testtest@gmail.com' ,true,null,'mika','nekasifra123',0,'mikic','test@gmail.com',1);
-
 INSERT INTO roles(id, name)
 VALUES (1, 'ROLE_DRIVER');
 INSERT INTO roles(id, name)
@@ -75,7 +64,13 @@ VALUES (2, 1, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 5
 
 INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, seats, split_bill, date, distance,
                   duration, price, owner_debit, owner_transaction_id, drive_status)
-VALUES (1, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1, 1);
+VALUES (3, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1, 1);
+
+
+
+INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, seats, split_bill, date, distance,
+                  duration, price, owner_debit, owner_transaction_id, drive_status)
+VALUES (5, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1, 0);
 
 -- stops, passengers
 
@@ -93,6 +88,9 @@ VALUES (4, 'klijent3@com', 0, 0, 200.0, true,1);
 
 INSERT INTO passenger(id, passenger_email, contribution, payment, debit,paying_enabled, transaction_id)
 VALUES (5, 'klijent2@com', 2, 0, 200.0, true,1);
+
+INSERT INTO passenger(id, passenger_email, contribution, payment, debit,paying_enabled, transaction_id)
+VALUES (6, 'klijent2@com', 2, 0, 200.0, true,1);
 
 -- INSERT INTO real_address(id, latitude, longitude)
 -- VALUES (1, 45.254125, 19.796972);
@@ -119,16 +117,6 @@ VALUES (2,4);
 INSERT INTO drive_passengers(drive_id, passengers_id)
 VALUES (3,5);
 
-
-INSERT INTO car(id,brand,color,latitude,longitude,model,num_of_seats,plate_number, car_on_map)
-VALUES (1,'BMW','crvenajebena',45.248861,19.833332,'X6',5,'NS000AB',false);
-
-INSERT INTO drivers_account(id,driver_status,car_id,user_id,drivers_availability)
-VALUES (1,0,1,1, true);
-
-INSERT INTO drivers_account(id,driver_status,car_id,user_id,drivers_availability)
-VALUES (2,0,1,1, true);
-
-INSERT INTO clients_account(id,bank_status, phone,address_id,clients_bank_account_id,user_id, picture_id)
-VALUES(1,2,'1234567890',1,null,2,null)
+INSERT INTO drive_passengers(drive_id, passengers_id)
+VALUES (5,6);
 

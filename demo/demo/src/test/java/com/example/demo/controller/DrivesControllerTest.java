@@ -205,7 +205,7 @@ public class DrivesControllerTest {
 
             HttpEntity<String> httpEntity = new HttpEntity(1, headers);
 
-            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/acceptDrive/1",
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/acceptDrive/5",
                     HttpMethod.POST,
                     httpEntity,
                     new ParameterizedTypeReference<>() {
@@ -214,7 +214,7 @@ public class DrivesControllerTest {
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             DriveDTO d = responseEntity.getBody();
 
-            Drive dr = driveService.getDrive(1L);
+            Drive dr = driveService.getDrive(5L);
 
             assertEquals(DriveStatus.PASSENGERS_WAITING, dr.getDriveStatus());
 

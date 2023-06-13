@@ -23,7 +23,7 @@ public class UserRepositoryTest {
 
     @Test
     public void shouldFindUserByEmail() {
-        User test = userRepository.findUserByEmail("test@gmail.com");
+        User test = userRepository.findUserByEmail("klijent2@com");
         assertThat(test).isNotNull();
     }
 
