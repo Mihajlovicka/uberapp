@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.example.demo.dto.CreateDriveReservationDTO;
+import com.example.demo.dto.DriveDTO;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -108,6 +110,22 @@ public class Drive {
         this.startDate = startDate;
         this.endDate = endDate;
         this.ownerTransactionId = ownerTransactionId;
+    }
+
+    public Drive(CreateDriveReservationDTO driveDTO){
+        this.stops = driveDTO.getStops();
+        this.distance = driveDTO.getDistance();
+        this.duration = driveDTO.getDuration();
+        this.price = driveDTO.getPrice();
+        this.passengers = driveDTO.getPassengers();
+        this.baby = driveDTO.getBaby();
+        this.babySeats = driveDTO.getBabySeats();
+        this.pets = driveDTO.getPets();
+        this.seats = driveDTO.getSeats();
+        this.routeJSON = driveDTO.getRouteJSON();
+        this.ownerDebit = driveDTO.getOwnerDebit();
+        this.driver = null;
+        this.driveStatus = DriveStatus.OWNER_PAYMENT_WAITING;
     }
 
     public Date getStartDate() {

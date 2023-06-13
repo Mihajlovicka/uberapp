@@ -82,7 +82,7 @@ public class NotificationService {
     }
 
 
-    public void addedToDriveNotify(Set<Passenger> passengers, Long id) throws EmailNotFoundException {
+    public void addedToDriveNotify(Set<Passenger> passengers, Long id) {
         for(Passenger passenger: passengers){
             if(!passenger.getContribution().equals(DrivePassengerStatus.REJECTED)){
                 addNotification(new Notification(

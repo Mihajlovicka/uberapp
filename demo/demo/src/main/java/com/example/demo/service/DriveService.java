@@ -3,11 +3,9 @@ package com.example.demo.service;
 import com.example.demo.exception.*;
 
 
-
 import com.example.demo.exception.NotDrivePassengerException;
 import com.example.demo.fakeBank.BankService;
 import com.example.demo.fakeBank.BankTransaction;
-import com.example.demo.fakeBank.ClientsBankAccount;
 import com.example.demo.model.*;
 import com.example.demo.converter.UserConverter;
 import com.example.demo.exception.EmailNotFoundException;
@@ -23,8 +21,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import java.util.Set;
@@ -37,7 +33,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
-
 
 
 @Component
@@ -62,17 +57,12 @@ public class DriveService {
     @Autowired
     private RideSimulationService rideSimulationService;
 
-    public Drive driveFailed(Drive drive){
+    public Drive driveFailed(Drive drive) {
         drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
         return driveRepository.save(drive);
     }
 
     public Drive saveDrive(Drive drive) throws EmailNotFoundException {
-
-        //driver se stavlja na null
-        drive.setDriver(null);
-
-
         //jel owner ima para
 
         //nema --> jbg //status je failed
@@ -81,65 +71,50 @@ public class DriveService {
             return driveFailed(drive);
         }
 
-
-        drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
-
-        Drive saved = driveRepository.save(drive);
-
         //napravi transakciju
-        BankTransaction bt = bankService.requestOwnerPayment(saved);
-        saved.setOwnerTransactionId(bt.getId());
-
-
-
-        return driveRepository.save(saved);
-
-    }
-
-    public Drive driveWaitingForPassengers(Drive drive) throws EmailNotFoundException {
-        drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
-        notificationService.addedToDriveNotify(drive.getPassengers(), drive.getId());
-
+        BankTransaction bt = bankService.requestOwnerPayment(drive);
+        drive.setOwnerTransactionId(bt.getId());
 
         return driveRepository.save(drive);
-
     }
 
-    @Transactional
+    public Drive driveWaitingForPassengers(Drive drive) {
+        drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
+        notificationService.addedToDriveNotify(drive.getPassengers(), drive.getId());
+        return driveRepository.save(drive);
+    }
+
+
     public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
-        String foundDriverEmail="";
-        if(drive.getDriveType().equals(DriveType.NOW)){
+        String foundDriverEmail = "";
+        if (drive.getDriveType().equals(DriveType.NOW)) {
             drive.setDriveType(DriveType.FUTURE);
             drive = driveRepository.save(drive);
             foundDriverEmail = getNextDriverForCurrentRide(drive);
-        }
-
-        if(drive.getDriveType().equals(DriveType.FUTURE)){
+        } else {
             foundDriverEmail = getNextDriverForFutureRide(drive);
         }
 
 
-
         if (foundDriverEmail.equals("")) {
-            notificationService.addNotificationMultiple(new Notification("Voznja odbijena", "Cao! Nazalost, vaza voznja je odbijena. Trenutno nema slobodnih vozila.",null,""), makeUsersFromPassengersForNotification(drive));
-            //vratiti pare na racun
-            bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
-            drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
-            return driveRepository.save(drive);
-            //throw new NotFoundException("Nema trenutno slobodnog vozaca.");
+            return driverNotFound(drive);
         }
-
 
         DriversAccount driver = userService.getDriver(foundDriverEmail);
         drive.setDriver(driver);
-        notificationService.addNotification(new Notification("Nova voznja", "Dodeljena vam je nova voznja. " + drive.getDate(), driver.getUser(),"localhost:4200/rides-dr"));
-
-
-        notificationService.addNotificationMultiple(new Notification("Voznja odobrena", "Vasa voznja je odobrena. ", null,""), makeUsersFromPassengersForNotification(drive));
-
+        notificationService.addNotification(new Notification("Nova voznja", "Dodeljena vam je nova voznja. " + drive.getDate(), driver.getUser(), "localhost:4200/rides-dr"));
+        notificationService.addNotificationMultiple(new Notification("Voznja odobrena", "Vasa voznja je odobrena. ", null, ""), makeUsersFromPassengersForNotification(drive));
 
         return driveRepository.save(drive);
 
+    }
+
+    private Drive driverNotFound(Drive drive) throws TransactionIdDoesNotExistException {
+        notificationService.addNotificationMultiple(new Notification("Voznja odbijena", "Cao! Nazalost, vaza voznja je odbijena. Trenutno nema slobodnih vozila.", null, ""), makeUsersFromPassengersForNotification(drive));
+        //vratiti pare na racun
+        bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
+        drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
+        return driveRepository.save(drive);
     }
 
     public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
@@ -153,19 +128,19 @@ public class DriveService {
 
 
     public boolean canPassengersAfford(Drive drive) throws EmailNotFoundException {
-        for(Passenger passenger: drive.getPassengers()) {
+        for (Passenger passenger : drive.getPassengers()) {
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
-            if(clientsAccount.getClientsBankAccount().getBalance()-passenger.getDebit()<0) return false;
+            if (clientsAccount.getClientsBankAccount().getBalance() - passenger.getDebit() < 0) return false;
         }
 
         return true;
     }
 
     public Drive findPoorParticipants(Drive drive) throws EmailNotFoundException {
-        for (Passenger passenger:
-             drive.getPassengers()) {
+        for (Passenger passenger :
+                drive.getPassengers()) {
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
-            if(clientsAccount.getClientsBankAccount().getBalance()-passenger.getDebit()<0){
+            if (clientsAccount.getClientsBankAccount().getBalance() - passenger.getDebit() < 0) {
                 passenger.setPayment(PaymentPassengerStatus.REJECTED);
             }
         }
@@ -179,60 +154,48 @@ public class DriveService {
 
         if (drive.getPassengers().size() != 0) {
 
-
-        //ako ima passengere
-        if (isParticipationAnswered(drive.getPassengers())) {
-
-            if(drive.isSplitBill()){
-                if (!canPassengersAfford(drive)) {
-                    //promeniit status onima koji ne mogu
-                    drive = findPoorParticipants(drive);
-                    //ponistiti ownerovu transakciju
-                    bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
-                    //drive.setOwnerTransactionId((long) -1);
-
-
-                    //ponovo izracunati cenu
-                    drive = calculateNewPriceForDrive(drive);
-
-
-                    //nova transakcija owneru? i mejl logicno
-                    drive.setOwnerTransactionId(bankService.requestOwnerPayment(drive).getId());
-                }
-                if (canPassengersAfford(drive)) {
-                    //ako jesu
-                    for (Passenger passenger :
-                            drive.getPassengers()) {
-                        if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING) || passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)) {
-                            BankTransaction passengersTransaction = bankService.requestPassengerPayment(drive, userService.findClientsAccount(passenger.getPassengerEmail()));
-                            passenger.setTransactionId(passengersTransaction.getId());
-                        }
+            //ako ima passengere
+            if (isParticipationAnswered(drive.getPassengers())) {
+                if (drive.isSplitBill()) {
+                    if (!canPassengersAfford(drive)) {
+                        //promeniit status onima koji ne mogu
+                        drive = findPoorParticipants(drive);
+                        //ponistiti ownerovu transakciju
+                        bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
+                        //ponovo izracunati cenu
+                        drive = calculateNewPriceForDrive(drive);
+                        //nova transakcija owneru? i mejl logicno
+                        drive.setOwnerTransactionId(bankService.requestOwnerPayment(drive).getId());
                     }
-                    drive.setDriveStatus(DriveStatus.PAYMENT_WAITING);
-                    drive = driveRepository.save(drive);
+                    else {
+                        //ako mogu da priuste
+                        for (Passenger passenger :
+                                drive.getPassengers()) {
+                            if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING) || passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)) {
+                                BankTransaction passengersTransaction = bankService.requestPassengerPayment(drive, userService.findClientsAccount(passenger.getPassengerEmail()));
+                                passenger.setTransactionId(passengersTransaction.getId());
+                            }
+                        }
+                        drive.setDriveStatus(DriveStatus.PAYMENT_WAITING);
+                        drive = driveRepository.save(drive);
 
+                    }
                 }
             }
+            else {
+                if (drive.getPassengers().size() > 0) drive = driveWaitingForPassengers(drive);
 
-
-
-
+            }
         }
-
-        if (!isParticipationAnswered(drive.getPassengers())) {
-            if (drive.getPassengers().size() > 0) drive = driveWaitingForPassengers(drive);
-
-        }
-    }
         //ako nema passengere
         if (drive.getPassengers().size() == 0 || !drive.isSplitBill()) drive = paymentDone(drive);
     }
 
-    public Drive findPassengerDrive(String passengerEmail, Long passengerTransactionId){
-        for (Drive drive: driveRepository.findAll()){
-            for (Passenger passenger:
-                 drive.getPassengers()) {
-                if(passenger.getPassengerEmail().equals((passengerEmail)) && passenger.getTransactionId().equals(passengerTransactionId)){
+    public Drive findPassengerDrive(String passengerEmail, Long passengerTransactionId) {
+        for (Drive drive : driveRepository.findAll()) {
+            for (Passenger passenger :
+                    drive.getPassengers()) {
+                if (passenger.getPassengerEmail().equals((passengerEmail)) && passenger.getTransactionId().equals(passengerTransactionId)) {
                     return drive;
                 }
             }
@@ -242,225 +205,174 @@ public class DriveService {
     }
 
 
-    public boolean isPaymentAnswered(Set<Passenger> passengers){
-        for (Passenger passenger:
+    public boolean isPaymentAnswered(Set<Passenger> passengers) {
+        for (Passenger passenger :
                 passengers) {
-            if(passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) return false;
+            if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) return false;
         }
         return true;
     }
 
-    public boolean isPaymentAccepted(Set<Passenger> passengers){
-        for (Passenger passenger:
+    public boolean isPaymentAccepted(Set<Passenger> passengers) {
+        for (Passenger passenger :
                 passengers) {
-            if(passenger.getPayment().equals(PaymentPassengerStatus.REJECTED) || passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) return false;
+            if (passenger.getPayment().equals(PaymentPassengerStatus.REJECTED) || passenger.getPayment().equals(PaymentPassengerStatus.WAITING))
+                return false;
         }
 
         return true;
     }
 
     public Drive passengerDeclinedPayment(Drive drive, BankTransaction transaction) throws TransactionIdDoesNotExistException, EmailNotFoundException {
-        for (Passenger passenger: drive.getPassengers()) {
-            if (passenger.getPassengerEmail().equals(transaction.getSender())) {
-                passenger.setPayment(PaymentPassengerStatus.REJECTED);
-            }
-        }
-        Drive saved = driveRepository.save(drive);
+        drive = setPassengerPaymentStatus(drive, transaction, PaymentPassengerStatus.REJECTED);
 
-        if(isPaymentAnswered(drive.getPassengers())){
+        if (isPaymentAnswered(drive.getPassengers())) {
             //ako su svi odg..vec znamo da nisu svi prihvatili
             //ponistiti ownerovu transakciju
-            bankService.declineTransaction(saved.getOwnerTransactionId(), saved.getOwner().getClientsBankAccount().getAccountNumber());
-            //saved.setOwnerTransactionId((long) -1);
+            bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
 
             //ponistiti svim passengerima transakcije
-            for (Passenger passenger: saved.getPassengers()){
-                if(passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)){
-                    bankService.declineTransaction(passenger.getTransactionId(),userService.findClientsAccount(passenger.getPassengerEmail()).getClientsBankAccount().getAccountNumber());
-                    //passenger.setTransactionId((long)-1);
-                    if(passenger.getPayment().equals(PaymentPassengerStatus.WAITING)){
-                        passenger.setPayment(PaymentPassengerStatus.WAITING);
-                    }
-                }
-
-
-            }
+            drive = cancelPassengersTransactions(drive);
 
             //ponovo izracunati cenu
-            saved = calculateNewPriceForDrive(saved);
-
+            drive = calculateNewPriceForDrive(drive);
 
             //nova transakcija owneru? i mejl logicno
-            saved.setOwnerTransactionId(bankService.requestOwnerPayment(saved).getId());
-
+            drive.setOwnerTransactionId(bankService.requestOwnerPayment(drive).getId());
         }
         //ako nisu svi odg nikome nista
-        return driveRepository.save(saved);
+        return driveRepository.save(drive);
+    }
+
+    private Drive cancelPassengersTransactions(Drive drive) throws TransactionIdDoesNotExistException, EmailNotFoundException {
+        for (Passenger passenger : drive.getPassengers()) {
+            if (passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)) {
+                bankService.declineTransaction(passenger.getTransactionId(), userService.findClientsAccount(passenger.getPassengerEmail()).getClientsBankAccount().getAccountNumber());
+                if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) {
+                    passenger.setPayment(PaymentPassengerStatus.WAITING);
+                }
+            }
+        }
+        return driveRepository.save(drive);
+    }
+
+    private Drive setPassengerPaymentStatus(Drive drive, BankTransaction transaction, PaymentPassengerStatus status) {
+        for (Passenger passenger : drive.getPassengers()) {
+            if (passenger.getPassengerEmail().equals(transaction.getSender())) {
+                passenger.setPayment(status);
+            }
+        }
+        return driveRepository.save(drive);
     }
 
 
-
     public Drive passengerAcceptedPayment(Drive drive, BankTransaction transaction) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
-        for (Passenger passenger: drive.getPassengers()) {
-            if (passenger.getPassengerEmail().equals(transaction.getSender())) {
-                passenger.setPayment(PaymentPassengerStatus.ACCEPTED);
+        drive = setPassengerPaymentStatus(drive, transaction, PaymentPassengerStatus.ACCEPTED);
 
+        //proveravam da li su svi odg
+        if (isPaymentAnswered(drive.getPassengers())) {
+            //ako jesu gledam da li su svi prihvatili
+            if (isPaymentAccepted(drive.getPassengers())) {
+                drive = paymentDone(drive);
+            }
+
+            if (!isPaymentAccepted(drive.getPassengers())) {
+                //ako nisu svi prihvatili neko odbio - problem
+                //ponistiti ownerovu transakciju
+                bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
+                //saved.setOwnerTransactionId((long) -1);
+
+                //ponistiti svim passengerima transakcije
+                drive = cancelPassengersTransactions(drive);
+
+                //ponovo izracunati cenu
+                drive = calculateNewPriceForDrive(drive);
+
+
+                //nova transakcija owneru? i mejl logicno
+                drive.setOwnerTransactionId(bankService.requestOwnerPayment(drive).getId());
             }
         }
-            Drive saved = driveRepository.save(drive);
 
-            //proveravam da li su svi odg
-            if(isPaymentAnswered(saved.getPassengers())){
-                //ako jesu gledam da li su svi prihvatili
-                if(isPaymentAccepted(saved.getPassengers())){
-                    saved = paymentDone(saved);
-                }
-
-                if(!isPaymentAccepted(saved.getPassengers())){
-                    //ako nisu svi prihvatili neko odbio - problem
-                    //ponistiti ownerovu transakciju
-                    bankService.declineTransaction(saved.getOwnerTransactionId(), saved.getOwner().getClientsBankAccount().getAccountNumber());
-                    //saved.setOwnerTransactionId((long) -1);
-
-                    //ponistiti svim passengerima transakcije
-
-                    for (Passenger passenger: saved.getPassengers()) {
-                        if (passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)) {
-                            bankService.declineTransaction(passenger.getTransactionId(), userService.findClientsAccount(passenger.getPassengerEmail()).getClientsBankAccount().getAccountNumber());
-                            passenger.setTransactionId((long) -1);
-                            if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) {
-                                passenger.setPayment(PaymentPassengerStatus.WAITING);
-                            }
-                        }
-
-                    }
-
-                    //ponovo izracunati cenu
-                    saved = calculateNewPriceForDrive(saved);
-
-
-                    //nova transakcija owneru? i mejl logicno
-                    saved.setOwnerTransactionId(bankService.requestOwnerPayment(saved).getId());
-                }
-            }
-
-        return driveRepository.save(saved);
+        return driveRepository.save(drive);
     }
 
     public void paymentAccepted(BankTransaction transaction) throws EmailNotFoundException, URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
         //ko je zapravo prhvatio ovo
         //preko sendera nadjemo ko je to
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId(transaction.getSender(), transaction.getId());
-        if(drive != null) {System.out.println("ovnerry");
-            ownerPaymentAccepted(transaction);}
-
-        if(drive==null){
-            Drive drivee = findPassengerDrive(transaction.getSender(), transaction.getId());
-            if(drivee != null){
-                Drive passengersDrive = passengerAcceptedPayment(drivee, transaction);//od ovoga kurtona je
-            }
-            //ako je null napravi neki exc i baci ga da ne psotoji voznja za ovu transakciju i da je greska
-            if(drivee==null) throw new NotFoundException("Drive for transaction does not exist!");
+        if (drive != null) {
+            ownerPaymentAccepted(transaction);
+            return;
         }
-
+        drive = findPassengerDrive(transaction.getSender(), transaction.getId());
+        if (drive != null) {
+            passengerAcceptedPayment(drive, transaction);
+            return;
+        }
+        //ako je null napravi neki exc i baci ga da ne psotoji voznja za ovu transakciju i da je greska
+        throw new NotFoundException("Drive for transaction does not exist!");
     }
 
     public void paymentDeclined(BankTransaction transaction) throws EmailNotFoundException, TransactionIdDoesNotExistException {
-        //ko je zapravo prhvatio ovo
+        //ko je zapravo odbio ovo
         //preko sendera nadjemo ko je to
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId(transaction.getSender(), transaction.getId());
-        if(drive != null) {
+        if (drive != null) {
             //owner odbio
             driveFailedMoneyTransactionRejected(transaction);
+            return;
         }
-        if(drive==null){
-            Drive drivee = findPassengerDrive(transaction.getSender(), transaction.getId());
-            if(drivee!= null){
-                //passenger je odbio
-                Drive passengersDrive = passengerDeclinedPayment(drivee, transaction);
-            }
-            if(drivee==null) throw new NotFoundException("Drive for transaction does not exist!");
+        drive = findPassengerDrive(transaction.getSender(), transaction.getId());
+        if (drive != null) {
+            //passenger je odbio
+            passengerDeclinedPayment(drive, transaction);
+            return;
         }
+        throw new NotFoundException("Drive for transaction does not exist!");
+
     }
-
-
-    /**
-    public Drive saveDrive(Drive drive) throws URISyntaxException, IOException, InterruptedException, EmailNotFoundException {
-
-        //driver se stavlja na null
-        drive.setDriver(null);
-        //drive startus se stavlja na waiting passengers
-        drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
-        drive.setDriveType(DriveType.NOW);
-        String foundDriverEmail = getNextDriverForCurrentRide(drive);
-//        Long foundDriverId = getNextDriverForFutureRide(drive);
-        if (foundDriverEmail.equals("")) {
-            notificationService.addNotificationMultiple(new Notification("Obavestenje", "Vasa voznja je odbijena. Nema slobodnih vozila.",null,""), makeUsersFromPassengersForNotification(drive));
-            throw new NotFoundException("Nema trenutno slobodnog vozaca.");
-
-        }
-
-//        Drive saved = driveRepository.save(drive);
-//
-//
-//        notificationService.addedToDriveNotify(drive.getPassengers(), saved.getId());
-//
-//
-//        return saved;
-
-        DriversAccount driver = userService.getDriver(foundDriverEmail);
-        drive.setDriver(driver);
-        notificationService.addNotification(new Notification("Nova voznja", "Dodeljena vam je nova voznja. " + drive.getDate(), driver.getUser(),"localhost:4200/rides-dr"));
-        notificationService.addNotificationMultiple(new Notification("Nova voznja", "Vasa voznja je odobrena. ", null,""), makeUsersFromPassengersForNotification(drive));
-        return driveRepository.save(drive);
-
-    }**/
-
 
 
     public List<Drive> getDrivesForUser(String email, boolean past) throws EmailNotFoundException {
         List<Drive> drives = new ArrayList<Drive>();
         User user = userService.getByEmail(email);
-        for(Drive drive : driveRepository.findAll()){
-            if(user.getRole().getName().equals("ROLE_CLIENT")) {
+        for (Drive drive : driveRepository.findAll()) {
+            if (user.getRole().getName().equals("ROLE_CLIENT")) {
                 if (drive.getOwner().getUser().getEmail().equals(email)) {
-                    if(!past) {
+                    if (!past) {
                         drives.add(drive);
-                    }
-                    else{
-                        if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                    } else {
+                        if (drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
                                 drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
-                                drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                drive.getDriveStatus() == DriveStatus.DRIVE_FAILED) {
                             drives.add(drive);
                         }
                     }
                 } else {
                     for (Passenger passenger : drive.getPassengers()) {
                         if (passenger.getPassengerEmail().equals(email)) {
-                            if(!past) {
+                            if (!past) {
                                 drives.add(drive);
-                            }
-                            else{
-                                if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                            } else {
+                                if (drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
                                         drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
-                                        drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                        drive.getDriveStatus() == DriveStatus.DRIVE_FAILED) {
                                     drives.add(drive);
                                 }
                             }
                         }
                     }
                 }
-            }
-            else{
-                if(drive.getDriver() != null) {
+            } else {
+                if (drive.getDriver() != null) {
                     if (drive.getDriver().getUser().getEmail().equals(email)) {
-                        if(!past) {
+                        if (!past) {
                             drives.add(drive);
-                        }
-                        else{
-                            if(drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
+                        } else {
+                            if (drive.getDriveStatus() == DriveStatus.DRIVE_ENDED ||
                                     drive.getDriveStatus() == DriveStatus.DRIVE_REJECTED ||
-                                    drive.getDriveStatus() == DriveStatus.DRIVE_FAILED ){
+                                    drive.getDriveStatus() == DriveStatus.DRIVE_FAILED) {
                                 drives.add(drive);
                             }
                         }
@@ -471,20 +383,13 @@ public class DriveService {
         return drives;
     }
 
-    public Drive getDrive(int driveID) {
-        for (Drive drive: driveRepository.findAll()) {
-            if(drive.getId() == driveID) return drive;
-        }
-        return null;
-    }
-
     public Drive getDrive(Long id) throws DriveNotFoundException {
-        Drive drive =  driveRepository.findById(id).orElse(null);
-        if(drive==null)throw new DriveNotFoundException("Drive does not exist!");
+        Drive drive = driveRepository.findById(id).orElse(null);
+        if (drive == null) throw new DriveNotFoundException("Drive does not exist!");
         return drive;
     }
 
-    @Transactional(propagation=Propagation.REQUIRED)
+
     public String getNextDriverForFutureRide(Drive drive) {
         List<DriversAccount> drivers = this.userService.getDrivers();
         if (drivers.size() > 0) {
@@ -495,34 +400,21 @@ public class DriveService {
     }
 
 
-    @Transactional(propagation = Propagation.REQUIRED)
     public String getNextDriverForCurrentRide(Drive drive) throws URISyntaxException, IOException, InterruptedException {
-        List<DriversAccount> drivers = this.userService.getDriversByStatus(DriverStatus.AVAILABLE);
-        drivers = getAvailableDrivers(drivers);
+        List<DriversAccount> drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.AVAILABLE);
         Map<String, Map<String, Double>> distances = new HashMap<>();
-        Location startLocation = drive.getStops().get(0).getLocation();
+        //Location startLocation = drive.getStops().get(0).getLocation();
         if (drivers.size() > 0) {
             //proveriti da li su slobodni celu voznju
             //od njegove lokacije do starta do kraja vreme i moze da otskace 5min
             distances = getFreeDriversDistancesNow(drivers, drive);
         }
         if (distances.size() == 0) {
-            drivers = this.userService.getDriversByStatus(DriverStatus.BUSY);
-            drivers = getAvailableDrivers(drivers);
+            drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.BUSY);
             distances = getBusyDriversDistancesNow(drivers, drive);
         }
         if (distances.size() == 0) return "";
         return getMinDistanceDriver(distances);
-    }
-
-    private List<DriversAccount> getAvailableDrivers(List<DriversAccount> drivers) {
-        List<DriversAccount> driversFiltered = new ArrayList<>();
-        for(DriversAccount d: drivers){
-            if(d.getDriversAvailability()){
-                driversFiltered.add(d);
-            }
-        }
-        return driversFiltered;
     }
 
     private Map<String, Map<String, Double>> getFreeDriversDistancesNow(List<DriversAccount> drivers, Drive drive) throws IOException, URISyntaxException, InterruptedException {
@@ -531,8 +423,7 @@ public class DriveService {
         for (DriversAccount driver : drivers) {
             Location carCurrentLocation = driver.getCar().getCurrentLocation();
             HashMap<String, Double> result = makeRequestForRide(carCurrentLocation, newStart, null);
-            double time = result.get("duration") + drive.getDuration() * 60;//u s
-            //da li ima voznju koja pocinje pre vocoga vremena now + time
+            double time = result.get("duration") + drive.getDuration() * 60;
             long millis = System.currentTimeMillis();
             Date newRideStart = new Date(millis); //od sad
             Date newRideEnd = new Date((long) (millis + time * 1000));
@@ -644,32 +535,42 @@ public class DriveService {
                 "annotations=distance,duration";
     }
 
-    public Drive getCurrentDrive(){
+    public Drive getCurrentDrive() {
         DriversAccount driver = userService.getLoggedDriver();
         for (Drive d : driveRepository.findByDriver(driver)) {
-            if(d.getDriveType().equals(DriveType.NOW))
+            if (d.getDriveType().equals(DriveType.NOW))
                 return d;
         }
         return null;
     }
 
     public Drive getFirstFutureDrive() {
-        List<Drive> future = new ArrayList<>();
         DriversAccount driver = userService.getLoggedDriver();
+        List<Drive> future = getFutureDrives( driver);
+        future = getSortedDrives(future);
+        if (future.size() > 0) {
+            return future.get(0);
+        }
+        return null;
+    }
+
+    private List<Drive> getFutureDrives( DriversAccount driver) {
+        List<Drive> future = new ArrayList<>();
         for (Drive d : driveRepository.findByDriver(driver)) {
-            if(d.getDriveType().equals(DriveType.FUTURE))
+            if (d.getDriveType().equals(DriveType.FUTURE))
                 future.add(d);
         }
+        return future;
+    }
+
+    private List<Drive> getSortedDrives(List<Drive> future) {
         Collections.sort(future, new Comparator<Drive>() {
             @Override
             public int compare(Drive d1, Drive d2) {
                 return d1.getDate().compareTo(d2.getDate());
             }
         });
-        if (future.size() > 0) {
-            return future.get(0);
-        }
-        return null;
+       return future;
     }
 
     public Map<String, Object> getFirstFutureDriveStops() {
@@ -682,9 +583,9 @@ public class DriveService {
         return resp;
     }
 
-    public String endDrive() throws EmailNotFoundException {
+    public void endDrive() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
-        if(drive != null){
+        if (drive != null) {
             drive.setDriveType(DriveType.PAST);
             userService.updateDriverStatus(DriverStatus.AVAILABLE);
             drive.setDriveStatus(DriveStatus.DRIVE_ENDED);
@@ -696,21 +597,16 @@ public class DriveService {
             userService.saveCurrent(drive.getOwner());
 
             //pasengeri u voznji
-            passengerNotInDriveStatus(drive.getPassengers());
+            passengerInDriveStatus(drive.getPassengers(), false);
 
 
             driveRepository.save(drive);
-            return "Voznja zavrsena";
-        }
-        else
-        {
-            return "Nema trenutne voznje.";
         }
     }
 
     public List<RealAddress> goToNextDrive() {
         Drive drive = getFirstFutureDrive();
-        if(drive != null){
+        if (drive != null) {
             drive.setDriveType(DriveType.NOW);
             userService.updateDriverStatus(DriverStatus.GOING_TO_LOCATION);
             driveRepository.save(drive);
@@ -720,47 +616,35 @@ public class DriveService {
     }
 
 
-    public void finalizePassengersTransactions(Set<Passenger> passengers){
-        for(Passenger passenger: passengers){
+    public void finalizePassengersTransactions(Set<Passenger> passengers) {
+        for (Passenger passenger : passengers) {
             bankService.transactionFinalized(passenger.getTransactionId());
         }
     }
 
-    public void passengerInDriveStatus(Set<Passenger> passengers) throws EmailNotFoundException {
-        for (Passenger passenger:
+    public void passengerInDriveStatus(Set<Passenger> passengers, boolean isStatus) throws EmailNotFoundException {
+        for (Passenger passenger :
                 passengers) {
             // i sacuvati ovo u user repo
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
-            clientsAccount.setInDrive(true);
+            clientsAccount.setInDrive(isStatus);
             userService.saveCurrent(clientsAccount);
         }
 
     }
 
-    public void passengerNotInDriveStatus(Set<Passenger> passengers) throws EmailNotFoundException {
-        for (Passenger passenger:
-                passengers) {
-            // i sacuvati ovo u user repo
-            ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
-            clientsAccount.setInDrive(false);
-            userService.saveCurrent(clientsAccount);
-
-        }
-    }
-
-    public String startDrive() throws EmailNotFoundException {
+    public void startDrive() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
-        if(drive != null){
+        if (drive != null) {
             drive.setDriveStatus(DriveStatus.DRIVE_STARTED);
             drive.setStartDate(new Date());
 
             //promeniti owneru da je u voznji
-            //sacuvati ovoga u userrepo
             drive.getOwner().setInDrive(true);
             userService.saveCurrent(drive.getOwner());
 
             //pasengeri u voznji
-            passengerInDriveStatus(drive.getPassengers());
+            passengerInDriveStatus(drive.getPassengers(), true);
 
             drive = driveRepository.save(drive);
 
@@ -768,50 +652,48 @@ public class DriveService {
             bankService.transactionFinalized(drive.getOwnerTransactionId());
 
             //promeniti status transakcije passengera
-            if(drive.isSplitBill()){
+            if (drive.isSplitBill()) {
                 finalizePassengersTransactions(drive.getPassengers());
             }
 
 
             userService.updateDriverStatus(DriverStatus.BUSY);
             rideSimulationService.createRideSim(drive);
-            return "Zapoceta nova voznja.";
         }
-        return "Nema voznje.";
     }
 
-    public Location getCarStartEndStop(Long id,boolean first) throws JsonProcessingException {
+    public Location getCarStartEndStop(Long id, boolean first) throws JsonProcessingException {
         Car c = carService.getCar(id);
-        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
-            if(d.getDriver().getCar().getId().equals(c.getId())){
+        for (Drive d : driveRepository.findByDriveType(DriveType.NOW)) {
+            if (d.getDriver().getCar().getId().equals(c.getId())) {
                 ResponseRouteHelp route = new ObjectMapper().readValue(d.getRouteJSON(), ResponseRouteHelp.class);
                 ArrayList<ArrayList<Double>> coords = route.getMetadata().getQuery().getCoordinates();
-                int i = coords.size()-1;
-                if(first) i = 0;
-                return new Location(coords.get(i).get(1),coords.get(i).get(0));
+                int i = coords.size() - 1;
+                if (first) i = 0;
+                return new Location(coords.get(i).get(1), coords.get(i).get(0));
             }
         }
         throw new NotFoundException("Car current location not found. No current drive.");
     }
 
 
-    public Drive getClientCurrentDrive(){
+    public Drive getClientCurrentDrive() {
         User user = userService.getLoggedIn();
-        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
-            if(d.getOwner().getUser().getEmail().equals(user.getEmail()))
+        for (Drive d : driveRepository.findByDriveType(DriveType.NOW)) {
+            if (d.getOwner().getUser().getEmail().equals(user.getEmail()))
                 return d;
-            for(Passenger passenger:d.getPassengers()){
-                if(passenger.getPassengerEmail().equals(user.getEmail()))
+            for (Passenger passenger : d.getPassengers()) {
+                if (passenger.getPassengerEmail().equals(user.getEmail()))
                     return d;
             }
         }
         throw new NotFoundException("No client current ride.");
     }
 
-    public List<User> makeUsersFromPassengersForNotification(Drive drive) throws EmailNotFoundException {
+    public List<User> makeUsersFromPassengersForNotification(Drive drive) {
         List<User> users = new ArrayList<>();
         users.add(drive.getOwner().getUser());
-        for(Passenger p: drive.getPassengers()){
+        for (Passenger p : drive.getPassengers()) {
 
             users.add(userService.findByEmail(p.getPassengerEmail()));
 
@@ -820,8 +702,8 @@ public class DriveService {
     }
 
     public Drive getCarCurrentDrive(int id) {
-        for(Drive d: driveRepository.findByDriveType(DriveType.NOW)){
-            if(d.getDriver().getCar().getId() == id){
+        for (Drive d : driveRepository.findByDriveType(DriveType.NOW)) {
+            if (d.getDriver().getCar().getId() == id) {
                 return d;
             }
         }
@@ -832,15 +714,15 @@ public class DriveService {
 
     public void notifyPassengers() throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
-        if(drive != null){
-            notificationService.addNotificationMultiple(new Notification("Vozilo je stiglo", "Vase vozilo ceka.", null,""), makeUsersFromPassengersForNotification(drive));
+        if (drive != null) {
+            notificationService.addNotificationMultiple(new Notification("Vozilo je stiglo", "Vase vozilo ceka.", null, ""), makeUsersFromPassengersForNotification(drive));
         }
     }
 
     public void cancelDrive(String reason) throws EmailNotFoundException {
         Drive drive = getCurrentDrive();
-        if(drive != null){
-            notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
+        if (drive != null) {
+            notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null, ""), makeUsersFromPassengersForNotification(drive));
             drive.setDriveStatus(DriveStatus.DRIVE_REJECTED);
             //promeniti status transakcije na finalized
             bankService.transactionFinalized(drive.getOwnerTransactionId());
@@ -851,23 +733,23 @@ public class DriveService {
             userService.changeDriverStatus(drive.getDriver(), DriverStatus.AVAILABLE);
             notificationService.addNotificationMultiple(new Notification(
                             "Voznja otkazana",
-                            "Vozac " + drive.getDriver().getUser().getName() + " " + drive.getDriver().getUser().getSurname()+
-                            " je otkazao vonju zbog: " + reason + ".",
+                            "Vozac " + drive.getDriver().getUser().getName() + " " + drive.getDriver().getUser().getSurname() +
+                                    " je otkazao vonju zbog: " + reason + ".",
                             null,
                             ""
-                    ),userService.getAdmins()
+                    ), userService.getAdmins()
             );
         }
     }
 
-    public List<Drive> getAllDrives(){
+    public List<Drive> getAllDrives() {
         return driveRepository.findAll();
     }
 
     public void cancelFutureDrives(DriversAccount driver) throws EmailNotFoundException {
-        for(Drive drive:driveRepository.findByDriver(driver)){
-            if(drive.getDriveType().equals(DriveType.FUTURE)){
-                notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null,""), makeUsersFromPassengersForNotification(drive));
+        for (Drive drive : driveRepository.findByDriver(driver)) {
+            if (drive.getDriveType().equals(DriveType.FUTURE)) {
+                notificationService.addNotificationMultiple(new Notification("Voznja otkazana", "Mnogo se izvinjavamo vasa voznja je otkazana.", null, ""), makeUsersFromPassengersForNotification(drive));
                 drive.setDriveStatus(DriveStatus.DRIVE_REJECTED);
                 drive.setDriveType(DriveType.PAST);
                 driveRepository.save(drive);
@@ -881,30 +763,30 @@ public class DriveService {
     }
 
 
-    public boolean isPassengerInDrive(String passengersEmail, Drive drive){
-        for (Passenger passenger:
-             drive.getPassengers()) {
-            if(passenger.getPassengerEmail().equals(passengersEmail)) return true;
+    public boolean isPassengerInDrive(String passengersEmail, Drive drive) {
+        for (Passenger passenger :
+                drive.getPassengers()) {
+            if (passenger.getPassengerEmail().equals(passengersEmail)) return true;
         }
 
         return false;
     }
 
-    public boolean isParticipationAnswered(Set<Passenger> passengers){
+    public boolean isParticipationAnswered(Set<Passenger> passengers) {
         boolean status = true;
-        for (Passenger passenger:
+        for (Passenger passenger :
                 passengers) {
-            if(passenger.getContribution().equals(DrivePassengerStatus.WAITING)) status = false;
+            if (passenger.getContribution().equals(DrivePassengerStatus.WAITING)) status = false;
         }
 
         return status;
     }
 
 
-    public boolean allAccepted(Set<Passenger> passengers){
-        for (Passenger passenger:
-                passengers ) {
-            if(passenger.getContribution().equals(DrivePassengerStatus.REJECTED)) return false;
+    public boolean allAccepted(Set<Passenger> passengers) {
+        for (Passenger passenger :
+                passengers) {
+            if (passenger.getContribution().equals(DrivePassengerStatus.REJECTED)) return false;
         }
 
         return true;
@@ -914,18 +796,12 @@ public class DriveService {
         String passengersEmail = userService.getLoggedUser().getEmail();
         Drive drive = getDrive(driveId);
 
-        if(!isPassengerInDrive(passengersEmail, drive)) throw new NotDrivePassengerException("Not drive participant.");
+        if (!isPassengerInDrive(passengersEmail, drive)) throw new NotDrivePassengerException("Not drive participant.");
 
-        for(Passenger passenger: drive.getPassengers()){
-            if(passenger.getPassengerEmail().equals(passengersEmail)){
-                passenger.setContribution(DrivePassengerStatus.REJECTED);
-                passenger.setPayment(PaymentPassengerStatus.REJECTED);
-            }
-        }
 
-        drive = driveRepository.save(drive);
+        drive = setParticipationStatus(passengersEmail, drive, DrivePassengerStatus.REJECTED);
 
-        if(isParticipationAnswered(drive.getPassengers())){
+        if (isParticipationAnswered(drive.getPassengers())) {
             //trenutna jedina kreirana transakcija je ownerova koja ima status waiting_for_finalization
             //nadjem tu njegovu transakciju
             //ponistim je
@@ -943,15 +819,12 @@ public class DriveService {
         }
 
 
-
         return drive;
 
     }
 
 
-
-
-    public Drive cancelDrive(Drive drive){
+    public Drive cancelDrive(Drive drive) {
         drive.setDriveStatus(DriveStatus.DRIVE_FAILED);
 
         notificationService.notifyCanceledDrive(drive);
@@ -970,42 +843,29 @@ public class DriveService {
             return driveFailed(drive);
         }
 
-        //i treba se trigerovati trazenje vozaca
         BankTransaction bt = bankService.requestOwnerPayment(drive);
         drive.setOwnerTransactionId(bt.getId());
-
 
 
         return driveRepository.save(drive);
     }
 
-    public Drive calculateNewPriceForDrive(Drive drive){
-        int partitions = 0;
-        //pronaci prvo koliko njih placa
-        for (Passenger passenger:
-             drive.getPassengers()) {
-            if(passenger.getContribution().equals(DrivePassengerStatus.ACCEPTED)){
-                if(passenger.getPayment().equals(PaymentPassengerStatus.WAITING) || passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)){
-                    //znaci samo oni koji placaju i koji jos nisu odbili lol
-                    partitions+=1;
-                }
-            }
-        }
+    public Drive calculateNewPriceForDrive(Drive drive) {
+        int partitions = getNumberOfPayments(drive);
 
-        if(partitions>0){
-            Double newDebit = drive.getPrice()/partitions;
+        if (partitions > 0) {
+            Double newDebit = drive.getPrice() / partitions;
             drive.setOwnerDebit(newDebit);
-            for (Passenger passenger:
+            for (Passenger passenger :
                     drive.getPassengers()) {
-                if(passenger.getContribution().equals(DrivePassengerStatus.ACCEPTED)){
-                    if(!passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING) || !passenger.getPayment().equals(PaymentPassengerStatus.REJECTED)){
+                if (passenger.getContribution().equals(DrivePassengerStatus.ACCEPTED)) {
+                    if (!passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING) || !passenger.getPayment().equals(PaymentPassengerStatus.REJECTED)) {
                         //znaci samo oni koji placaju i koji jos nisu odbili lol
                         passenger.setDebit(newDebit);
                     }
                 }
             }
-        }
-        else{
+        } else {
             drive.setSplitBill(false);
             drive.setOwnerDebit(drive.getPrice());
         }
@@ -1014,73 +874,55 @@ public class DriveService {
         return driveRepository.save(drive);
     }
 
-    //tu ce imati opciju da otkaze voznju i da prihvati da se odrzava
-    //ako prihvati kreira mu se trasakcija
-    //stize mu pitanje da li hoce da se odrzi
-    //ako nema sad ovoliko para fail
-    //ako nece voznja failed
-    //ako hoce
-    //ponavljam pitanje da li hoce da ucestvuju tj saljem im one info o voznji opet samo txt notifikacije drugaciji
+    private int getNumberOfPayments(Drive drive) {
+        int partitions = 0;
+        //pronaci prvo koliko njih placa
+        for (Passenger passenger :
+                drive.getPassengers()) {
+            if (passenger.getContribution().equals(DrivePassengerStatus.ACCEPTED)) {
+                if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING) || passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)) {
+                    //znaci samo oni koji placaju i koji jos nisu odbili lol
+                    partitions += 1;
+                }
+            }
+        }
+        return partitions;
+    }
 
     public Drive acceptDriveParticipation(Long driveId) throws DriveNotFoundException, NotDrivePassengerException, EmailNotFoundException, URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
         String passengersEmail = userService.getLoggedUser().getEmail();
         Drive drive = getDrive(driveId);
 
-        if(!isPassengerInDrive(passengersEmail, drive)) throw new NotDrivePassengerException("Not drive participant.");
+        if (!isPassengerInDrive(passengersEmail, drive)) throw new NotDrivePassengerException("Not drive participant.");
 
-        for(Passenger passenger: drive.getPassengers()){
-            if(passenger.getPassengerEmail().equals(passengersEmail)){
-                passenger.setContribution(DrivePassengerStatus.ACCEPTED);
-            }
-        }
-
-        drive = driveRepository.save(drive);
+        //izdvojiti
+        drive = setParticipationStatus(passengersEmail, drive, DrivePassengerStatus.ACCEPTED);
 
         //da li su svi prosli
-        if(isParticipationAnswered(drive.getPassengers())){
+        if (isParticipationAnswered(drive.getPassengers())) {
             //da li su svi prihvatili
 
-            if(allAccepted(drive.getPassengers())){
+            if (allAccepted(drive.getPassengers())) {
                 //ako jesu
-                if(drive.isSplitBill()){
+                if (drive.isSplitBill()) {
                     //proveriti jel mogu svi da priuste
 
-                    if(canPassengersAfford(drive)){
+                    if (canPassengersAfford(drive)) {
                         //ako mogu ovo
-                        for (Passenger passenger:
-                                drive.getPassengers()) {
-                            if(!passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING)){
-                                BankTransaction passengersTransaction = bankService.requestPassengerPayment(drive, userService.findClientsAccount(passengersEmail));
-                                passenger.setTransactionId(passengersTransaction.getId());
-                            }
-                        }
-                        drive.setDriveStatus(DriveStatus.PAYMENT_WAITING);
-                        drive = driveRepository.save(drive);
+                        drive = createPassengersTransaction(passengersEmail, drive);
                     }
-                    else{
+                    else {
                         drive = findPoorParticipants(drive);
-                        drive = driveRepository.save(drive);
 
                         //ponistiti ownerovu transakciju
                         bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
                         //drive.setOwnerTransactionId((long) -1);
 
                         //ponistiti svim passengerima transakcije
-                        for (Passenger passenger: drive.getPassengers()){
-                            if(passenger.getPayment().equals(PaymentPassengerStatus.ACCEPTED)){
-                                bankService.declineTransaction(passenger.getTransactionId(),userService.findClientsAccount(passenger.getPassengerEmail()).getClientsBankAccount().getAccountNumber());
-                                //passenger.setTransactionId((long)-1);
-                                if(passenger.getPayment().equals(PaymentPassengerStatus.WAITING)){
-                                    passenger.setPayment(PaymentPassengerStatus.WAITING);
-                                }
-                            }
-
-
-                        }
+                        cancelPassengersTransactions(drive);
 
                         //ponovo izracunati cenu
                         drive = calculateNewPriceForDrive(drive);
-
 
                         //nova transakcija owneru? i mejl logicno
                         drive.setOwnerTransactionId(bankService.requestOwnerPayment(drive).getId());
@@ -1089,24 +931,23 @@ public class DriveService {
 
 
                 }
-                if(!drive.isSplitBill()){
+                else{
                     drive = paymentDone(drive);
                 }
             }
 
-            if(!allAccepted(drive.getPassengers())){
+           else {
                 //trenutna jedina kreirana transakcija je ownerova koja ima status waiting_for_finalization
                 //nadjem tu njegovu transakciju
                 //ponistim je
                 bankService.declineTransaction(drive.getOwnerTransactionId(), drive.getOwner().getClientsBankAccount().getAccountNumber());
-                //drive.setOwnerTransactionId((long) -1);
 
                 //passenger transakcije nisu kreirane
                 //tako racunaj novu cenu
-                Drive calculated = calculateNewPriceForDrive(drive);
+                drive = calculateNewPriceForDrive(drive);
 
                 //drive status je waiting for owner
-                calculated.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
+                drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
 
                 //poslati mu notifikaciju sa novim infom o voznji
                 driveChangedOwnerNotify(drive);
@@ -1118,14 +959,40 @@ public class DriveService {
         return drive;
     }
 
-    public Drive driveChangedOwnerNotify(Drive drive){
+    private Drive createPassengersTransaction(String passengersEmail, Drive drive) throws EmailNotFoundException {
+        for (Passenger passenger :
+                drive.getPassengers()) {
+            if (!passenger.getPayment().equals(PaymentPassengerStatus.NOT_PAYING)) {
+                BankTransaction passengersTransaction = bankService.requestPassengerPayment(drive, userService.findClientsAccount(passengersEmail));
+                passenger.setTransactionId(passengersTransaction.getId());
+            }
+        }
+        drive.setDriveStatus(DriveStatus.PAYMENT_WAITING);
+        return driveRepository.save(drive);
+    }
+
+    private Drive setParticipationStatus(String passengersEmail, Drive drive, DrivePassengerStatus status) {
+        for (Passenger passenger : drive.getPassengers()) {
+            if (passenger.getPassengerEmail().equals(passengersEmail)) {
+                passenger.setContribution(status);
+
+                if(status.equals(DrivePassengerStatus.REJECTED)){
+                    passenger.setPayment(PaymentPassengerStatus.REJECTED);
+                }
+            }
+        }
+
+        return  driveRepository.save(drive);
+    }
+
+    public Drive driveChangedOwnerNotify(Drive drive) {
         drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
         notificationService.notifyOwnerDriveChanged(drive.getId(), drive.getOwner().getUser());
 
         return driveRepository.save(drive);
     }
 
-    public void driveFailedMoneyTransactionRejected(BankTransaction transaction)  {
+    public void driveFailedMoneyTransactionRejected(BankTransaction transaction) {
 
         //ovo je owenr voznje, zato sto us sutini placanje se odbija finalno s njim...tek kad on odbije, ili nema para voznja je fail
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId(transaction.getSender(), transaction.getId());

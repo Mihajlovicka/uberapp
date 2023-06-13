@@ -64,22 +64,8 @@ public class DriveController {
     @PostMapping(value = "/api/createDriveReservation")
     public ResponseEntity createDriveReservation(@RequestBody CreateDriveReservationDTO driveReservationDTO) throws EmailNotFoundException, ParseException, URISyntaxException, IOException, InterruptedException {
 
-        Drive drive = new Drive();
-        drive.setDistance(driveReservationDTO.getDistance());
-        drive.setDuration(driveReservationDTO.getDuration());
-        drive.setPrice(driveReservationDTO.getPrice());
-        drive.setBaby(driveReservationDTO.getBaby());
-        drive.setBabySeats(driveReservationDTO.getBabySeats());
-        drive.setPets(driveReservationDTO.getPets());
-        drive.setSeats(driveReservationDTO.getSeats());
-        drive.setRouteJSON(driveReservationDTO.getRouteJSON());
-        drive.setSplitBill(driveReservationDTO.isSplitBill());
+        Drive drive = new Drive(driveReservationDTO);
         drive.setOwner(userService.findClientsAccount(driveReservationDTO.getOwner().getUser().getEmail()));
-        //stops
-        drive.setStops(driveReservationDTO.getStops());
-        //passengeri
-        drive.setPassengers(driveReservationDTO.getPassengers());
-        drive.setOwnerDebit(driveReservationDTO.getOwnerDebit());
 
         if(driveReservationDTO.getDate().equals("")){
             drive.setDriveType(DriveType.NOW);
@@ -129,7 +115,8 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/endRide")
-    public ResponseEntity endRide() throws EmailNotFoundException {driveService.endDrive();
+    public ResponseEntity endRide() throws EmailNotFoundException {
+        driveService.endDrive();
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
@@ -141,7 +128,8 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/startRide")
-    public ResponseEntity startDrive() throws EmailNotFoundException {driveService.startDrive();
+    public ResponseEntity startDrive() throws EmailNotFoundException {
+        driveService.startDrive();
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
@@ -181,10 +169,8 @@ public class DriveController {
     }
 
     @GetMapping(value = "/api/getDrive")
-    public ResponseEntity getDrive(@RequestParam String driveID) throws EmailNotFoundException {
-
-        int driveId = Integer.valueOf(driveID);
-        return new ResponseEntity(driveService.getDrive(driveId), HttpStatus.OK);
+    public ResponseEntity getDrive(@RequestParam String driveID) throws DriveNotFoundException {
+        return new ResponseEntity(driveService.getDrive(Long.valueOf(driveID)), HttpStatus.OK);
 
     }
 
