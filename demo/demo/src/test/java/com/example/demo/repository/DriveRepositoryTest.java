@@ -86,5 +86,12 @@ public class DriveRepositoryTest {
         assertThat(drive).isNull();
     }
 
+    @Test
+    public void shouldFindDriveByDriversAvailabilityAndStatus() {
+        DriversAccount driver = driversRepository.findById(Long.valueOf(1)).orElse(null);
+        List<Drive> test = driveRepository.findByDriver(driver);
+        assertThat(test).isNotEmpty();
+    }
+
 
 }
