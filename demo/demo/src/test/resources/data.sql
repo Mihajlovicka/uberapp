@@ -72,6 +72,11 @@ INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, s
                   duration, price, owner_debit, owner_transaction_id)
 VALUES (2, 1, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1);
 
+
+INSERT INTO drive(id, drive_type, driver_id, owner_id, baby, baby_seats, pets, seats, split_bill, date, distance,
+                  duration, price, owner_debit, owner_transaction_id, drive_status)
+VALUES (1, 0, 1, 1, 0, 0, 0, 0, false, '2022-02-02 15:44:00', 5.0, 5.5, 500.0, 500.0, 1, 1);
+
 -- stops, passengers
 
 INSERT INTO passenger(id, passenger_email, contribution, payment, debit,paying_enabled, transaction_id)
@@ -85,6 +90,9 @@ VALUES (3, 'klijent2@com', 0, 0, 200.0, true,1);
 
 INSERT INTO passenger(id, passenger_email, contribution, payment, debit,paying_enabled, transaction_id)
 VALUES (4, 'klijent3@com', 0, 0, 200.0, true,1);
+
+INSERT INTO passenger(id, passenger_email, contribution, payment, debit,paying_enabled, transaction_id)
+VALUES (5, 'klijent2@com', 2, 0, 200.0, true,1);
 
 -- INSERT INTO real_address(id, latitude, longitude)
 -- VALUES (1, 45.254125, 19.796972);
@@ -108,6 +116,8 @@ VALUES (2,3);
 INSERT INTO drive_passengers(drive_id, passengers_id)
 VALUES (2,4);
 
+INSERT INTO drive_passengers(drive_id, passengers_id)
+VALUES (3,5);
 
 
 INSERT INTO car(id,brand,color,latitude,longitude,model,num_of_seats,plate_number, car_on_map)

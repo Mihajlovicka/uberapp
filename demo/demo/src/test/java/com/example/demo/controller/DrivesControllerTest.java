@@ -44,17 +44,19 @@ public class DrivesControllerTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private BankService bankService;
+
+    @Autowired
+    private UserConverter userConverter;
+
+
     HttpHeaders headers = new HttpHeaders();
-    
+
     @Nested
     @DisplayName("Client tests")
     class Group1Client {
-
-        @Autowired
-        private BankService bankService;
-        @Autowired
-        private UserConverter userConverter;
-
+        
         @BeforeEach
         public void login() {
             ResponseEntity<UserTokenState> responseEntity =
@@ -184,8 +186,6 @@ public class DrivesControllerTest {
     @DisplayName("Participant tests")
     class Group1Participant {
 
-        @Autowired
-        private BankService bankService;
 
         @BeforeEach
         public void login() {
@@ -199,30 +199,96 @@ public class DrivesControllerTest {
             headers.add("Authorization", "Bearer " + accessToken);
         }
 
-        //passenger nije u voznji
-        //svi su odgovorili
-        //nisu svi odgovorili
-//        @Test
-//        public void shouldAcceptDriveParticipation() throws DriveNotFoundException {
-//
-//            HttpEntity<String> httpEntity = new HttpEntity(1, headers);
-//
-//            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/acceptDrive/1",
-//                    HttpMethod.POST,
-//                    httpEntity,
-//                    new ParameterizedTypeReference<>() {
-//                    });
-//
-//            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//            DriveDTO d = responseEntity.getBody();
-//
-//            Drive dr = driveService.getDrive(1L);
-//
-//            assertEquals(DriveStatus.DRIVE_FAILED, dr.getDriveStatus());
-//
-//            dr.setDriveStatus(DriveStatus.DRIVER_WAITING);
-//            driveService.save(dr);
-//        }
+        //one accepted one waiting for
+        @Test
+        public void shouldAcceptDriveParticipation() throws DriveNotFoundException, EmailNotFoundException {
+
+            HttpEntity<String> httpEntity = new HttpEntity(1, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/acceptDrive/1",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {
+                    });
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            DriveDTO d = responseEntity.getBody();
+
+            Drive dr = driveService.getDrive(1L);
+
+            assertEquals(DriveStatus.PASSENGERS_WAITING, dr.getDriveStatus());
+
+
+        }
+
+        //accepted but does not have money
+        @Test
+        public void shouldAcceptAndDriveFailDriveParticipation() throws DriveNotFoundException, EmailNotFoundException {
+
+            HttpEntity<String> httpEntity = new HttpEntity(3, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/acceptDrive/3",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {
+                    });
+
+            DriveDTO d = responseEntity.getBody();
+
+            Drive dr = driveService.getDrive(3L);
+
+            assertEquals(DriveStatus.DRIVE_FAILED, dr.getDriveStatus());
+
+
+        }
+
+
+        //decline one other not
+        @Test
+        public void shouldDeclineDriveParticipation() throws DriveNotFoundException, EmailNotFoundException {
+
+            HttpEntity<String> httpEntity = new HttpEntity(1, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/declineDrive/1",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {
+                    });
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            DriveDTO d = responseEntity.getBody();
+
+            Drive dr = driveService.getDrive(1L);
+
+
+            assertEquals(DriveStatus.PASSENGERS_WAITING, dr.getDriveStatus());
+
+        }
+
+
+        //decline only one, owner needs to pay debit again
+        @Test
+        public void shouldDeclineDriveOwnerNeedsToPayParticipation() throws DriveNotFoundException, EmailNotFoundException {
+
+            HttpEntity<String> httpEntity = new HttpEntity(3, headers);
+
+            ResponseEntity<DriveDTO> responseEntity = restTemplate.exchange("/api/declineDrive/3",
+                    HttpMethod.POST,
+                    httpEntity,
+                    new ParameterizedTypeReference<>() {
+                    });
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            DriveDTO d = responseEntity.getBody();
+
+            Drive dr = driveService.getDrive(3L);
+
+
+            assertEquals(DriveStatus.OWNER_PAYMENT_WAITING, dr.getDriveStatus());
+
+        }
     }
+
+
 
 }
