@@ -74,18 +74,19 @@ public class DriveService {
         //napravi transakciju
         BankTransaction bt = bankService.requestOwnerPayment(drive);
         drive.setOwnerTransactionId(bt.getId());
+        drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
 
         return driveRepository.save(drive);
     }
 
-    public Drive driveWaitingForPassengers(Drive drive) {
+    private Drive driveWaitingForPassengers(Drive drive) {
         drive.setDriveStatus(DriveStatus.PASSENGERS_WAITING);
         notificationService.addedToDriveNotify(drive.getPassengers(), drive.getId());
         return driveRepository.save(drive);
     }
 
 
-    public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
+    public Drive findAvailableDriver(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
         String foundDriverEmail = "";
         if (drive.getDriveType().equals(DriveType.NOW)) {
             drive.setDriveType(DriveType.FUTURE);
@@ -117,17 +118,16 @@ public class DriveService {
         return driveRepository.save(drive);
     }
 
-    public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
+    public Drive paymentDone(Drive drive) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException{
         drive.setDriveStatus(DriveStatus.DRIVER_WAITING);
         Drive saved = driveRepository.save(drive);
-
 
         return findAvailableDriver(saved);
 
     }
 
 
-    public boolean canPassengersAfford(Drive drive) throws EmailNotFoundException {
+    private boolean canPassengersAfford(Drive drive) throws EmailNotFoundException {
         for (Passenger passenger : drive.getPassengers()) {
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
             if (clientsAccount.getClientsBankAccount().getBalance() - passenger.getDebit() < 0) return false;
@@ -136,7 +136,7 @@ public class DriveService {
         return true;
     }
 
-    public Drive findPoorParticipants(Drive drive) throws EmailNotFoundException {
+    private Drive findPoorParticipants(Drive drive) throws EmailNotFoundException {
         for (Passenger passenger :
                 drive.getPassengers()) {
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
@@ -148,7 +148,7 @@ public class DriveService {
         return driveRepository.save(drive);
     }
 
-    public void ownerPaymentAccepted(BankTransaction transaction) throws EmailNotFoundException, URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
+    private void ownerPaymentAccepted(BankTransaction transaction) throws EmailNotFoundException, URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException {
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId(transaction.getSender(), transaction.getId());
 
 
@@ -181,6 +181,10 @@ public class DriveService {
 
                     }
                 }
+                else{
+                    //ima pass, participacija je odg ali bil nije splitovan znaci voze se ali ne placaju
+                    drive = paymentDone(drive);
+                }
             }
             else {
                 if (drive.getPassengers().size() > 0) drive = driveWaitingForPassengers(drive);
@@ -188,10 +192,10 @@ public class DriveService {
             }
         }
         //ako nema passengere
-        if (drive.getPassengers().size() == 0 || !drive.isSplitBill()) drive = paymentDone(drive);
+        if (drive.getPassengers().size() == 0 && !drive.isSplitBill()) drive = paymentDone(drive);
     }
 
-    public Drive findPassengerDrive(String passengerEmail, Long passengerTransactionId) {
+    private Drive findPassengerDrive(String passengerEmail, Long passengerTransactionId) {
         for (Drive drive : driveRepository.findAll()) {
             for (Passenger passenger :
                     drive.getPassengers()) {
@@ -205,7 +209,7 @@ public class DriveService {
     }
 
 
-    public boolean isPaymentAnswered(Set<Passenger> passengers) {
+    private boolean isPaymentAnswered(Set<Passenger> passengers) {
         for (Passenger passenger :
                 passengers) {
             if (passenger.getPayment().equals(PaymentPassengerStatus.WAITING)) return false;
@@ -213,7 +217,7 @@ public class DriveService {
         return true;
     }
 
-    public boolean isPaymentAccepted(Set<Passenger> passengers) {
+    private boolean isPaymentAccepted(Set<Passenger> passengers) {
         for (Passenger passenger :
                 passengers) {
             if (passenger.getPayment().equals(PaymentPassengerStatus.REJECTED) || passenger.getPayment().equals(PaymentPassengerStatus.WAITING))
@@ -223,7 +227,7 @@ public class DriveService {
         return true;
     }
 
-    public Drive passengerDeclinedPayment(Drive drive, BankTransaction transaction) throws TransactionIdDoesNotExistException, EmailNotFoundException {
+    private Drive passengerDeclinedPayment(Drive drive, BankTransaction transaction) throws TransactionIdDoesNotExistException, EmailNotFoundException {
         drive = setPassengerPaymentStatus(drive, transaction, PaymentPassengerStatus.REJECTED);
 
         if (isPaymentAnswered(drive.getPassengers())) {
@@ -266,7 +270,7 @@ public class DriveService {
     }
 
 
-    public Drive passengerAcceptedPayment(Drive drive, BankTransaction transaction) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
+    private Drive passengerAcceptedPayment(Drive drive, BankTransaction transaction) throws URISyntaxException, IOException, InterruptedException, TransactionIdDoesNotExistException, EmailNotFoundException {
         drive = setPassengerPaymentStatus(drive, transaction, PaymentPassengerStatus.ACCEPTED);
 
         //proveravam da li su svi odg
@@ -390,8 +394,8 @@ public class DriveService {
     }
 
 
-    public String getNextDriverForFutureRide(Drive drive) {
-        List<DriversAccount> drivers = this.userService.getDrivers();
+    private String getNextDriverForFutureRide(Drive drive) {
+        List<DriversAccount> drivers = this.userService.getDrivers(); //ovo cemo mokovati za kad ima.. :) !!!!!
         if (drivers.size() > 0) {
             DriversAccount d = getDriversDistancesFuture(drivers, drive);
             return d == null ? "" : d.getUser().getEmail();
@@ -400,8 +404,8 @@ public class DriveService {
     }
 
 
-    public String getNextDriverForCurrentRide(Drive drive) throws URISyntaxException, IOException, InterruptedException {
-        List<DriversAccount> drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.AVAILABLE);
+    private String getNextDriverForCurrentRide(Drive drive) throws URISyntaxException, IOException, InterruptedException {
+        List<DriversAccount> drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.AVAILABLE); //ovo cemo mokovati za kad ima.. :) !!!!!
         Map<String, Map<String, Double>> distances = new HashMap<>();
         //Location startLocation = drive.getStops().get(0).getLocation();
         if (drivers.size() > 0) {
@@ -410,7 +414,7 @@ public class DriveService {
             distances = getFreeDriversDistancesNow(drivers, drive);
         }
         if (distances.size() == 0) {
-            drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.BUSY);
+            drivers = userService.getDriversByStatusAndAvailability(true, DriverStatus.BUSY); //ovo cemo mokovati za kad ima.. :) !!!!!
             distances = getBusyDriversDistancesNow(drivers, drive);
         }
         if (distances.size() == 0) return "";
@@ -494,6 +498,10 @@ public class DriveService {
     }
 
 
+    public void save(Drive d){
+        driveRepository.save(d);
+    }
+
     private HashMap<String, Double> makeRequestForRide(Location start, Location end, Location middle) throws IOException, InterruptedException, URISyntaxException {
 
         HttpClient client = HttpClient.newHttpClient();
@@ -570,7 +578,7 @@ public class DriveService {
                 return d1.getDate().compareTo(d2.getDate());
             }
         });
-       return future;
+        return future;
     }
 
     public Map<String, Object> getFirstFutureDriveStops() {
@@ -616,19 +624,20 @@ public class DriveService {
     }
 
 
-    public void finalizePassengersTransactions(Set<Passenger> passengers) {
+    private void finalizePassengersTransactions(Set<Passenger> passengers) {
         for (Passenger passenger : passengers) {
             bankService.transactionFinalized(passenger.getTransactionId());
         }
     }
 
-    public void passengerInDriveStatus(Set<Passenger> passengers, boolean isStatus) throws EmailNotFoundException {
+    private void passengerInDriveStatus(Set<Passenger> passengers, boolean isStatus) throws EmailNotFoundException {
         for (Passenger passenger :
                 passengers) {
             // i sacuvati ovo u user repo
             ClientsAccount clientsAccount = userService.findClientsAccount(passenger.getPassengerEmail());
             clientsAccount.setInDrive(isStatus);
             userService.saveCurrent(clientsAccount);
+
         }
 
     }
@@ -763,7 +772,7 @@ public class DriveService {
     }
 
 
-    public boolean isPassengerInDrive(String passengersEmail, Drive drive) {
+    private boolean isPassengerInDrive(String passengersEmail, Drive drive) {
         for (Passenger passenger :
                 drive.getPassengers()) {
             if (passenger.getPassengerEmail().equals(passengersEmail)) return true;
@@ -772,7 +781,7 @@ public class DriveService {
         return false;
     }
 
-    public boolean isParticipationAnswered(Set<Passenger> passengers) {
+    private boolean isParticipationAnswered(Set<Passenger> passengers) {
         boolean status = true;
         for (Passenger passenger :
                 passengers) {
@@ -783,7 +792,7 @@ public class DriveService {
     }
 
 
-    public boolean allAccepted(Set<Passenger> passengers) {
+    private boolean allAccepted(Set<Passenger> passengers) {
         for (Passenger passenger :
                 passengers) {
             if (passenger.getContribution().equals(DrivePassengerStatus.REJECTED)) return false;
@@ -850,7 +859,7 @@ public class DriveService {
         return driveRepository.save(drive);
     }
 
-    public Drive calculateNewPriceForDrive(Drive drive) {
+    private Drive calculateNewPriceForDrive(Drive drive) {
         int partitions = getNumberOfPayments(drive);
 
         if (partitions > 0) {
@@ -936,7 +945,7 @@ public class DriveService {
                 }
             }
 
-           else {
+            else {
                 //trenutna jedina kreirana transakcija je ownerova koja ima status waiting_for_finalization
                 //nadjem tu njegovu transakciju
                 //ponistim je
@@ -985,14 +994,14 @@ public class DriveService {
         return  driveRepository.save(drive);
     }
 
-    public Drive driveChangedOwnerNotify(Drive drive) {
+    private Drive driveChangedOwnerNotify(Drive drive) {
         drive.setDriveStatus(DriveStatus.OWNER_PAYMENT_WAITING);
         notificationService.notifyOwnerDriveChanged(drive.getId(), drive.getOwner().getUser());
 
         return driveRepository.save(drive);
     }
 
-    public void driveFailedMoneyTransactionRejected(BankTransaction transaction) {
+    private void driveFailedMoneyTransactionRejected(BankTransaction transaction) {
 
         //ovo je owenr voznje, zato sto us sutini placanje se odbija finalno s njim...tek kad on odbije, ili nema para voznja je fail
         Drive drive = driveRepository.findByOwner_User_EmailAndOwnerTransactionId(transaction.getSender(), transaction.getId());
@@ -1001,10 +1010,6 @@ public class DriveService {
 
         driveRepository.save(drive);
         notificationService.paymentFailedDriveCanceledNotify(transaction.getSender());
-    }
-
-    public void save(Drive d){
-        driveRepository.save(d);
     }
 
 }

@@ -236,7 +236,7 @@ public class DriveServiceTest {
     }
 
     @Test
-    public void shouldCancelDrive() {
+    public void shouldCancelDrive() throws EmailNotFoundException {
         ClientsAccount c = new ClientsAccount();
         Passenger p = new Passenger();
         HashSet<Passenger> set = new HashSet<>();
@@ -272,7 +272,7 @@ public class DriveServiceTest {
     }
 
     @Test
-    public void shouldDoNothingDriveIsNull() {
+    public void shouldDoNothingDriveIsNull() throws EmailNotFoundException {
 
         doReturn(driver).when(userService).getLoggedDriver();
         doReturn(new ArrayList<>()).when(driveRepository).findByDriver(driver);
