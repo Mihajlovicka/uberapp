@@ -1,12 +1,13 @@
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { AppService } from '../app.service';
-import { CarBodyType, Fuel } from '../model/car.model';
-import { BankStatus, ClientsAccount } from '../model/clientsAccount.model';
+import {Component, Input, OnInit} from '@angular/core';
+import {AppService} from '../app.service';
+import {CarBodyType, Fuel} from '../model/car.model';
+import {BankStatus, ClientsAccount} from '../model/clientsAccount.model';
 import {Drive, DriveStatus, DriveType} from '../model/drive.model';
-import { DriveReservationForm, PriceStart } from '../model/driveReservationForm.model';
-import { DriverStatus } from '../model/driversAccount.model';
-import { PaymentPassengerStatus } from '../model/passenger.model';
-import { Role, Status, User } from '../model/user.model';
+import {DriveReservationForm, PriceStart} from '../model/driveReservationForm.model';
+import {DriverStatus} from '../model/driversAccount.model';
+import {PaymentPassengerStatus} from '../model/passenger.model';
+import {Role, Status, User} from '../model/user.model';
+import {delay} from "rxjs";
 
 @Component({
   selector: 'app-payment',
@@ -193,15 +194,15 @@ export class PaymentComponent implements OnInit{
       if(passenger.payingEnabled===true)this.numberOfPartition=this.numberOfPartition+1;
     })
   }
-  
+
 
 
   setSplitPayment(split: boolean){
     this.drive.splitBill=split;
     //pozvati ovo
     if(this.drive.splitBill===true)this.setNumOfPartition();
-  
-    //pogledati kpjim komponentama se vraca ovo 
+
+    //pogledati kpjim komponentama se vraca ovo
     //bil i ono za prikaz pass vljd
 
   }
@@ -216,7 +217,7 @@ export class PaymentComponent implements OnInit{
 
 
     if(this.drive.splitBill === true){
-      
+
       this.drive.passengers.forEach(passenger  => {
         if(passenger.payingEnabled===true){
         passenger.debit = Number((this.drive.price/(this.numberOfPartition+1)).toFixed(2));
@@ -228,7 +229,7 @@ export class PaymentComponent implements OnInit{
       });
 
 
-      
+
     }
 
     if(this.drive.splitBill===false){
@@ -239,10 +240,17 @@ export class PaymentComponent implements OnInit{
       this.drive.ownerDebit = this.drive.price;
     }
 
-    this.service.createDriveReservation(this.drive).subscribe(
-      (resp: Drive) =>{
+    this.service.createDriveReservation(this.drive).pipe(delay(1000)).subscribe(
+      (resp: Drive) => {
         this.created = resp;
-        console.log(this.created);}
+        console.log(this.created);
+        if (resp.driveStatus != undefined) {
+          if (resp.driveStatus == DriveStatus.DRIVE_FAILED)
+            this.service.openErrorDialog("Voznja neuspesno rezervisana.");
+          if (resp.driveStatus == DriveStatus.OWNER_PAYMENT_WAITING)
+            this.service.openErrorDialog("Voznja uspesno rezervisana, proverite mail. transakcija:" + this.created.ownerTransactionId);
+        }
+      }
 
     )
     this.drive.price = this.drive.price - this.starting_price;

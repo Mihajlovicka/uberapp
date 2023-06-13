@@ -129,8 +129,8 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/endRide")
-    public ResponseEntity<String> endRide() throws EmailNotFoundException {
-        return new ResponseEntity(driveService.endDrive(), HttpStatus.OK);
+    public ResponseEntity endRide() throws EmailNotFoundException {driveService.endDrive();
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
@@ -141,8 +141,8 @@ public class DriveController {
 
     @PreAuthorize("hasRole('ROLE_DRIVER')")
     @PostMapping(path = "/ride/startRide")
-    public ResponseEntity<List<RealAddress>> startDrive() throws EmailNotFoundException {
-        return new ResponseEntity(driveService.startDrive(), HttpStatus.OK);
+    public ResponseEntity startDrive() throws EmailNotFoundException {driveService.startDrive();
+        return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @GetMapping( path = "/api/ride/getNewStartAddress/{id}", produces = "application/json")

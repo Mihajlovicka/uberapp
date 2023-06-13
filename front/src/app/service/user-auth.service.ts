@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {catchError, Observable} from "rxjs";
+import {catchError, Observable, of} from "rxjs";
 import {AppService} from "../app.service";
 import {ClientsAccount} from "../model/clientsAccount.model";
 
@@ -30,7 +30,7 @@ export class UserAuthService {
 
     public login(loginData: any){
       return this.http.post(this.PATH_OF_API + 'auth/login', loginData, {headers: this.requestHeader}).pipe(
-        catchError(this.service.handleError<any>("Korisnicko ime ili lozinka nisu ispravni."))
+        catchError(this.handleError<any>("Korisnicko ime ili lozinka nisu ispravni."))
       );
     }
 
@@ -58,5 +58,16 @@ export class UserAuthService {
   public roleMatch(role:string){
     return this.getRole() != null && this.getRole() && this.getRole() === role;
   }
+  public handleError<T>(operation = 'operation', result?: T) {
+    return (error: any): Observable<T> => {
+      // TODO: send the error to remote logging infrastructure
+      console.error(error); // log to console instead
 
+      // TODO: better job of transforming error for user consumption
+      this.service.openErrorDialog(`${operation} failed.`);
+
+      // Let the app keep running by returning an empty result.
+      return of(result as T);
+    };
+  }
 }

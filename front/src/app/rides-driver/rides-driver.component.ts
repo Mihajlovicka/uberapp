@@ -203,7 +203,7 @@ export class RidesDriverComponent implements OnInit {
     this.appService.endRide().subscribe((res: any) => {
       this.stops = []
       this.status = 'AVAILABLE'
-      this.appService.openErrorDialog(res);
+      this.appService.openErrorDialog("Zavrsena voznja.");
     })
     this.getFirstFutureRide()
   }

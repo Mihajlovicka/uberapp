@@ -18,7 +18,7 @@
     <div *ngIf="isLoggedIn() && !isAdmin()" style="display: inline-block;" class="hover" (click)="openSupport();">
       <mat-icon matBadge="{{numberOfMessages}}" matBadgeColor="warn" style="color: #673ab7;">support_agent</mat-icon>
     </div>
-    <button mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
+    <button id="prijavaBtn" mat-raised-button color="primary" routerLink="/login" *ngIf="! isLoggedIn()">Prijava</button>
 
     <button mat-raised-button color="primary" style="margin-left:8px" routerLink="/register" *ngIf="! isLoggedIn()">Registracija</button>
 

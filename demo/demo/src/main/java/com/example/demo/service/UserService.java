@@ -77,7 +77,7 @@ public class UserService {
         //sanje meila
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setSubject("Potrvda registracije UberApp");
-        emailDetails.setRecipient("saramihajlovic94@gmail.com");
+        emailDetails.setRecipient("srki0505@gmail.com");
         emailDetails.setMsgBody("Kliknite na link kako bi se registrovali. \n " +
                 "http://localhost:4200/registerConfirm/"+emailDetails.getRecipient());
         emailService.send(emailDetails);

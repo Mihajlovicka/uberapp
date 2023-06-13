@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormControl, NgForm, Validators} from '@angular/forms';
 import {UserAuthService} from "../service/user-auth.service";
 import {Router} from "@angular/router";
@@ -12,7 +12,8 @@ export class LoginComponent implements OnInit {
   username = new FormControl('',[Validators.required, Validators.email])
   password = new FormControl('', [Validators.required]);
   hide = true;
-
+  // @ts-ignore
+  @ViewChild('loginForm', { static: true }) loginForm: NgForm;
   getErrorMessage() {
     if (this.username.hasError('required')) {
       return 'Popunite polje';
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
     return this.username.hasError('email') ? 'Email nije validan' : '';
   }
   constructor(
-    private service: UserAuthService,
+    public service: UserAuthService,
     private router: Router
   ) {
   }

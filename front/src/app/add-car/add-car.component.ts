@@ -13,15 +13,16 @@ import { Role, Status } from '../model/user.model';
 })
 export class AddCarComponent implements OnInit {
 
-  constructor(private service: AppService, private router: Router) { }
+  constructor(private service: AppService, private router: Router) {
+  }
 
-  selectedFuelType:string='';
-  selectedBodyType:string='';
-  selectedNumOfSeats:string='';
+  selectedFuelType: string = '';
+  selectedBodyType: string = '';
+  selectedNumOfSeats: string = '';
 
 
   info: DriverCarInfo = {
-    username:'',
+    username: '',
     name: '',
     surname: '',
     email: '',
@@ -30,43 +31,43 @@ export class AddCarComponent implements OnInit {
     checkPassword: '',
     role: Role.ROLE_DRIVER,
     car: {
-      brand:'',
-      model:'',
-      color:'',
-      plateNumber:'',
+      brand: '',
+      model: '',
+      color: '',
+      plateNumber: '',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
-      numOfSeats:5,
+      numOfSeats: 5,
     }
 
   }
 
   driversAcc: DriversAccount = {
-    user:{
-      username:'',
-      name:'',
-      surname:'',
-      email:'',
+    user: {
+      username: '',
+      name: '',
+      surname: '',
+      email: '',
       status: Status.ACTIVE,
       role: Role.ROLE_DRIVER
     },
-    picture:{
-      name:'',
-      type:'',
-      picByte:null
+    picture: {
+      name: '',
+      type: '',
+      picByte: null
     },
-    phone:'',
-    car:{
-      brand:'',
-      model:'',
-      color:'',
-      plateNumber:'',
+    phone: '',
+    car: {
+      brand: '',
+      model: '',
+      color: '',
+      plateNumber: '',
       bodyType: CarBodyType.HATCHBACK,
       fuelType: Fuel.GASOLINE,
-      numOfSeats:5,
+      numOfSeats: 5,
     },
     driverStatus: DriverStatus.AVAILABLE,
-    driversAvailability:true
+    driversAvailability: true
   }
 
   ngOnInit(): void {
@@ -81,17 +82,17 @@ export class AddCarComponent implements OnInit {
   }
 
 
-  validateChars(str: string): boolean{
+  validateChars(str: string): boolean {
     var regex = /^[a-zA-Z]+\s?[a-zA-Z]+$/;
     return regex.test(str);
   }
 
-  validateRegistrationPlateNumber(plateNum: string): boolean{
+  validateRegistrationPlateNumber(plateNum: string): boolean {
     var regex = /^[a-zA-Z]{2}\d{3}[a-zA-Z]{2}$/
     return regex.test(plateNum);
   }
 
-  capitalizeForm(){
+  capitalizeForm() {
     this.info.car.brand.charAt(0).toUpperCase();
     this.info.car.model.charAt(0).toUpperCase();
     this.info.car.plateNumber.toUpperCase();
@@ -99,24 +100,41 @@ export class AddCarComponent implements OnInit {
   }
 
 
-  mappFuelOptions(){
-    if(this.selectedFuelType === 'GASOLINE')this.info.car.fuelType=Fuel.GASOLINE;
-    if(this.selectedFuelType === 'DIESEL')this.info.car.fuelType=Fuel.DIESEL;
-    if(this.selectedFuelType === 'AUTOGAS')this.info.car.fuelType=Fuel.AUTOGAS;
+  mappFuelOptions() {
+    if (this.selectedFuelType === 'GASOLINE'){ this.info.car.fuelType = Fuel.GASOLINE;return true;}
+    else
+    if (this.selectedFuelType === 'DIESEL'){ this.info.car.fuelType = Fuel.DIESEL;return true;}
+    else
+    if (this.selectedFuelType === 'AUTOGAS'){ this.info.car.fuelType = Fuel.AUTOGAS;return true;}
+    else{alert('Nevažeći tip goriva!');return false;}
   }
 
-  mappBodyOptions(){
-    if(this.selectedBodyType === 'COUPE')this.info.car.bodyType=CarBodyType.COUPE;
-    if(this.selectedBodyType === 'JEEP')this.info.car.bodyType=CarBodyType.JEEP;
-    if(this.selectedBodyType === 'SEDAN')this.info.car.bodyType=CarBodyType.SEDAN;
-    if(this.selectedBodyType === 'SUV')this.info.car.bodyType=CarBodyType.SUV;
-    if(this.selectedBodyType === 'HATCHBACK')this.info.car.bodyType=CarBodyType.HATCHBACK;
+  mappBodyOptions() {
+
+    if (this.selectedBodyType === 'COUPE') {
+      this.info.car.bodyType = CarBodyType.COUPE;
+      return true
+    } else if (this.selectedBodyType === 'JEEP') {
+      this.info.car.bodyType = CarBodyType.JEEP;
+      return true
+    } else if (this.selectedBodyType === 'SEDAN') {
+      this.info.car.bodyType = CarBodyType.SEDAN;
+      return true
+    } else if (this.selectedBodyType === 'SUV') {
+      this.info.car.bodyType = CarBodyType.SUV;
+      return true
+    } else if (this.selectedBodyType === 'HATCHBACK') {
+      this.info.car.bodyType = CarBodyType.HATCHBACK;
+      return true
+    } else {
+      alert('Nevažeći tip karoserije!');
+      return false;
+    }
   }
 
 
-
- //fja za kad idemo nazad i da ona sacuiva u servisu te podatke(znaci samo set data postavi na ovo trenutno odavde)
-  back(){
+  //fja za kad idemo nazad i da ona sacuiva u servisu te podatke(znaci samo set data postavi na ovo trenutno odavde)
+  back() {
 
     this.mappBodyOptions();
     this.mappFuelOptions();
@@ -127,40 +145,46 @@ export class AddCarComponent implements OnInit {
 
   }
 
-  save(){
+  save() {
 
-    if(this.info.car.brand==='')alert('Unesite marku!')
-    else if(!this.validateChars(this.info.car.brand))alert("Marka nije validna")
+    if (this.info.car.brand === '') alert('Unesite marku!')
+    else if (!this.validateChars(this.info.car.brand)) alert("Marka nije validna")
 
-    else if(this.info.car.model==='')alert('Unesite model!')
+    else if (this.info.car.model === '') alert('Unesite model!')
 
-    else if(this.info.car.color==='')alert('Unesite boju!')
-    else if(!this.validateChars(this.info.car.color))alert("Boja nije validna")
+    else if (this.info.car.color === '') alert('Unesite boju!')
+    else if (!this.validateChars(this.info.car.color)) alert("Boja nije validna")
 
-    else if(this.info.car.plateNumber==='')alert('Unesite registracioni broj!')
-    else if(!this.validateRegistrationPlateNumber(this.info.car.plateNumber))alert("Registracija nije validna!")
-    else{
+    else if (this.info.car.plateNumber === '') alert('Unesite registracioni broj!')
+    else if (!this.validateRegistrationPlateNumber(this.info.car.plateNumber)) alert("Registracija nije validna!")
+    else {
 
-    this.mappBodyOptions();
-    this.mappFuelOptions();
-    this.info.car.numOfSeats=parseInt(this.selectedNumOfSeats);
+      if (this.mappBodyOptions()) {
+        if (this.mappFuelOptions()) {
+          this.info.car.numOfSeats = parseInt(this.selectedNumOfSeats);
 
-    this.capitalizeForm();
-
-
-    this.service.setData(this.info);
-
-    console.log("ovo pre cuvankja")
-    console.log(this.info);
+          if (this.info.car.numOfSeats >= 10 || isNaN(this.info.car.numOfSeats)) {
+            alert('Nevažeći broj sedišta!')
+          } else {
+            this.capitalizeForm();
 
 
-    this.service.addDriverCarAccount(this.info).subscribe((resp: DriversAccount) => {
-      this.driversAcc = resp;
-      //alert("Uspesno ste dodali novog vozaca u sistem!")
-      console.log(this.driversAcc);
-    })
+            this.service.setData(this.info);
+
+            // console.log("ovo pre cuvankja")
+            // console.log(this.info);
 
 
+            this.service.addDriverCarAccount(this.info).subscribe((resp: DriversAccount) => {
+              this.driversAcc = resp;
+              //alert("Uspesno ste dodali novog vozaca u sistem!")
+              console.log(this.driversAcc);
+            })
+
+
+          }
+        }
+      }
     }
   }
 

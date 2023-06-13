@@ -86,12 +86,17 @@ export class RegisterComponent implements OnInit {
     return regex.test(str);
   }
 
-  capitalizeForm(){
-    this.registerForm.name.charAt(0).toUpperCase();
-    this.registerForm.surname.charAt(0).toUpperCase();
-    this.registerForm.address.city.charAt(0).toUpperCase();
-    this.registerForm.address.street.charAt(0).toUpperCase();
+  capitalizeForm() {
+    this.registerForm.name = this.capitalizeFirstLetter(this.registerForm.name);
+    this.registerForm.surname = this.capitalizeFirstLetter(this.registerForm.surname);
+    this.registerForm.address.city = this.capitalizeFirstLetter(this.registerForm.address.city);
+    this.registerForm.address.street = this.capitalizeFirstLetter(this.registerForm.address.street);
   }
+
+  capitalizeFirstLetter(s: string) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
 
   matchingPasswords(pass: string, check: string): boolean{
     if(pass===check)return true
